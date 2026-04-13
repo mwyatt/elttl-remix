@@ -1,0 +1,5 @@
+- prettier
+- vitest
+- authentication
+- core app functionality
+- cache - work out if required - performance of queries?
