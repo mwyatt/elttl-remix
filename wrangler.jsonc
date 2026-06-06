@@ -1,0 +1,12 @@
+{
+  "name": "elttl-remix",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-04-04",
+  "main": "./workers/app.ts",
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  }
+}
