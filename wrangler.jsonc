@@ -8,5 +8,8 @@
       "enabled": true,
       "invocation_logs": true
     }
+  },
+  "vars": {
+    "TURSO_URL": "libsql://elttlbackup-16-05-2026-mwyatt.aws-eu-west-1.turso.io",
   }
 }

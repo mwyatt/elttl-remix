@@ -1,5 +1,6 @@
 .DS_Store
 .env
+.env.local
 /node_modules/
 *.tsbuildinfo
 
@@ -13,3 +14,4 @@
 .dev.vars*
 worker-configuration.d.ts
 
+db/
