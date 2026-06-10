@@ -2,6 +2,10 @@ import type { Route } from "./+types/about-us";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
+import {Link} from "react-router";
+import {linkStyles} from "~/styles/ui-classes";
+import MainHeading from "~/components/MainHeading";
+import SubHeading from "~/components/SubHeading";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -42,7 +46,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 export const QuickLink = ({ href, name, external = false }) => {
-  return <GeneralLink className={linkStyles.join(' ')} href={href} target={external ? '_blank' : '_self'} rel='noreferrer'>{name === undefined ? href : name}</GeneralLink>
+  return <Link className={linkStyles.join(' ')} to={href} target={external ? '_blank' : '_self'} rel='noreferrer'>{name === undefined ? href : name}</Link>
 }
 
 export default function AboutUsPage({ loaderData }: Route.ComponentProps) {
@@ -78,7 +82,6 @@ export default function AboutUsPage({ loaderData }: Route.ComponentProps) {
   const competitionsLink = <QuickLink href='/competitions' name='Competitions' />
 
   return (
-    <FrontLayout>
       <div className='max-w-[768px] mx-auto text-sm'>
         <MainHeading name='About Us' />
 
@@ -172,6 +175,5 @@ export default function AboutUsPage({ loaderData }: Route.ComponentProps) {
           coaching by arrangement. He can be contacted direct: {mickMoirLink} or we can put you in touch. See {coachingAndSessionsLink}.
         </p>
       </div>
-    </FrontLayout>
   )
 }

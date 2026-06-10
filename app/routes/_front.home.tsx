@@ -14,6 +14,6 @@ export function loader() {
   return { message: env.VALUE_FROM_CLOUDFLARE };
 }
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+export default function HomePage({ loaderData }: Route.ComponentProps) {
   return <Welcome message={loaderData.message} />;
 }
