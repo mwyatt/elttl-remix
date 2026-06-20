@@ -1,5 +1,6 @@
 import { Link, useRouteLoaderData } from "react-router";
 import type { Route } from "./+types/admin._index";
+import {linkStyles} from "~/styles/ui-classes";
 
 type AdminLoaderData = {
   user: {
@@ -18,44 +19,20 @@ export function meta(_: Route.MetaArgs) {
 }
 
 export default function AdminIndexPage() {
-  // parent route id is usually "routes/admin" with your file naming
-  const adminData = useRouteLoaderData("routes/admin") as AdminLoaderData | undefined;
-  const user = adminData?.user;
-
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm text-stone-600 mt-1">
-          {user ? `Signed in as ${user.email ?? user.name ?? user.id}` : "Authenticated"}
-        </p>
-      </header>
-
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Link
-          to="/admin/fixtures"
-          className="rounded border border-stone-300 p-4 hover:bg-stone-50"
-        >
-          <h2 className="font-semibold">Fixtures</h2>
-          <p className="text-sm text-stone-600 mt-1">Manage fixtures and schedule updates.</p>
-        </Link>
-
-        <Link
-          to="/admin/results"
-          className="rounded border border-stone-300 p-4 hover:bg-stone-50"
-        >
-          <h2 className="font-semibold">Results</h2>
-          <p className="text-sm text-stone-600 mt-1">Review and edit submitted results.</p>
-        </Link>
-
-        <Link
-          to="/admin/players"
-          className="rounded border border-stone-300 p-4 hover:bg-stone-50"
-        >
-          <h2 className="font-semibold">Players</h2>
-          <p className="text-sm text-stone-600 mt-1">Maintain player records and details.</p>
-        </Link>
-      </section>
-    </main>
+      <>
+      <h2 className='font-bold text-2xl mb-4 mt-6'>Dashboard</h2>
+      <p>Welcome to the admin area.</p>
+      <div>
+        <div>
+          <h3 className='font-semibold text-lg mb-4 mt-6'>Reports</h3>
+          <ul className='list-disc list-inside pl-4'>
+            <li>
+              <Link to='/admin/report/players-playing-up' className={linkStyles.join(' ')}>Players Playing Up</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+        </>
   );
 }

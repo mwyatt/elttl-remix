@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import Address from '@/components/Address'
 import { PiXLogoFill } from 'react-icons/pi'
 import CookieBanner from '@/components/CookieBanner'
-import { CookieBannerConsentChoiceKey } from '@/constants/Cookies'
+// import { CookieBannerConsentChoiceKey } from '@/constants/Cookies'
 import {getCurrentYear} from "@/repositories/year.repository.server";
 import {getDbFromContext} from "@/db-context.server";
 import {Link, Outlet} from "react-router";

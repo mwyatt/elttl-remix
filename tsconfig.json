@@ -5,8 +5,9 @@
     { "path": "./tsconfig.cloudflare.json" }
   ],
   "compilerOptions": {
-        "baseUrl": ".",
+    "baseUrl": ".",
     "paths": {
+      "~/*": ["app/*"],
       "@/*": ["app/*"]
     },
     "checkJs": true,

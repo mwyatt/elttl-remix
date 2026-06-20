@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types'
-
 const component = function FullLoader ({ isLoading }) {
   if (!isLoading) {
     return null
@@ -12,10 +10,6 @@ const component = function FullLoader ({ isLoading }) {
       <p>Loading...</p>
     </div>
   )
-}
-
-component.propTypes = {
-  isLoading: PropTypes.bool.isRequired
 }
 
 export default component

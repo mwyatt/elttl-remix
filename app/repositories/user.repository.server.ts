@@ -1,10 +1,11 @@
 import { sql } from "drizzle-orm";
 
 export async function getUserById (db, id) {
-  return db.all(sql`
+  const users = await db.all(sql`
   select * from user 
            where id = ${id}
   `)
+    return users[0]
 }
 
 export async function getUserByEmail (db, email) {

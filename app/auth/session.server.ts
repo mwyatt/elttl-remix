@@ -5,6 +5,8 @@ type SessionData = {
   isAdmin?: boolean;
 };
 
+const FLASH_KEY = "flashMessage";
+
 const sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-me";
 
 export const sessionStorage = createCookieSessionStorage<SessionData>({
@@ -52,4 +54,43 @@ export async function destroySession(request: Request) {
       "Set-Cookie": await sessionStorage.destroySession(session),
     },
   });
+}
+
+export async function getSessionUser(request: Request) {
+  const session = await getSession(request);
+  const userId = session.get("userId");
+
+  if (!userId) {
+    throw Error("No user id found in session")
+  }
+
+  const isAdmin = session.get("isAdmin") ?? false
+
+  return {
+    isAdmin,
+    userId
+  }
+}
+
+export async function createFlashHeaders(
+  request: Request,
+  message: string
+): Promise<Headers> {
+  const session = await getSession(request);
+  session.flash(FLASH_KEY, message);
+
+  const headers = new Headers();
+  headers.append("Set-Cookie", await sessionStorage.commitSession(session));
+  return headers;
+}
+
+export async function getFlashMessage(
+  request: Request
+): Promise<{ message: string | null; headers: Headers }> {
+  const session = await getSession(request);
+  const message = (session.get(FLASH_KEY) as string | undefined) ?? null;
+
+  const headers = new Headers();
+  headers.append("Set-Cookie", await sessionStorage.commitSession(session)); // clears flashed value
+  return { message, headers };
 }

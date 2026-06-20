@@ -1,5 +1,3 @@
-'use client'
-
 export default function Feedback ({ message }) {
   if (!message) return null
 

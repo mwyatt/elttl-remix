@@ -16,13 +16,16 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.3",
-    "argon2-browser": "^1.18.0",
+    "dayjs": "^1.11.21",
     "drizzle-orm": "^0.45.2",
     "isbot": "^5.1.36",
+    "lodash": "^4.18.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-icons": "^5.6.0",
-    "react-router": "7.16.0"
+    "react-router": "7.16.0",
+    "react-select": "^5.10.2",
+    "react-simple-wysiwyg": "^3.4.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.29.1",
@@ -32,7 +35,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "concurrently": "^10.0.3",
-    "drizzle-kit": "^0.31.10",
+    "drizzle-kit": "^0.19.1",
+    "source-map-explorer": "^2.5.3",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "vite": "^8.0.3",

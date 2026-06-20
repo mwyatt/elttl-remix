@@ -1,4 +1,5 @@
 const encoder = new TextEncoder();
+const DEFAULT_ITERATIONS = 100000;
 
 function toBase64(bytes: Uint8Array): string {
   let binary = "";
@@ -13,7 +14,7 @@ function fromBase64(base64: string): Uint8Array {
   return bytes;
 }
 
-async function derive(password: string, salt: Uint8Array, iterations = 210000): Promise<Uint8Array> {
+async function derive(password: string, salt: Uint8Array, iterations = DEFAULT_ITERATIONS): Promise<Uint8Array> {
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     encoder.encode(password),
@@ -38,7 +39,7 @@ async function derive(password: string, salt: Uint8Array, iterations = 210000): 
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iterations = 210000;
+  const iterations = DEFAULT_ITERATIONS;
   const hash = await derive(password, salt, iterations);
 
   return `pbkdf2$sha256$${iterations}$${toBase64(salt)}$${toBase64(hash)}`;

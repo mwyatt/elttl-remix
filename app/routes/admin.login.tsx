@@ -29,7 +29,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   const isVerified = await verifyPassword(password, user.password)
 
   if (isVerified) {
-    return createAdminSession(request, "1", redirectTo);
+    return createAdminSession(request, user.id, redirectTo);
   }
 
   return { error: "Invalid credentials" };
