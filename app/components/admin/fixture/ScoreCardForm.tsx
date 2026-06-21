@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import { useFetcher } from "react-router";
+import {useFetcher, useRevalidator} from "react-router";
 import { PlayerSelect } from '~/components/admin/fixture/PlayerSelect'
 import {
   getOtherSideCapitalized,
@@ -18,11 +18,22 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
   const [encounterStruct, setEncounterStruct] = useState(getDefaultEncounterStruct(encounters))
   const [feedbackMessage, setFeedbackMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-
   const fetcher = useFetcher();
+  const { revalidate } = useRevalidator();
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data?.ok) revalidate();
+    if (fetcher.state !== "idle") return
+
+    setIsLoading(false)
+
+    if (fetcher.data?.message) {
+      setFeedbackMessage(fetcher.data.message)
+    }
+
+    if (fetcher.data?.ok) {
+      // trigger reload/update
+      revalidate?.()
+    }
   }, [fetcher.state, fetcher.data]);
 
   const handleSubmit = async (event) => {
@@ -33,32 +44,16 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
       { encounterStruct: JSON.stringify(encounterStruct) },
       { method: "post", action: `/admin/fixture/${fixture.id}` }
     );
-
-    const data = await response.json()
-
-    setFeedbackMessage(data.message)
-    setIsLoading(false)
   }
 
   const handleRollback = async (event) => {
     setIsLoading(true)
     event.preventDefault()
 
-    const response = await fetch(`/admin/api/fixture/${fixture.id}/rollback`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authentication: cookie
-      },
-      body: JSON.stringify({
-        encounterStruct
-      })
-    })
-
-    const data = await response.json()
-
-    setFeedbackMessage(data.message)
-    setIsLoading(false)
+    fetcher.submit(
+      { encounterStruct: JSON.stringify(encounterStruct) },
+      { method: "post", action: `/admin/fixture/${fixture.id}/rollback` }
+    );
   }
 
   const handleChangePlayer = (structPosition, optionValue) => {

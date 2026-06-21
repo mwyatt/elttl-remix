@@ -10,3 +10,12 @@ export async function getCurrentYear(db: any) {
 
   return result[0];
 }
+
+export async function getLatestYear(db: any) {
+  const result = await db.all(sql`
+    select * from tennisYear
+    order by id desc
+  `);
+
+  return result[0];
+}

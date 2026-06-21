@@ -1,4 +1,4 @@
-import GeneralLink from '@/components/GeneralLink'
+import {Link} from "react-router";
 
 export default function Breadcrumbs ({ items = [] }) {
   if (items.length === 1) {
@@ -6,7 +6,7 @@ export default function Breadcrumbs ({ items = [] }) {
   }
   const getLink = (item) => {
     if (item.href) {
-      return <GeneralLink className='text-primary-500' href={item.href}>{item.name}</GeneralLink>
+      return <Link className='text-primary-500' to={item.href}>{item.name}</Link>
     }
     return <span className='text-stone-400 cursor-auto'>{item.name}</span>
   }

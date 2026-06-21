@@ -1,15 +1,13 @@
-'use client'
-
-import GeneralLink from '@/components/GeneralLink'
-import { allHomeButtonStyles } from '@/lib/styles'
+import { allHomeButtonStyles } from '~/styles/ui-classes'
+import {Link} from "react-router";
 
 const Panel = ({ name, total, url }) => (
-  <GeneralLink
-    href={url} className='flex-wrap flex p-6 grow text-xl flex-col items-center gap-2 rounded bg-secondary-500 text-white'
+  <Link
+    to={url} className='flex-wrap flex p-6 grow text-xl flex-col items-center gap-2 rounded bg-secondary-500 text-white'
   >
     <span className='text-5xl font-semibold'>{total}</span>
     {name}
-  </GeneralLink>
+  </Link>
 )
 
 export default function SeasonTotals ({ yearName, totals }) {
@@ -18,8 +16,8 @@ export default function SeasonTotals ({ yearName, totals }) {
       <div className='flex items-center'>
         <h2 className='text-2xl grow'>Season {yearName}-{parseInt(yearName) + 1}</h2>
         <div className='flex gap-2'>
-          <GeneralLink className={allHomeButtonStyles} href={`/result/${yearName}`}>Team Information</GeneralLink>
-          <GeneralLink className={allHomeButtonStyles} href={`/result/${yearName}/season`}>Season Overview</GeneralLink>
+          <Link className={allHomeButtonStyles} to={`/result/${yearName}`}>Team Information</Link>
+          <Link className={allHomeButtonStyles} to={`/result/${yearName}/season`}>Season Overview</Link>
         </div>
       </div>
       <div className='flex flex-wrap gap-3'>

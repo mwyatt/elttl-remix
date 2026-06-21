@@ -1,10 +1,8 @@
-'use client'
-
-import GeneralLink from '@/components/GeneralLink'
-import { ExactDayWeekTypes, WeekTypeLabels } from '@/constants/Week'
-import { formatDayWithSuffixOfMonth } from '@/lib/date'
-import { getWeekDate } from '@/lib/week'
+import { ExactDayWeekTypes, WeekTypeLabels } from '~/constants/Week'
+import { formatDayWithSuffixOfMonth } from '~/libraries/date'
+import { getWeekDate } from '~/libraries/week'
 import { GiTrophyCup } from 'react-icons/gi'
+import {Link} from "react-router";
 
 export default function UpcomingEventWeek ({ yearName, week }) {
   const isExactEventDate = ExactDayWeekTypes.includes(week.type)
@@ -32,8 +30,8 @@ export default function UpcomingEventWeek ({ yearName, week }) {
         </div>
       </div>
       <div className='w-full flex gap-4 justify-end'>
-        <GeneralLink className='text-stone-500 border border-stone-400 px-2 py-1 rounded text-lg flex items-center' href={`/result/${yearName}/season`}>Season Overview</GeneralLink>
-        <GeneralLink href={`/result/${yearName}/week/${week.id}`} className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg'>More Info</GeneralLink>
+        <Link className='text-stone-500 border border-stone-400 px-2 py-1 rounded text-lg flex items-center' to={`/result/${yearName}/season`}>Season Overview</Link>
+        <Link to={`/result/${yearName}/week/${week.id}`} className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg'>More Info</Link>
       </div>
     </div>
   )

@@ -11,7 +11,8 @@ import uniq from "lodash/uniq";
 import filter from "lodash/filter";
 import { playerGetMany } from '~/repositories/player.repository.server'
 import {getCurrentYear} from "~/repositories/year.repository.server";
-const TRACE_RANK_CHANGES = true
+const TRACE_RANK_CHANGES = false
+import { sql } from "drizzle-orm"
 
 const logRankChange = (...args) => {
   if (TRACE_RANK_CHANGES) {
@@ -206,34 +207,29 @@ export default async function fulfillFixture (db, fixtureId, encounterStruct, ro
         status: encounter.status
       }
 
-      await db.run(`
+      await db.run(sql`
             INSERT INTO tennisEncounter
             (yearId, fixtureId, playerIdLeft, playerIdRight, playerRankChangeLeft, playerRankChangeRight, scoreLeft, scoreRight, status)
-            VALUES (:yearId, :fixtureId, :playerIdLeft, :playerIdRight, :playerRankChangeLeft, :playerRankChangeRight, :scoreLeft, :scoreRight, :status)
-        `, {
-              ':yearId': insertData.yearId,
-    ':fixtureId': insertData.fixtureId,
-    ':playerIdLeft': insertData.playerIdLeft,
-    ':playerIdRight': insertData.playerIdRight,
-    ':playerRankChangeLeft': insertData.playerRankChangeLeft,
-    ':playerRankChangeRight': insertData.playerRankChangeRight,
-    ':scoreLeft': insertData.scoreLeft,
-    ':scoreRight': insertData.scoreRight,
-    ':status': insertData.status ?? ''
-      })
+            VALUES (${insertData.yearId},
+                     ${insertData.fixtureId},
+                     ${insertData.playerIdLeft},
+                     ${insertData.playerIdRight},
+                     ${insertData.playerRankChangeLeft},
+                     ${insertData.playerRankChangeRight},
+                     ${insertData.scoreLeft},
+                     ${insertData.scoreRight},
+                     ${insertData.status}
+                   )
+        `)
     }
   }
 
-  await db.run(`
-      UPDATE tennisFixture tf
-      SET tf.timeFulfilled = :timeFulfilled
-      WHERE tf.yearId = :yearId
-        and id = :fixtureId
-  `, {
-    ':timeFulfilled': updateFixtureData.timeFulfilled,
-    ':yearId': updateFixtureData.yearId,
-    ':fixtureId': updateFixtureData.fixtureId
-  })
+  await db.run(sql`
+      UPDATE tennisFixture 
+      SET timeFulfilled = ${updateFixtureData.timeFulfilled}
+      WHERE yearId = ${updateFixtureData.yearId}
+        and id = ${updateFixtureData.fixtureId}
+  `)
 
   logRankChange('player ranks before update:', playerRanks)
 
@@ -241,8 +237,8 @@ export default async function fulfillFixture (db, fixtureId, encounterStruct, ro
   for (const playerId in playerRanks) {
     const playerRank = playerRanks[playerId]
     await db.run(`
-          UPDATE tennisPlayer tp
-          SET tp.rank = ${playerRank}
+          UPDATE tennisPlayer
+          SET rank = ${playerRank}
           WHERE yearId = ${currentYear.id}
             and id = ${parseInt(playerId)}
       `)

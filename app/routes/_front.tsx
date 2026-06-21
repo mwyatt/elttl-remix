@@ -2,23 +2,16 @@ import { sql } from "drizzle-orm";
 import type { Route } from "./+types/_front";
 import React from 'react'
 import { BiLogoFacebook } from 'react-icons/bi'
-import Header from '@/components/Header'
-import Address from '@/components/Address'
+import Header from '~/components/Header'
+import Address from '~/components/Address'
 import { PiXLogoFill } from 'react-icons/pi'
-import CookieBanner from '@/components/CookieBanner'
-// import { CookieBannerConsentChoiceKey } from '@/constants/Cookies'
-import {getCurrentYear} from "@/repositories/year.repository.server";
-import {getDbFromContext} from "@/db-context.server";
+import {getCurrentYear} from "~/repositories/year.repository.server";
+import {getDbFromContext} from "~/db-context.server";
 import {Link, Outlet} from "react-router";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
   const currentYear = await getCurrentYear(db);
-
-    // @todo cookies
-  // const cookieStore = await cookies()
-  // const isCookieBannerDismissed = cookieStore.get(CookieBannerConsentChoiceKey)?.value.length > 0
-
 
     const divisions = await db.all<{ name: string }>(sql`  SELECT name
       FROM tennisDivision
@@ -125,7 +118,8 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
   } = loaderData
 
   const isCookieBannerDismissed = false
-  const visitingYearName = ''
+  // @todo
+  const visitingYearName = '2025'
 
   // @todo this is passed through via the url params (get the year portion if it exists)
   const isVisitingArchive = visitingYearName !== undefined && (currentYearName !== visitingYearName)
@@ -217,7 +211,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
         </div>
       </footer>
 
-      <CookieBanner isCookieBannerDismissed={isCookieBannerDismissed} />
+      {/*<CookieBanner isCookieBannerDismissed={isCookieBannerDismissed} />*/}
     </div>
   )
 }

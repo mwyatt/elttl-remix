@@ -1,5 +1,5 @@
-import ElttlEmblem from '@/components/icons/ElttlEmblem'
-import MenuPrimary from '@/components/MenuPrimary'
+import ElttlEmblem from '~/components/icons/ElttlEmblem'
+import MenuPrimary from '~/components/MenuPrimary'
 import { useState } from 'react'
 import { BiBook, BiCode, BiMap, BiNews, BiQuestionMark, BiTrophy } from 'react-icons/bi'
 import {Link} from "react-router";

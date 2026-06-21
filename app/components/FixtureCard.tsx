@@ -1,13 +1,13 @@
 'use client'
 
-import GeneralLink from '@/components/GeneralLink'
-import DatePretty from '@/components/DatePretty'
+import DatePretty from '~/components/DatePretty'
 import classNames from 'classnames'
+import {Link} from "react-router";
 
 export default function FixtureCard ({ year, teamLeft, teamRight, timeFulfilled }) {
   return (
-    <GeneralLink
-      href={`/result/${year}/fixture/${teamLeft.slug}/${teamRight.slug}`}
+    <Link
+      to={`/result/${year}/fixture/${teamLeft.slug}/${teamRight.slug}`}
       className={classNames({
         'border-stone-500 border text-stone-500': !timeFulfilled,
         'border-primary-500 border text-primary-500': timeFulfilled,
@@ -29,6 +29,6 @@ export default function FixtureCard ({ year, teamLeft, teamRight, timeFulfilled 
           <span className=''>{teamRight.score}</span>
         </span>
       </>
-    </GeneralLink>
+    </Link>
   )
 }

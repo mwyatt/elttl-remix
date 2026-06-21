@@ -1,6 +1,5 @@
-import '@testing-library/jest-dom'
-import { getSides, getSideCapitalized, getSidesCapitalized, SIDE_LEFT, getOtherSide, getSideIndex } from '@/constants/encounter'
-import { describe, it, expect } from '@jest/globals'
+import { getSides, getSideCapitalized, getSidesCapitalized, SIDE_LEFT, getOtherSide, getSideIndex } from '~/constants/encounter'
+import { describe, it, expect } from 'vitest'
 
 describe('encounter', () => {
   it('has sides and can transform them', () => {

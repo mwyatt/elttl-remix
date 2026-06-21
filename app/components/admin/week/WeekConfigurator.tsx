@@ -1,7 +1,5 @@
-'use client'
-
 import { useState } from 'react'
-import { WeekTypeLabels, WeekTypes } from '@/constants/Week'
+import { WeekTypeLabels, WeekTypes } from '~/constants/Week'
 import { DndContext } from '@dnd-kit/core'
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
@@ -9,9 +7,10 @@ import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import utc from 'dayjs/plugin/utc'
-import FullLoader from '@/components/FullLoader'
-import Feedback from '@/components/Feedback'
-import lodash from 'lodash'
+import FullLoader from '~/components/FullLoader'
+import Feedback from '~/components/Feedback'
+import uniq from "lodash/uniq";
+import chunk from "lodash/chunk";
 
 dayjs.extend(isoWeek)
 dayjs.extend(weekOfYear)
@@ -110,7 +109,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
 
     divisions.forEach(division => {
       const divisionFixtures = stateFixtures.filter(fixture => fixture.divisionId === division.id)
-      const chunkedFixtures = lodash.chunk(divisionFixtures, Math.ceil(divisionFixtures.length / fixtureWeeks.length))
+      const chunkedFixtures = chunk(divisionFixtures, Math.ceil(divisionFixtures.length / fixtureWeeks.length))
 
       chunkedFixtures.forEach((fixtureChunk, index) => {
         const week = fixtureWeeks[index % fixtureWeeks.length]
@@ -134,7 +133,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
     // const unplacedFixtures = stateFixtures.filter(fixture => fixture.weekId === null && fixture.divisionId === currentDivisionId)
     // const fixtureWeeks = stateWeeks.filter(week => week.type === WeekTypes.fixture)
 
-    // const teamIds = lodash.uniq(unplacedFixtures.map(fixture => fixture.teamLeftId))
+    // const teamIds = uniq(unplacedFixtures.map(fixture => fixture.teamLeftId))
 
     // console.log({ fixtureWeeks, teamIds })
 
@@ -257,9 +256,9 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
 
   const getTeamsInDivision = function (divisionId) {
     const unplacedFixtures = stateFixtures.filter(fixture => fixture.weekId === null && fixture.divisionId === divisionId)
-    const uniqueTeamLeftIds = lodash.uniq(unplacedFixtures.map(fixture => fixture.teamLeftId))
-    const uniqueTeamRightIds = lodash.uniq(unplacedFixtures.map(fixture => fixture.teamRightId))
-    const uniqueTeamIds = lodash.uniq([...uniqueTeamLeftIds, ...uniqueTeamRightIds])
+    const uniqueTeamLeftIds = uniq(unplacedFixtures.map(fixture => fixture.teamLeftId))
+    const uniqueTeamRightIds = uniq(unplacedFixtures.map(fixture => fixture.teamRightId))
+    const uniqueTeamIds = uniq([...uniqueTeamLeftIds, ...uniqueTeamRightIds])
 
     const teamsInDivision = [
       ...uniqueTeamIds.map(teamId => {
