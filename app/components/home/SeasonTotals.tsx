@@ -16,8 +16,8 @@ export default function SeasonTotals ({ yearName, totals }) {
       <div className='flex items-center'>
         <h2 className='text-2xl grow'>Season {yearName}-{parseInt(yearName) + 1}</h2>
         <div className='flex gap-2'>
-          <Link className={allHomeButtonStyles} to={`/result/${yearName}`}>Team Information</Link>
-          <Link className={allHomeButtonStyles} to={`/result/${yearName}/season`}>Season Overview</Link>
+          <Link className={allHomeButtonStyles.join(' ')} to={`/result/${yearName}`}>Team Information</Link>
+          <Link className={allHomeButtonStyles.join(' ')} to={`/result/${yearName}/season`}>Season Overview</Link>
         </div>
       </div>
       <div className='flex flex-wrap gap-3'>

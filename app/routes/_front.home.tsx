@@ -70,10 +70,8 @@ export async function loader({context}) {
     press.url = `/press/${press.slug}`
   })
 
-  // Season
-  // Season 2025-2026
   // Divisions - 4
-  const [divisions] = await db.all(sql`
+  const divisions = await db.all(sql`
       SELECT id
       FROM tennisDivision
       WHERE yearId = ${currentYear.id}
@@ -178,7 +176,6 @@ LIMIT 1;
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
   const { advertisementsPrimary, latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures } = loaderData
-
   return (
       <div className='sm:p-6 sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {upcomingEventWeek && (
@@ -193,7 +190,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           <div className='flex items-center'>
             <h2 className='text-2xl grow'>News Updates</h2>
             <div>
-              <Link className={allHomeButtonStyles} to='/press/'>All News</Link>
+              <Link className={allHomeButtonStyles.join(' ')} to='/press/'>All News</Link>
             </div>
           </div>
           {latestPress.map((press) => (

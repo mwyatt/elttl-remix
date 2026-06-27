@@ -12,6 +12,19 @@ export default [
     route("about-us", "routes/_front.about-us.tsx"),
     route("competitions", "routes/_front.competitions.tsx"),
     route("contact-us", "routes/_front.contact-us.tsx"),
+
+    route("result", "routes/_front.result.tsx"),
+    route("result/:year", "routes/_front.result.$year.tsx"),
+
+    route("result/:year/:division", "routes/_front.result.$year.$division.tsx"),
+    route("result/:year/:division/league", "routes/_front.result.$year.$division.league.tsx"),
+    route("result/:year/:division/merit", "routes/_front.result.$year.$division.merit.tsx"),
+    route("result/:year/:division/doubles-merit", "routes/_front.result.$year.$division.doubles-merit.tsx"),
+
+    route("result/:year/team/:slug", "routes/_front.result.$year.team.$slug.tsx"),
+    route("result/:year/venue/:slug", "routes/_front.result.$year.venue.$slug.tsx"),
+    route("result/:year/player/:slug", "routes/_front.result.$year.player.$slug.tsx"),
+    route("result/:year/fixture/:teamLeftSlug/:teamRightSlug", "routes/_front.result.$year.fixture.$teamLeftSlug.$teamRightSlug.tsx"),
   ]),
 
   route("admin/login", "routes/admin.login.tsx"),

@@ -1,14 +1,11 @@
-import {
-  formatDateWithDayAndSuffixOfMonth,
-  formatDayWithSuffixOfMonth
-} from '@/lib/date'
-import { getWeekDate } from '@/lib/week'
-import { ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes } from '@/constants/Week'
 import classNames from 'classnames'
 import { BiMap, BiTrophy } from 'react-icons/bi'
-import GeneralLink from '@/components/GeneralLink'
-import { allHomeButtonStyles, linkStyles } from '@/lib/styles'
 import dayjs from 'dayjs'
+import {Link} from "react-router";
+import {ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes} from "~/constants/Week";
+import {formatDateWithDayAndSuffixOfMonth, formatDayWithSuffixOfMonth} from "~/libraries/date";
+import {getWeekDate} from "~/libraries/week";
+import {allHomeButtonStyles, linkStyles} from "~/styles/ui-classes";
 
 export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
   const isCurrentWeek = week.id === closestWeekId
@@ -51,8 +48,8 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
         'border-r-primary-500 bg-primary-500 text-white': isCurrentWeek
       })}
       >
-        <GeneralLink
-          href={`/result/${yearName}/week/${week.id}`}
+        <Link
+          to={`/result/${yearName}/week/${week.id}`}
         >{!isExactEventDate && (
           <span
             className={classNames({
@@ -63,7 +60,7 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
           >w/c
           </span>
         )} {formattedDate}
-        </GeneralLink>
+        </Link>
       </div>
       <div className='col-span-4 flex flex-col sm:flex-row p-2 pr-0 gap-2 sm:gap-4 sm:items-center'>
         <div className='text-lg flex-grow'>
@@ -77,55 +74,55 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
               {!isAtHome && ('Away')}
               {' vs '}
               {isAtHome && (
-                <GeneralLink
+                <Link
                   className={linkStyles.join(' ')}
-                  href={`/result/${yearName}/team/${fixture.teamRightSlug}`}
+                  to={`/result/${yearName}/team/${fixture.teamRightSlug}`}
                 >
                   {fixture.teamRightName}
-                </GeneralLink>
+                </Link>
               )}
               {!isAtHome && (
-                <GeneralLink
+                <Link
                   className={linkStyles.join(' ')}
-                  href={`/result/${yearName}/team/${fixture.teamLeftSlug}`}
+                  to={`/result/${yearName}/team/${fixture.teamLeftSlug}`}
                 >{fixture.teamLeftName}
-                </GeneralLink>
+                </Link>
               )}
               {' at '}
-              <GeneralLink
+              <Link
                 className={linkStyles.join(' ')}
-                href={`/result/${yearName}/venue/${fixture.venueSlug}`}
+                to={`/result/${yearName}/venue/${fixture.venueSlug}`}
               >{fixture.venueName}
-              </GeneralLink>
+              </Link>
             </div>
           )}
         </div>
         <div className='sm:p-2 pr-0 flex items-end justify-end'>
-          {/* <GeneralLink */}
+          {/* <Link */}
           {/*  className={allHomeButtonStyles} */}
-          {/*  href={`/result/${yearName}/week/${week.id}`} */}
+          {/*  to={`/result/${yearName}/week/${week.id}`} */}
           {/* >View Week */}
-          {/* </GeneralLink> */}
+          {/* </Link> */}
 
           {(isFixtureWeek && !fixture.timeFulfilled && !isAtHome) && (
-            <GeneralLink href={fixture.venueLocation} target='_blank' rel='noreferrer' className={`${allHomeButtonStyles.join(' ')} flex items-center gap-1 inline-block`}>
+            <Link to={fixture.venueLocation} target='_blank' rel='noreferrer' className={`${allHomeButtonStyles.join(' ')} flex items-center gap-1 inline-block`}>
               <span><BiMap size={20} /></span>
               <span>Directions</span>
-            </GeneralLink>
+            </Link>
           )}
           {(isFixtureWeek && fixture.timeFulfilled) && (
-            <GeneralLink
+            <Link
               className={`${allHomeButtonStyles} whitespace-nowrap inline-block`}
-              href={fixtureLink}
+              to={fixtureLink}
             >View {fixture.timeFulfilled ? 'Result' : 'Fixture'}
-            </GeneralLink>
+            </Link>
           )}
           {(isEvent || week.type === WeekTypes.catchup) && (
-            <GeneralLink
+            <Link
               className='color-secondary-500 border-b border-secondary-500 whitespace-nowrap inline-block'
-              href={`/result/${yearName}/week/${week.id}`}
+              to={`/result/${yearName}/week/${week.id}`}
             >More Info
-            </GeneralLink>
+            </Link>
           )}
         </div>
       </div>

@@ -1,7 +1,7 @@
 import classNames from 'classnames'
-import Week from '@/components/Week'
-import { getClosestWeekId } from '@/lib/date'
-import GeneralLink from '@/components/GeneralLink'
+import {Link} from "react-router";
+import {getClosestWeekId} from "~/libraries/date";
+import Week from "~/components/Week";
 
 export default function WeeksTimeline ({ yearName, weeks, teamSlug }) {
   const closestWeekId = getClosestWeekId(weeks)
@@ -13,11 +13,11 @@ export default function WeeksTimeline ({ yearName, weeks, teamSlug }) {
           <h2 className='text-2xl'>Events</h2>
         </div>
         <div>
-          <GeneralLink
+          <Link
             className='color-secondary-500 border-b border-secondary-500 whitespace-nowrap'
-            href={`/result/${yearName}/season`}
+            to={`/result/${yearName}/season`}
           >Season Overview
-          </GeneralLink>
+          </Link>
         </div>
       </div>
       <div className={classNames({

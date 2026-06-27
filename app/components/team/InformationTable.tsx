@@ -1,8 +1,6 @@
-'use client'
-
-import GeneralLink from '@/components/GeneralLink'
-import { linkStyles } from '@/lib/styles'
-import { getShortPlayerName } from '@/lib/player'
+import {Link} from "react-router";
+import {linkStyles} from "~/styles/ui-classes";
+import {getShortPlayerName} from "~/libraries/player";
 
 export default function InformationTable ({ yearName, teams }) {
   const getContact = (landline, mobile) => {
@@ -32,17 +30,17 @@ export default function InformationTable ({ yearName, teams }) {
         {teams.map((team, index) => (
           <tr key={index} className='border-t border-dashed hover:bg-gray-100'>
             <td className='p-2 md:p-4'>
-              <GeneralLink className={linkStyles.join(' ')} href={`/result/${yearName}/team/${team.slug}`}>{team.name}</GeneralLink>
+              <Link className={linkStyles.join(' ')} to={`/result/${yearName}/team/${team.slug}`}>{team.name}</Link>
             </td>
             <td className='p-2 md:p-4 hidden sm:table-cell'>
-              <GeneralLink className={linkStyles.join(' ')} href={`/result/${yearName}/venue/${team.venueSlug}`}>{team.venueName}</GeneralLink>
+              <Link className={linkStyles.join(' ')} to={`/result/${yearName}/venue/${team.venueSlug}`}>{team.venueName}</Link>
             </td>
             <td className='p-2 md:p-4'>
               {team.secretarySlug && (
-                <GeneralLink className={linkStyles.join(' ')} href={`/result/${yearName}/player/${team.secretarySlug}`}>
+                <Link className={linkStyles.join(' ')} to={`/result/${yearName}/player/${team.secretarySlug}`}>
                   <span className='sm:hidden'>{getShortPlayerName(team.secretaryName)}</span>
                   <span className='hidden sm:inline'>{team.secretaryName}</span>
-                </GeneralLink>
+                </Link>
               )}
             </td>
             <td className='p-2 md:p-4'>
