@@ -249,14 +249,23 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Competitions Schedule</h2>
             <p>Find out more about the various competitions being held this season.</p>
             <div className='flex justify-end'>
-              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='http://localhost:3000/competitions-schedule-2025-2026.pdf'>Download</Link>
+              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/competitions'>Competitions</Link>
             </div>
           </div>
         </Panel>
         <Panel>
           <div className='flex flex-col gap-4'>
-            <h2 className='text-2xl'>Welcome to Season 2025</h2>
-            <p>Welcome to the new season, download the handbook for fixtures and more.</p>
+            <h2 className='text-2xl'>Handicap Calculator</h2>
+            <p>Want to know how many points start a player gets in a handicap match? Give our new handicap calculator a try!</p>
+            <div className='flex justify-end'>
+              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/handicap-calculator'>Calculator</Link>
+            </div>
+          </div>
+        </Panel>
+        <Panel>
+          <div className='flex flex-col gap-4'>
+            <h2 className='text-2xl'>Handbook</h2>
+            <p>Welcome to the season, download the handbook for fixtures and more.</p>
             <div className='flex justify-end'>
               <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='http://localhost:3000/handbook-2025-2026.pdf'>Download</Link>
             </div>

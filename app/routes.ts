@@ -12,9 +12,21 @@ export default [
     route("about-us", "routes/_front.about-us.tsx"),
     route("competitions", "routes/_front.competitions.tsx"),
     route("contact-us", "routes/_front.contact-us.tsx"),
+    route("committee-members", "routes/_front.committee-members.tsx"),
+    route("sessions", "routes/_front.sessions.tsx"),
+    route("prepaid-practice-scheme", "routes/_front.prepaid-practice-scheme.tsx"),
+    route("schools", "routes/_front.schools.tsx"),
+    route("constitution-and-rules", "routes/_front.constitution-and-rules.tsx"),
+    route("gdpr", "routes/_front.gdpr.tsx"),
+    route("code-of-conduct", "routes/_front.code-of-conduct.tsx"),
+    route("handicap-calculator", "routes/_front.handicap-calculator.tsx"),
+
 
     route("result", "routes/_front.result.tsx"),
     route("result/:year", "routes/_front.result.$year.tsx"),
+
+    route("result/:year/season", "routes/_front.result.$year.season.tsx"),
+    route("result/:year/week/:id", "routes/_front.result.$year.week.$id.tsx"),
 
     route("result/:year/:division", "routes/_front.result.$year.$division.tsx"),
     route("result/:year/:division/league", "routes/_front.result.$year.$division.league.tsx"),

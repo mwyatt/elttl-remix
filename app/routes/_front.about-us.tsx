@@ -45,6 +45,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { players, currentYearName: currentYear.name };
 }
 
+// @todo move to more general loc
 export const QuickLink = ({ href, name, external = false }) => {
   return <Link className={linkStyles.join(' ')} to={href} target={external ? '_blank' : '_self'} rel='noreferrer'>{name === undefined ? href : name}</Link>
 }

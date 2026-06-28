@@ -1,10 +1,8 @@
-'use client'
-
-import dynamic from 'next/dynamic'
 import { SIDE_LEFT, SIDE_RIGHT } from '@/constants/encounter'
 import { getHandicap, getStartValue } from '@/constants/Handicap'
 import { useMemo, useState } from 'react'
-const CreatableSelect = dynamic(() => import('react-select/creatable'), { ssr: false })
+import { lazy, Suspense } from "react";
+const CreatableSelect = lazy(() => import("react-select/creatable"));
 
 export default function HandicapCalculator ({ players }) {
   const [chosenPlayers, setChosenPlayers] = useState({})
@@ -50,12 +48,14 @@ export default function HandicapCalculator ({ players }) {
     <>
       <div className='flex gap-6 mb-4 mt-8 flex-col sm:flex-row'>
         <div className='basis-1/2'>
+          <Suspense fallback={<div>Loading…</div>}>
           <CreatableSelect
             isValidNewOption={() => false}
             className='text-lg'
             options={options}
             onChange={option => handleChangePlayer(SIDE_LEFT, option.value)}
           />
+</Suspense>
           {handicapInformation && (
             <div className='text-lg pt-4 text-center'>
               <p>Handicap: {handicapInformation[SIDE_LEFT]}</p>
@@ -63,12 +63,14 @@ export default function HandicapCalculator ({ players }) {
           )}
         </div>
         <div className='basis-1/2'>
+          <Suspense fallback={<div>Loading…</div>}>
           <CreatableSelect
             isValidNewOption={() => false}
             className='text-lg'
             options={options}
             onChange={option => handleChangePlayer(SIDE_RIGHT, option.value)}
           />
+</Suspense>
           {handicapInformation && (
             <div className='text-lg pt-4 text-center'>
               <p>Handicap: {handicapInformation[SIDE_RIGHT]}</p>
