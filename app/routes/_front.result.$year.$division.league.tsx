@@ -128,7 +128,7 @@ export default function _frontResultYearDivisionLeague({ loaderData, params }: R
         <tbody>
 
           {stats.map((stat, index) => (
-            <tr key={index} className='border-dashed border-t hover:bg-gray-100'>
+            <tr key={index} className='border-dashed border-t border-t-neutral-300 hover:bg-gray-100'>
               <td className='p-2 md:p-4'>
                 <Link className={linkStyles.join(' ')} to={`/result/${year}/team/${stat.team.slug}`}>{stat.team.name}</Link>
               </td>

@@ -17,7 +17,7 @@ export default function MenuPrimary ({ items, primaryOpenStatuses, setPrimaryOpe
           <div
             key={index}
             className={[
-              'relative p-3 sm:p-4 border-l flex grow gap-4 items-center cursor-pointer',
+              'relative p-3 sm:p-4 border-l border-l-neutral-300 flex grow gap-4 items-center cursor-pointer',
               primaryOpenStatuses[index].isOpen
                 ? 'bg-stone-100'
                 : ''

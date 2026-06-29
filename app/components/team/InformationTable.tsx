@@ -28,7 +28,7 @@ export default function InformationTable ({ yearName, teams }) {
       <tbody>
 
         {teams.map((team, index) => (
-          <tr key={index} className='border-t border-dashed hover:bg-gray-100'>
+          <tr key={index} className='border-t border-t-neutral-300 border-dashed hover:bg-gray-100'>
             <td className='p-2 md:p-4'>
               <Link className={linkStyles.join(' ')} to={`/result/${yearName}/team/${team.slug}`}>{team.name}</Link>
             </td>

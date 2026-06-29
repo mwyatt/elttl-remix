@@ -9,12 +9,13 @@ import Breadcrumbs from "~/components/Breadcrumbs";
 import {BiCaretLeft, BiCaretRight} from "react-icons/bi";
 import DatePretty from "~/components/DatePretty";
 import {sql} from "drizzle-orm";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+      return buildMeta({
+    title: 'News Updates',
+    description: "Latest news updates from the league, including news and updates about teams, fixtures, and events."
+  })
 }
 
 export async function loader({ request, context }: Route.LoaderArgs) {

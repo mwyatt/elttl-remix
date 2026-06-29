@@ -20,7 +20,7 @@ export default function FixtureCard ({ year, teamLeft, teamRight, timeFulfilled 
             Fulfilled <DatePretty time={timeFulfilled} />
           </span>
         )}
-        <span className='flex gap-2 border-b border-dashed px-2'>
+        <span className='flex gap-2 border-b border-b-neutral-300 border-dashed px-2'>
           <span className='flex-grow'>{teamLeft.name}</span>
           <span className=''>{teamLeft.score}</span>
         </span>

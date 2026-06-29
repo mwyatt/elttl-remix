@@ -16,12 +16,13 @@ import SeasonTotals from "~/components/home/SeasonTotals";
 import SessionsToday from "~/components/home/SessionsToday";
 import FixtureCard from "~/components/FixtureCard";
 import ImageGallery from "~/components/home/ImageGallery";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
+  return buildMeta({
+    title: 'Home page',
+    description: "Explore the latest match results across all divisions, including scores, standings, and performance summaries."
+  })
 }
 
 export async function loader({context}) {
@@ -194,7 +195,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
           {latestPress.map((press) => (
-            <div className='py-4 border-b border-dashed' key={press.id}>
+            <div className='py-4 border-b border-b-neutral-300 border-dashed' key={press.id}>
               <p
                 className='text-sm text-gray-500 mb-2'
                 title={dayjs.unix(press.timePublished).format('DD/MM/YYYY HH:mm')}

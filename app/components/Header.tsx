@@ -9,6 +9,13 @@ export default function Header ({ appName, menuPrimary }) {
     menuPrimary.map(() => ({ isOpen: false }))
   )
 
+  const handleClick = (index) => {
+    setPrimaryOpenStatuses([
+      {isOpen: false},
+      {isOpen: false},
+    ])
+  }
+
   const getIcon = (name) => {
     switch (name) {
       case 'About Us':
@@ -29,8 +36,8 @@ export default function Header ({ appName, menuPrimary }) {
   }
 
   return (
-    <header className='border-b border-b-slate-300 bg-white drop-shadow-sm'>
-      <div className='max-w-[1440px] sm:flex mx-auto border-l border-l-slate-200'>
+    <header className='border-b border-b-neutral-300 bg-white drop-shadow-sm'>
+      <div className='max-w-[1440px] sm:flex mx-auto border-l border-l-neutral-200'>
         <Link
           to='/'
           className='flex-1 flex flex-grow gap-2 sm:gap-4 p-4 items-center justify-center sm:justify-start border-b sm:border-none sm:max-w-[500px]'
@@ -63,6 +70,7 @@ export default function Header ({ appName, menuPrimary }) {
                         className='flex py-4 px-4 block text-lg text-primary-500 bg-white font-semibold rounded'
                         to={secondaryItem.url}
                         target={secondaryItem.target || '_self'}
+                        onClick={() => handleClick(index)}
                       >
                         {getIcon(secondaryItem.name)}
                         {secondaryItem.name}
@@ -72,7 +80,11 @@ export default function Header ({ appName, menuPrimary }) {
                         <div className='sm:flex lg:block'>
                           {secondaryItem.children.map((tertiaryItem) => (
                             <div key={tertiaryItem.name}>
-                              <Link className='px-4 py-4 block text-lg border-t border-t-neutral-300' to={tertiaryItem.url}>{tertiaryItem.name}</Link>
+                              <Link
+                                  className='px-4 py-4 block text-lg border-t border-t-neutral-300'
+                                  to={tertiaryItem.url}
+                        onClick={() => handleClick(index)}
+                              >{tertiaryItem.name}</Link>
                             </div>
                           ))}
                         </div>
