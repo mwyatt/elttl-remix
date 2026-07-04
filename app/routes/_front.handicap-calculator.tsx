@@ -7,8 +7,8 @@ import HandicapCalculator from "~/components/HandicapCalculator";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "About Us" },
-    { name: "description", content: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist." },
+    { title: "Handicap Calculator" },
+    { name: "description", content: "Use the East Lancashire Table Tennis League Handicap Calculator to compare players, view handicap differences, and see starting points for disadvantaged players in league matches." },
   ];
 }
 

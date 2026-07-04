@@ -3,12 +3,13 @@ import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
 import {QuickLink} from "~/routes/_front.about-us";
 import SubHeading from "~/components/SubHeading";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "About Us" },
-    { name: "description", content: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist." },
-  ];
+    return buildMeta({
+    title: 'GDPR & Data Privacy Policy',
+    description: "Read the East Lancashire Table Tennis League GDPR and Data Privacy Policy, covering how personal data is collected, stored, used, protected, shared, and managed, along with members’ rights, subject access requests, and data protection responsibilities."
+  })
 }
 
 export async function loader({ context }: Route.LoaderArgs) {

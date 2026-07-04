@@ -13,13 +13,20 @@ import {getSideCapitalized, scorecardStructure, SIDE_LEFT, SIDE_RIGHT} from "~/c
 import EncounterStatus from "~/constants/EncounterStatus";
 import classNames from "classnames";
 import FixtureEncounterChart from "~/components/FixtureEncounterChart";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, teamLeftSlug, teamRightSlug } = params;
+
+  const teamLeftName = teamLeftSlug.replace(/-/g, ' ');
+  const teamRightName = teamRightSlug.replace(/-/g, ' ');
+
+  return buildMeta({
+    title: `${teamLeftName} vs ${teamRightName} – ${year} Fixture Result`,
+    description: `View the full match breakdown for ${teamLeftName} vs ${teamRightName} in the ${year} season, including individual encounters, scores, rank changes, venue details, and overall performance totals.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

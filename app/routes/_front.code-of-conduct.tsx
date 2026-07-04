@@ -7,8 +7,8 @@ import {QuickLink} from "~/routes/_front.about-us";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "About Us" },
-    { name: "description", content: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist." },
+    { title: "Code of Conduct" },
+    { name: "description", content: "Read the East Lancashire Table Tennis League Code of Conduct, including behaviour expectations for players and officials, the complaints procedure, disciplinary panel process, sanctions, and appeal rights for all participants in ELTTL activities." },
   ];
 }
 

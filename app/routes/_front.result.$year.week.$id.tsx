@@ -8,7 +8,8 @@ import {linkStyles} from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
 import {
   getFixturesByWeekId,
-  getUnfulfilledFixtures, getUnfulfilledFixturesByWeekId
+  getUnfulfilledFixtures,
+  getUnfulfilledFixturesByWeekId
 } from "~/repositories/fixture.repository.server";
 import MainHeading from "~/components/MainHeading";
 import {ExactDayWeekTypes, FredHoldenCupWeekTypes, getWeekTypeLabel, WeekTypes} from "~/constants/Week";
@@ -23,13 +24,20 @@ import {
 } from "~/components/CompetitionsContent";
 import DatePretty from "~/components/DatePretty";
 import dayjs from "dayjs";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params, loaderData }: Route.MetaArgs) {
+  const { year } = params;
+  const { week } = loaderData;
+
+  const weekTypeLabel = getWeekTypeLabel(week.type);
+
+  return buildMeta({
+    title: `${weekTypeLabel} – ${year} Week Overview`,
+    description: `View the full overview for this ${weekTypeLabel} in the ${year} season, including scheduled fixtures, event details, outstanding matches, and related news from the East Lancashire Table Tennis League.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /.env
+Disallow: /.git
+Disallow: /build/
+Disallow: /assets/
+Disallow: /private/
+Allow: /
+
+# Slow down aggressive SEO crawlers
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+# Optional: keep Bingbot polite
+User-agent: bingbot
+Crawl-delay: 2

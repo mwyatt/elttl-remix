@@ -1,10 +1,10 @@
-import { sql } from "drizzle-orm";
-import type { Route } from "./+types/_front";
+import {sql} from "drizzle-orm";
+import type {Route} from "./+types/_front";
 import React from 'react'
-import { BiLogoFacebook } from 'react-icons/bi'
+import {BiLogoFacebook} from 'react-icons/bi'
 import Header from '~/components/Header'
 import Address from '~/components/Address'
-import { PiXLogoFill } from 'react-icons/pi'
+import {PiXLogoFill} from 'react-icons/pi'
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {Link, Outlet} from "react-router";
@@ -46,7 +46,7 @@ export async function loader({ context }: Route.LoaderArgs) {
     },
     {
       title: 'Results Archive',
-      description: 'Your stats, never forgotten! See the previous seasons scores.',
+      description: 'Browse all past and current seasons of the league.',
       action: 'View',
       url: '/result/'
     }
@@ -141,7 +141,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
         </div>
       )}
 
-      <div className={`${paddedContent ? 'p-4 sm:p-8' : ''} ${maxWidth ? 'max-w-[1440px] mx-auto' : ''} bg-white/80`}>
+      <div className={`${paddedContent ? 'p-4 sm:p-8' : ''} ${maxWidth ? 'max-w-[1440px] mx-auto' : ''} bg-white/95`}>
         <Outlet />
       </div>
 

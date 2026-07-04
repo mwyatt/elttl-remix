@@ -2,27 +2,26 @@ import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import {Link} from "react-router";
 import MainHeading from "~/components/MainHeading";
+import {buildMeta} from "~/constants/MetaData";
+import {getAllYears} from "~/repositories/year.repository.server";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+  return buildMeta({
+    title: "Results by Season",
+    description:
+      "Browse all past and current seasons of the East Lancashire Table Tennis League, with quick access to yearly results, divisions, teams, fixtures, and performance summaries.",
+  });
 }
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
 
-  const years = await db.all(`
-      SELECT name
-      FROM tennisYear
-      ORDER BY id ASC
-  `)
+    const years = await getAllYears(db)
 
   return Response.json({years}, { status: StatusCodes.OK })
 }
 
-export default function _frontResult({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResult({ loaderData }: Route.ComponentProps) {
     const {
     years
   } = loaderData;

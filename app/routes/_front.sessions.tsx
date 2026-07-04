@@ -8,16 +8,16 @@ import {sessionContacts, sessions, sessionVenues} from "~/constants/VenueSession
 import {homeNightMap} from "~/constants/Team";
 import dayjs from "dayjs";
 import {Link} from "react-router";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-    return [
-        {title: "Sessions"},
-        {
-            name: "description",
-            content: "Find out about the various sessions available at our venues, including practice times and special events."
-        },
-    ];
+  return buildMeta({
+    title: "Coaching & Sessions",
+    description:
+      "Discover coaching opportunities and daily table tennis sessions across local venues, including practice times, Bat & Chat sessions, youth coaching, costs, and contact details.",
+  });
 }
+
 
 export async function loader({context}: Route.LoaderArgs) {
     const db = getDbFromContext(context);

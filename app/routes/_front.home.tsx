@@ -1,5 +1,4 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import type {Route} from "./+types/home";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {NonEventTypes, WeekTypes} from "~/constants/Week";
@@ -20,8 +19,8 @@ import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
-    title: 'Home page',
-    description: "Explore the latest match results across all divisions, including scores, standings, and performance summaries."
+    title: 'Home',
+    description: "Stay up to date with the East Lancashire Table Tennis League. View the latest fixtures, results, news updates, schedules, season statistics, sessions, competitions, all in one place."
   })
 }
 

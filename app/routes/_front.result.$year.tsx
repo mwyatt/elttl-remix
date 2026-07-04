@@ -7,12 +7,15 @@ import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
 import InformationTable from "~/components/team/InformationTable";
 import MainHeading from "~/components/MainHeading";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year } = params;
+
+  return buildMeta({
+    title: `${year} Season Teams & Divisions`,
+    description: `Browse all teams registered in the ${year} season, organised by division with venue details, secretaries, and quick links to each division’s full results and fixtures.`,
+  });
 }
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {

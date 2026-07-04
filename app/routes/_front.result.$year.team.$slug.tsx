@@ -3,11 +3,8 @@ import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import {sql} from "drizzle-orm";
 import {getYearByName} from "~/repositories/year.repository.server";
-import {Link, useSearchParams} from "react-router";
-import {capitalizeFirstLetter} from "~/libraries/misc";
-import DivisionalSubMenu from "~/components/DivisionalSubMenu";
+import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
-import InformationTable from "~/components/team/InformationTable";
 import {linkStyles} from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
 import {getAllWeeksByYear} from "~/repositories/week.repository.server";
@@ -15,13 +12,23 @@ import {getFixturesByTeamId} from "~/repositories/fixture.repository.server";
 import MainHeading from "~/components/MainHeading";
 import {homeNightMap} from "~/constants/Team";
 import WeeksTimeline from "~/components/WeeksTimeline";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, slug } = params;
+
+  // Convert slug to readable team name (e.g., "hyndburn-a" → "Hyndburn A")
+  const teamName = slug
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
+  return buildMeta({
+    title: `${teamName} – ${year} Team Overview & Results`,
+    description: `View the full team overview for ${teamName} in the ${year} season, including division details, venue, home night, registered players, weekly fixtures, and fulfilled match results.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
@@ -149,7 +156,7 @@ team, players, fixtures, weeks
           <div className=''>
 
             {players.map((player, index) => (
-              <div key={index} className='flex p-4 gap-4 border-t border-dashed hover:bg-gray-100'>
+              <div key={index} className='flex p-4 gap-4 border-t border-t-neutral-300 border-dashed hover:bg-gray-100'>
                 <div className='flex-2'>
                   <Link
                     to={`/result/${year}/player/${player.slug}`}

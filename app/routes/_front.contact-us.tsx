@@ -4,13 +4,13 @@ import Breadcrumbs from "~/components/Breadcrumbs";
 import Address from "~/components/Address";
 import DirectionsButton from "~/components/DirectionsButton";
 import {linkStyles} from "~/styles/ui-classes";
-import {BrandName, buildMeta, DeveloperEmail} from "~/constants/MetaData";
+import {buildMeta, DeveloperEmail} from "~/constants/MetaData";
 import {Link} from "react-router";
 
 export function meta({}) {
     return buildMeta({
-        title: 'Contact us',
-        description: `Contact us for any questions or comments about the ${BrandName}.`
+        title: 'Contact Us',
+        description: `Get in touch with the East Lancashire Table Tennis League for venue information, directions, league enquiries, or website feedback. Contact the League Secretary or reach the website maintainer directly by email.`
     })
 }
 

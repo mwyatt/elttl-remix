@@ -11,7 +11,7 @@ import {buildMeta} from "~/constants/MetaData";
 export function meta({}) {
     return buildMeta({
         title: 'Annual League Competition',
-        description: "Information about the competitions held by the league annually, including the Fred Holden Cup, Annual Closed Competition, and other events."
+        description: "Explore the annual competitions run by the East Lancashire Table Tennis League, including the Fred Holden Cup, the Annual Closed Competition, Vets events, divisional handicap tournaments, and other seasonal league formats."
     })
 }
 

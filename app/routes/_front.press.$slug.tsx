@@ -14,7 +14,7 @@ export function meta({loaderData}: Route.MetaArgs) {
     } = loaderData;
     return buildMeta({
         title: press.title,
-        description: `${press.title} - ${press.author} - ${dayjs.unix(press.timePublished)}`
+        description: `A news update from the East Lancashire Table Tennis League: ${press.title}, written by ${press.author} and published on ${dayjs.unix(press.timePublished)}. Read the full article and stay up to date with league events and announcements.`
     })
 }
 

@@ -3,20 +3,21 @@ import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import {sql} from "drizzle-orm";
 import {getYearDivisionId} from "~/repositories/year.repository.server";
-import {Link, useSearchParams} from "react-router";
+import {Link} from "react-router";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
-import SubHeading from "~/components/SubHeading";
-import InformationTable from "~/components/team/InformationTable";
 import {linkStyles} from "~/styles/ui-classes";
-import FixtureCard from "~/components/FixtureCard";
 import {getOtherSideCapitalized, getSidesCapitalized} from "~/constants/encounter";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, division } = params;
+  const divisionName = capitalizeFirstLetter(division);
+
+  return buildMeta({
+    title: `${divisionName} Division League Table – ${year}`,
+    description: `View the ${divisionName} division league table for the ${year} season, including team standings, wins, draws, losses, matches played, and total points across all league fixtures.`,
+  });
 }
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {

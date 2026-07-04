@@ -13,13 +13,23 @@ import {linkStyles} from "~/styles/ui-classes";
 import WeeksTimeline from "~/components/WeeksTimeline";
 import RankChange from "~/components/player/RankChange";
 import FixtureCard from "~/components/FixtureCard";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, slug } = params;
+
+  // Convert slug to a readable name (e.g., "john-smith" → "John Smith")
+  const playerName = slug
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
+  return buildMeta({
+    title: `${playerName} – ${year} Player Performance & Results`,
+    description: `View detailed performance results for ${playerName} in the ${year} season, including encounters, scores, rank changes, team information, weekly fixtures, and fulfilled matches.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

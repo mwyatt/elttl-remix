@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import {sql} from "drizzle-orm";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 
 export async function getCurrentYear(db: any) {
@@ -50,4 +50,14 @@ export async function getYearByName (db, name) {
   }
 
   return years[0]
+}
+
+export async function getAllYears (db) {
+  const years = await db.all(`
+      SELECT id, name
+      FROM tennisYear
+      ORDER BY id ASC
+  `)
+
+  return years
 }

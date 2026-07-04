@@ -7,13 +7,23 @@ import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
 import MainHeading from "~/components/MainHeading";
 import DirectionsButton from "~/components/DirectionsButton";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, slug } = params;
+
+  // Convert slug to readable venue name (e.g., "hyndburn-table-tennis-centre" → "Hyndburn Table Tennis Centre")
+  const venueName = slug
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
+  return buildMeta({
+    title: `${venueName} – ${year} Venue Information & Teams`,
+    description: `View venue details for ${venueName} in the ${year} season, including all teams playing here, their divisions, home nights, and directions to the venue.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

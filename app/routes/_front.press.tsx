@@ -1,4 +1,4 @@
-import type { Route } from "./+types/about-us";
+import type {Route} from "./+types/about-us";
 import {getDbFromContext} from "~/db-context.server";
 import {Link, useSearchParams} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
@@ -14,7 +14,7 @@ import {buildMeta} from "~/constants/MetaData";
 export function meta({}: Route.MetaArgs) {
       return buildMeta({
     title: 'News Updates',
-    description: "Latest news updates from the league, including news and updates about teams, fixtures, and events."
+    description: "Browse the latest news updates from the East Lancashire Table Tennis League, including press articles, team announcements, fixture updates, and important league information."
   })
 }
 

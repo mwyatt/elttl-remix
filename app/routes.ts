@@ -3,7 +3,11 @@ import {index, route, type RouteConfig} from "@react-router/dev/routes";
 export default [
     route("api/update-password-local", "routes/api.update-password-local.ts"),
 
+    // @todo
+    // route("sitemap.xml", "routes/sitemap.xml.tsx"),
+
     route("/", "routes/_front.tsx", [
+
         index("routes/_front.home.tsx"),
 
         route("press", "routes/_front.press.tsx"),
@@ -52,10 +56,12 @@ export default [
         route("player", "routes/admin.player.tsx"),
         route("player/:id", "routes/admin.player.$id.tsx"),
 
+        // @todo
         route("fixture", "routes/admin.fixture.tsx"),
-        route("fixture/:id", "routes/admin.fixture.$id.tsx"),
-        route("fixture/:id/rollback", "routes/admin.fixture.$id.rollback.tsx"),
+        // route("fixture/:id", "routes/admin.fixture.$id.tsx"),
+        // route("fixture/:id/rollback", "routes/admin.fixture.$id.rollback.tsx"),
 
-        route("week", "routes/admin.week.tsx"),
+        // @todo
+        // route("week", "routes/admin.week.tsx"),
     ]),
 ] satisfies RouteConfig;

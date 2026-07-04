@@ -10,6 +10,6 @@
     }
   },
   "vars": {
-    "TURSO_URL": "libsql://elttlbackup-16-05-2026-mwyatt.aws-eu-west-1.turso.io",
+    "TURSO_URL": "libsql://elttlbackup-04-07-2026-mwyatt.aws-eu-west-1.turso.io",
   }
 }

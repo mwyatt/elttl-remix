@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import {sql} from "drizzle-orm";
 
 export async function getPressByTitleLikeAndPublishedAfter(
   db: any,
@@ -29,4 +29,14 @@ export async function getPressBySlugLike(
   `);
 
   return contents;
+}
+
+export async function getAllPress(
+  db: any,
+) {
+  return await db.all(sql`
+    SELECT *
+    FROM content
+    WHERE type = ${"press"}
+  `);
 }

@@ -11,7 +11,7 @@ import {buildMeta} from "~/constants/MetaData";
 export function meta({}: Route.MetaArgs) {
     return buildMeta({
         title: 'About us',
-        description: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist."
+        description: "Learn about the East Lancashire Table Tennis League, its history since 1974, local venues, coaching opportunities, affiliated clubs, and how players of all abilities can get involved across Hyndburn, Burnley and the wider East Lancashire area."
     })
 }
 

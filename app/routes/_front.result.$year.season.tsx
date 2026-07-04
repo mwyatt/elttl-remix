@@ -11,13 +11,17 @@ import {getWeekDate} from "~/libraries/week";
 import {ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes} from "~/constants/Week";
 import classNames from "classnames";
 import {BiTrophy} from "react-icons/bi";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year } = params;
+
+  return buildMeta({
+    title: `Season Overview – ${year}`,
+    description: `Explore the full week‑by‑week schedule for the ${year} season, including fixture weeks, event weeks, dates, and links to detailed results for each part of the East Lancashire Table Tennis League season.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

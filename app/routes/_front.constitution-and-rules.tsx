@@ -1,8 +1,10 @@
+import {buildMeta} from "~/constants/MetaData";
+
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "About Us" },
-    { name: "description", content: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist." },
-  ];
+    return buildMeta({
+    title: 'Constitution and Rules',
+    description: "Read the official Constitution and Rules of the East Lancashire Table Tennis League, including governance structure, membership requirements, affiliation, meetings, league format, team regulations, match rules, competitions, and disciplinary procedures."
+  });
 }
 
 export default function _frontConstitutionAndRules({ loaderData }: Route.ComponentProps) {

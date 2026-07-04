@@ -1,15 +1,13 @@
 import MainHeading from "~/components/MainHeading";
 import {linkStyles} from "~/styles/ui-classes";
 import {Link} from "react-router";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-    return [
-        {title: "Prepaid Practice Scheme"},
-        {
-            name: "description",
-            content: "Save money on regular practice sessions at Hyndburn Table Tennis Centre or St. Peters with the League’s annual prepaid scheme. Learn how the season ticket works and compare costs for single‑venue or combined access."
-        },
-    ];
+      return buildMeta({
+    title: 'Prepaid Practice Scheme',
+    description: "Save money on regular practice sessions at Hyndburn Table Tennis Centre or St. Peters with the League’s annual prepaid scheme. Compare single‑venue and combined access options and learn how the season ticket works."
+  })
 }
 
 export default function _frontPrepaidPracticeScheme({loaderData}: Route.ComponentProps) {

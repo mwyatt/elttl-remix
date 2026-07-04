@@ -3,20 +3,25 @@ import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import {sql} from "drizzle-orm";
 import {getYearDivisionId} from "~/repositories/year.repository.server";
-import {Link, useSearchParams} from "react-router";
+import {Link} from "react-router";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
 import SubHeading from "~/components/SubHeading";
 import InformationTable from "~/components/team/InformationTable";
 import {linkStyles} from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
+import {buildMeta} from "~/constants/MetaData";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "@todo" },
-    { name: "description", content: "@todo" },
-  ];
+export function meta({ params }: Route.MetaArgs) {
+  const { year, division } = params;
+  const divisionName = capitalizeFirstLetter(division);
+
+  return buildMeta({
+    title: `${divisionName} Division Overview – ${year}`,
+    description: `Explore the ${divisionName} division overview for the ${year} season, including team details, venues, secretaries, head‑to‑head results, fulfilled fixtures, and upcoming matches across the division.`,
+  });
 }
+
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)

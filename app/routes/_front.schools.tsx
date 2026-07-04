@@ -1,4 +1,4 @@
-import type { Route } from "./+types/about-us";
+import type {Route} from "./+types/about-us";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -6,12 +6,14 @@ import MainHeading from "~/components/MainHeading";
 import {QuickLink} from "~/routes/_front.about-us";
 import {Link} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
+import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "About Us" },
-    { name: "description", content: "Our League has been running since 1974, originally being the Hyndburn Table Tennis League and becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire area as various other local leagues ceased to exist." },
-  ];
+  return buildMeta({
+    title: "Schools",
+    description:
+      "Information for schools interested in developing table tennis, including guidance for primary and secondary pupils and contact details for league representatives.",
+  });
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
