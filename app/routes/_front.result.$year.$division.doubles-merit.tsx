@@ -2,7 +2,6 @@ import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import {sql} from "drizzle-orm";
-import {getYearDivisionId} from "~/repositories/year.repository.server";
 import {Link} from "react-router";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
@@ -10,6 +9,7 @@ import {linkStyles} from "~/styles/ui-classes";
 import {getOtherSideCapitalized, getSidesCapitalized} from "~/constants/encounter";
 import EncounterStatus from "~/constants/EncounterStatus";
 import {buildMeta} from "~/constants/MetaData";
+import {parseYearDivisionId} from "~/libraries/year";
 
 export function meta({params}: Route.MetaArgs) {
   const { year, division } = params;
@@ -25,12 +25,8 @@ export function meta({params}: Route.MetaArgs) {
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const { year, division } = params
-  const yearDivisionId = await getYearDivisionId(db, year, division)
 
-  // @todo make DRY
-  if (!yearDivisionId) {
-    return Response.json(`Unable to find division with year name '${year}' and slug '${division}'`, { status: StatusCodes.NOT_FOUND })
-  }
+  const yearDivisionId = await parseYearDivisionId(db, year, division)
 
   const leagueTable = await db.all(sql`
     select

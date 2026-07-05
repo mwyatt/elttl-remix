@@ -2,7 +2,6 @@ import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import {sql} from "drizzle-orm";
-import {getYearByName} from "~/repositories/year.repository.server";
 import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
 import {linkStyles} from "~/styles/ui-classes";
@@ -13,6 +12,7 @@ import MainHeading from "~/components/MainHeading";
 import {homeNightMap} from "~/constants/Team";
 import WeeksTimeline from "~/components/WeeksTimeline";
 import {buildMeta} from "~/constants/MetaData";
+import {parseYearNameGetYear} from "~/libraries/year";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -33,12 +33,7 @@ export function meta({ params }: Route.MetaArgs) {
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const { year, slug } = params
-
-  const currentYear = await getYearByName(db, year)
-
-  if (!currentYear) {
-    return Response.json(`Unable to find year with name '${year}'`, { status: StatusCodes.NOT_FOUND })
-  }
+  const currentYear = await parseYearNameGetYear(db, year)
 
   const teams = await db.all(sql`
       SELECT

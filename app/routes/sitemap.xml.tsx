@@ -4,7 +4,7 @@ import {getAllDivisionsByYear} from "~/repositories/division.repository.server";
 import {getAllTeamsByYear} from "~/repositories/team.repository.server";
 import {playerGetAll} from "~/repositories/player.repository.server";
 import {getAllVenuesByYear} from "~/repositories/venue.repository.server";
-import {getAllPress} from "~/repositories/content.repository.server";
+import {getAllPublishedPress} from "~/repositories/content.repository.server";
 import {getAllWeeksByYear} from "~/repositories/week.repository.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -44,7 +44,7 @@ export async function loader({ context }: Route.LoaderArgs) {
     );
   }
 
-  const press = await getAllPress(db);
+  const press = await getAllPublishedPress(db);
   press.forEach(article => urls.push(`/press/${article.slug}`));
 
   const xml = `

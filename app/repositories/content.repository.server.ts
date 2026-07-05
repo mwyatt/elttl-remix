@@ -1,4 +1,5 @@
 import {sql} from "drizzle-orm";
+import ContentStatus from "~/constants/ContentStatus";
 
 export async function getPressByTitleLikeAndPublishedAfter(
   db: any,
@@ -11,6 +12,7 @@ export async function getPressByTitleLikeAndPublishedAfter(
     WHERE type = ${"press"}
       AND title LIKE ${`%${titleFragment}%`}
       AND timePublished > ${datePublished.unix()}
+      AND status = ${ContentStatus.PUBLISHED}
     ORDER BY timePublished DESC
   `);
 
@@ -31,12 +33,13 @@ export async function getPressBySlugLike(
   return contents;
 }
 
-export async function getAllPress(
+export async function getAllPublishedPress(
   db: any,
 ) {
   return await db.all(sql`
     SELECT *
     FROM content
     WHERE type = ${"press"}
+    AND status = ${ContentStatus.PUBLISHED}
   `);
 }

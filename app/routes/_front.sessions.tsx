@@ -76,7 +76,7 @@ export default function _frontSessions({loaderData}: Route.ComponentProps) {
                                             {session.contactId && (
                                                 <span className='ml-2 text-sm text-gray-500 text-base'>Contact: <Link
                                                     className={linkStyles.join(' ')}
-                                                    to={`result/${currentYear.name}/player/${sessionContacts[session.contactId].slug}`}>{sessionContacts[session.contactId].name}</Link></span>
+                                                    to={`/result/${currentYear.name}/player/${sessionContacts[session.contactId].slug}`}>{sessionContacts[session.contactId].name}</Link></span>
                                             )}
                                         </li>
                                     ))}

@@ -9,9 +9,12 @@ import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {Link, Outlet} from "react-router";
 
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
   const currentYear = await getCurrentYear(db);
+  const { year } = params
+  const isVisitingArchive = year !== undefined && (currentYear.name !== year)
+  const visitingYearName = year !== undefined ? year : currentYear.name
 
     const divisions = await db.all<{ name: string }>(sql`  SELECT name
       FROM tennisDivision
@@ -63,9 +66,6 @@ export async function loader({ context }: Route.LoaderArgs) {
       url: 'https://lancashirecounty.ttleagues.com/page/affiliationtolancashirecountytta',
       target: '_blank'
     },
-
-    // @todo get assets - sftp could be easiest method to store initially
-    // would be ideal to allow updating of these for logged in users
     gdpr: { name: 'GDPR', url: '/gdpr' },
     diciplineProcedure: { name: 'Code of Conduct', url: '/code-of-conduct' },
     safeguardingPolicy: { name: 'Safeguarding Policy', url: '/safeguarding-guidance-2020.pdf', target: '_blank' }
@@ -104,7 +104,9 @@ export async function loader({ context }: Route.LoaderArgs) {
         name: 'Results', url: '/result', children: divisionsChildren
       }
     ],
-    advertisementsSecondary
+    advertisementsSecondary,
+    isVisitingArchive,
+    visitingYearName,
   }
 }
 
@@ -112,17 +114,12 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
   const appName = 'East Lancashire Table Tennis League'
   const {
     currentYearName,
+      visitingYearName,
     menuPrimary,
     footLinks,
-    advertisementsSecondary
+    advertisementsSecondary,
+      isVisitingArchive
   } = loaderData
-
-  const isCookieBannerDismissed = false
-  // @todo
-  const visitingYearName = '2025'
-
-  // @todo this is passed through via the url params (get the year portion if it exists)
-  const isVisitingArchive = visitingYearName !== undefined && (currentYearName !== visitingYearName)
 
     // @todo these were set based on page before
     const paddedContent = true

@@ -1,7 +1,6 @@
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {getYearByName} from "~/repositories/year.repository.server";
 import {Link} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
 import {getAllWeeksByYear} from "~/repositories/week.repository.server";
@@ -12,6 +11,7 @@ import {ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes} from "~/con
 import classNames from "classnames";
 import {BiTrophy} from "react-icons/bi";
 import {buildMeta} from "~/constants/MetaData";
+import {parseYearNameGetYear} from "~/libraries/year";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year } = params;
@@ -26,12 +26,7 @@ export function meta({ params }: Route.MetaArgs) {
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const { year } = params
-  const requestedYear = await getYearByName(db, year)
-
-  // @todo DRY
-  if (!requestedYear) {
-    return Response.json(`Unable to find year with name '${year}'`, { status: StatusCodes.NOT_FOUND })
-  }
+  const requestedYear = await parseYearNameGetYear(db, year)
 
   const weeks = await getAllWeeksByYear(db, requestedYear.id)
 
