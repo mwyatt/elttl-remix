@@ -28,13 +28,6 @@ export async function loader({context}) {
   const db = getDbFromContext(context)
   const currentYear = await getCurrentYear(db)
 
-  const advertisementsPrimary = await db.all(sql`
-      SELECT id, title, description, url, action
-      FROM ad
-      WHERE status = 1
-        AND groupKey = 'home-primary'
-  `<any>)
-
   const latestPress = await db.all(sql`
       SELECT id, timePublished, title, slug
       FROM content
@@ -93,6 +86,7 @@ export async function loader({context}) {
       WHERE yearId = ${currentYear.id}
   `)
   const totalPlayers = players.length
+
   // Fixtures fulfilled in the 2025-2026 season - 100/200
   const fixtures = await db.all(sql`
       SELECT id
@@ -119,6 +113,7 @@ export async function loader({context}) {
       WHERE yearId = ${currentYear.id}
         AND timeStart = ${dayjs().startOf('week').unix()}
   `)
+
   let thisWeek = null
   let weekFixtures = []
   if (weeks.length > 0) {
@@ -155,7 +150,6 @@ LIMIT 1;
   }
 
   return Response.json({
-    advertisementsPrimary,
     latestPress,
     latestFixtures,
     currentYear: currentYear.name,
@@ -175,7 +169,7 @@ LIMIT 1;
 }
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
-  const { advertisementsPrimary, latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures } = loaderData
+  const { latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures } = loaderData
   return (
       <div className='sm:p-6 sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {upcomingEventWeek && (
@@ -267,7 +261,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Handbook</h2>
             <p>Welcome to the season, download the handbook for fixtures and more.</p>
             <div className='flex justify-end'>
-              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='http://localhost:3000/handbook-2025-2026.pdf'>Download</Link>
+              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
             </div>
           </div>
         </Panel>

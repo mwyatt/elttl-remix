@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import {sql} from "drizzle-orm";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 
 export async function getAllWeeksByYear (db, yearId) {
@@ -70,47 +70,3 @@ export async function persistWeeks (db, weeks, fixtures) {
   }
 }
 
-// export async function getAllWeeksByTeamId (yearId, teamId) {
-//
-//
-//   // All weeks in the year except 'nothing' type
-//   const [weeks] = await connection.execute(`
-//       select
-//           tw.id,
-//           tw.type,
-//           tw.timeStart
-//       from tennisWeek tw
-//       where tw.yearId = :yearId and type != :typeExclusion
-//       order by tw.timeStart asc
-//   `, {
-//     yearId: yearId,
-//     typeExclusion: WeekTypes.nothing
-//   })
-
-// @todo could be useful for frontend limited display
-//  We want 1 week before and 3 weeks after the current week
-// Look for the current closest week
-// const now = dayjs()
-// let closestWeek = null
-//
-// for (let i = 0; i < weeks.length; i++) {
-//   const week = weeks[i]
-//   const weekStart = dayjs.unix(week.timeStart)
-//   if (now.isBefore(weekStart)) {
-//     break
-//   }
-//   closestWeek = week
-// }
-//
-// let weeksFeatured = []
-// if (closestWeek) {
-//   const closestIndex = weeks.findIndex(week => week.id === closestWeek.id)
-//   const startIndex = Math.max(0, closestIndex - 1)
-//   const endIndex = Math.min(weeks.length, closestIndex + 4)
-//   weeksFeatured = weeks.slice(startIndex, endIndex)
-// }
-
-// connection.release()
-
-// return weeks
-// }

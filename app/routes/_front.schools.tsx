@@ -3,10 +3,11 @@ import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
-import {QuickLink} from "~/routes/_front.about-us";
 import {Link} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
 import {buildMeta} from "~/constants/MetaData";
+import {getPlayerBySlug} from "~/libraries/player";
+import QuickLink from "~/components/QuickLink";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -31,11 +32,7 @@ export default function _frontSchools({ loaderData }: Route.ComponentProps) {
     currentYearName
   } = loaderData;
 
-  const getPlayerBySlug = (slug) => {
-    return players.find((player) => player.slug === slug)
-  }
-
-  const davidHeys = getPlayerBySlug('david-heys')
+  const davidHeys = getPlayerBySlug('david-heys', players)
   const davidHeysLink = <QuickLink href={`/result/${currentYearName}/player/${davidHeys.slug}`} name={davidHeys.name} />
 
   return (

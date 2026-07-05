@@ -12,11 +12,6 @@ export default function _frontConstitutionAndRules({ loaderData }: Route.Compone
     <>
       <div className='max-w-[768px] mx-auto'>
         <h1 className='text-2xl mb-4'>Constitution and Rules</h1>
-        {/* @todo key and links to different areas of the rules */}
-        {/* <div> */}
-        {/*  <GeneralLink href={'#constitution'}>Constitution</GeneralLink> */}
-        {/*  <GeneralLink href={'#constitution'}>Constitution</GeneralLink> */}
-        {/* </div> */}
         <div className='text-sm'>
           <h2 id='constitution' className='text-xl mb-2 font-semibold text-center underline'>CONSTITUTION</h2>
           <h3 className='text-lg mb-2 font-semibold'>NAME AND GOVERNANCE</h3>

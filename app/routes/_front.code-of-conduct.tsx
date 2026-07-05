@@ -3,7 +3,8 @@ import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
 import SubHeading from "~/components/SubHeading";
-import {QuickLink} from "~/routes/_front.about-us";
+import {getPlayerBySlug} from "~/libraries/player";
+import QuickLink from "~/components/QuickLink";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -30,17 +31,13 @@ export default function _frontCommitteeMembers({ loaderData }: Route.ComponentPr
     currentYearName
   } = loaderData;
 
-  const getPlayerBySlug = (slug) => {
-    return players.find((player) => player.slug === slug)
-  }
-
-  const ianPickles = getPlayerBySlug('ian-pickles')
+  const ianPickles = getPlayerBySlug('ian-pickles', players)
   const ianPicklesLink = <QuickLink href={`/result/${currentYearName}/player/${ianPickles.slug}`} name={ianPickles.name} />
-  const adamHek = getPlayerBySlug('adam-hek')
+  const adamHek = getPlayerBySlug('adam-hek', players)
   const adamHekLink = <QuickLink href={`/result/${currentYearName}/player/${adamHek.slug}`} name={adamHek.name} />
-  const fredWade = getPlayerBySlug('fred-wade')
+  const fredWade = getPlayerBySlug('fred-wade', players)
   const fredWadeLink = <QuickLink href={`/result/${currentYearName}/player/${fredWade.slug}`} name={fredWade.name} />
-  const robinWillo = getPlayerBySlug('robin-willoughby')
+  const robinWillo = getPlayerBySlug('robin-willoughby', players)
   const robinWilloLink = <QuickLink href={`/result/${currentYearName}/player/${robinWillo.slug}`} name={robinWillo.name} />
 
   return (

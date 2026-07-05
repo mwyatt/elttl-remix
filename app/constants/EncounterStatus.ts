@@ -7,7 +7,7 @@ const EncounterStatus = {
   // Marks the encounter as doubles so that rank changes are not applied
   DOUBLES: 'doubles',
 
-  // @todo for public fixture submission
+  // For public fixture submission
   DRAFT: 'draft'
 }
 

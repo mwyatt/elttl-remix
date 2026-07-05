@@ -1,9 +1,9 @@
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
-import {QuickLink} from "~/routes/_front.about-us";
 import SubHeading from "~/components/SubHeading";
 import {buildMeta} from "~/constants/MetaData";
+import QuickLink from "~/components/QuickLink";
 
 export function meta({}: Route.MetaArgs) {
     return buildMeta({

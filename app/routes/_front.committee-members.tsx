@@ -5,6 +5,7 @@ import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
 import SubHeading from "~/components/SubHeading";
 import {buildMeta} from "~/constants/MetaData";
+import {getPlayerBySlug} from "~/libraries/player";
 
 export function meta({}: Route.MetaArgs) {
     return buildMeta({
@@ -61,11 +62,6 @@ export default function _frontCommitteeMembers({loaderData}: Route.ComponentProp
         }
     }
 
-    // @todo dry up
-    const getPlayerBySlug = (slug) => {
-        return players.find((player) => player.slug === slug)
-    }
-
     const welfareOfficer = {
         name: 'Catherine Lawson',
         phoneLandline: '',
@@ -73,17 +69,17 @@ export default function _frontCommitteeMembers({loaderData}: Route.ComponentProp
     }
 
     const committeeMembers = [
-        {role: 'Hon. Chairman', player: getPlayerBySlug('ged-simpson')},
-        {role: 'Hon. Vice Chairman', player: getPlayerBySlug('ian-pickles')},
-        {role: 'Hon. Secretary', player: getPlayerBySlug('david-heys')},
+        {role: 'Hon. Chairman', player: getPlayerBySlug('ged-simpson', players)},
+        {role: 'Hon. Vice Chairman', player: getPlayerBySlug('ian-pickles', players)},
+        {role: 'Hon. Secretary', player: getPlayerBySlug('david-heys', players)},
         {role: 'Asst Secretary', player: null},
-        {role: 'Hon. Treasurer', player: getPlayerBySlug('martin-ormsby')},
-        {role: 'Hon. Fixtures Secretary', player: getPlayerBySlug('bernard-milnes')},
-        {role: 'Assist. Fixtures Secretary', player: getPlayerBySlug('mike-turner')},
-        {role: 'Centre Liaison Officer', player: getPlayerBySlug('robin-willoughby')},
-        {role: 'Media Officer', player: getPlayerBySlug('adam-hek')},
+        {role: 'Hon. Treasurer', player: getPlayerBySlug('martin-ormsby', players)},
+        {role: 'Hon. Fixtures Secretary', player: getPlayerBySlug('bernard-milnes', players)},
+        {role: 'Assist. Fixtures Secretary', player: getPlayerBySlug('mike-turner', players)},
+        {role: 'Centre Liaison Officer', player: getPlayerBySlug('robin-willoughby', players)},
+        {role: 'Media Officer', player: getPlayerBySlug('adam-hek', players)},
         {role: 'Welfare Officer', player: welfareOfficer},
-        {role: 'Web Designer', player: getPlayerBySlug('martin-wyatt')},
+        {role: 'Web Designer', player: getPlayerBySlug('martin-wyatt', players)},
         {
             role: 'Handicap Officer',
             player: {
@@ -92,20 +88,20 @@ export default function _frontCommitteeMembers({loaderData}: Route.ComponentProp
                 phoneMobile: '07939 367743'
             }
         },
-        {role: 'Tournament Team', player: getPlayerBySlug('mike-turner')},
-        {role: '', player: getPlayerBySlug('ian-pickles')},
-        {role: 'Premier Div Rep', player: getPlayerBySlug('colin-hooper')},
-        {role: 'First Div Rep', player: getPlayerBySlug('ian-pickles')},
-        {role: 'Second Div Rep', player: getPlayerBySlug('robin-willoughby')},
-        {role: 'Third Div Rep', player: getPlayerBySlug('fred-wade')},
-        {role: 'InterLeague Secretary', player: getPlayerBySlug('jason-pilling')}
+        {role: 'Tournament Team', player: getPlayerBySlug('mike-turner', players)},
+        {role: '', player: getPlayerBySlug('ian-pickles', players)},
+        {role: 'Premier Div Rep', player: getPlayerBySlug('colin-hooper', players)},
+        {role: 'First Div Rep', player: getPlayerBySlug('ian-pickles', players)},
+        {role: 'Second Div Rep', player: getPlayerBySlug('robin-willoughby', players)},
+        {role: 'Third Div Rep', player: getPlayerBySlug('fred-wade', players)},
+        {role: 'InterLeague Secretary', player: getPlayerBySlug('jason-pilling', players)}
     ]
 
     const otherCommitteeMembers = [
-        {player: getPlayerBySlug('shamir-bose')},
-        {player: getPlayerBySlug('mick-moir')},
-        {player: getPlayerBySlug('harry-rawcliffe')},
-        {player: getPlayerBySlug('chris-freely')}
+        {player: getPlayerBySlug('shamir-bose', players)},
+        {player: getPlayerBySlug('mick-moir', players)},
+        {player: getPlayerBySlug('harry-rawcliffe', players)},
+        {player: getPlayerBySlug('chris-freely', players)}
     ]
 
     return (

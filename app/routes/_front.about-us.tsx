@@ -2,11 +2,11 @@ import type {Route} from "./+types/about-us";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
-import {Link} from "react-router";
-import {linkStyles} from "~/styles/ui-classes";
 import MainHeading from "~/components/MainHeading";
 import SubHeading from "~/components/SubHeading";
 import {buildMeta} from "~/constants/MetaData";
+import {getPlayerBySlug} from "~/libraries/player";
+import QuickLink from "~/components/QuickLink";
 
 export function meta({}: Route.MetaArgs) {
     return buildMeta({
@@ -46,12 +46,6 @@ export async function loader({context}: Route.LoaderArgs) {
     return {players, currentYearName: currentYear.name};
 }
 
-// @todo move to more general loc
-export const QuickLink = ({href, name, external = false}) => {
-    return <Link className={linkStyles.join(' ')} to={href} target={external ? '_blank' : '_self'}
-                 rel='noreferrer'>{name === undefined ? href : name}</Link>
-}
-
 export default function AboutUsPage({loaderData}: Route.ComponentProps) {
     const {
         players,
@@ -61,17 +55,13 @@ export default function AboutUsPage({loaderData}: Route.ComponentProps) {
     const nextYearName = parseInt(currentYearName) + 1
     const handbookLink = <QuickLink href={`/handbook-${currentYearName}-${nextYearName}.pdf`} name='Handbook' external/>
 
-    const getPlayerBySlug = (slug) => {
-        return players.find((player) => player.slug === slug)
-    }
-
-    const davidHeys = getPlayerBySlug('david-heys')
-    const mickMoir = getPlayerBySlug('mick-moir')
-    const bryanEdwards = getPlayerBySlug('bryan-edwards')
-    const darrenWright = getPlayerBySlug('darren-wright')
-    const neilHepworth = getPlayerBySlug('neil-hepworth')
-    const colinHooper = getPlayerBySlug('colin-hooper')
-    const trevorElkington = getPlayerBySlug('trevor-elkington')
+    const davidHeys = getPlayerBySlug('david-heys', players)
+    const mickMoir = getPlayerBySlug('mick-moir', players)
+    const bryanEdwards = getPlayerBySlug('bryan-edwards', players)
+    const darrenWright = getPlayerBySlug('darren-wright', players)
+    const neilHepworth = getPlayerBySlug('neil-hepworth', players)
+    const colinHooper = getPlayerBySlug('colin-hooper', players)
+    const trevorElkington = getPlayerBySlug('trevor-elkington', players)
 
     const davidHeysLink = <QuickLink href={`/result/${currentYearName}/player/${davidHeys.slug}`}
                                      name={davidHeys.name}/>

@@ -6,3 +6,7 @@ export const getShortPlayerName = (name) => {
   const [firstName, lastName] = name.split(' ')
   return `${firstName.charAt(0).toUpperCase()}. ${lastName}`
 }
+
+export const getPlayerBySlug = (slug, players) => {
+    return players.find((player) => player.slug === slug)
+  }

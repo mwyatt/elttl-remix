@@ -1,5 +1,3 @@
-import { sql } from "drizzle-orm";
-
 export async function getFixturesByWeekId (db, yearId, weekId) {
   const fixtures = await db.all(`
     select
