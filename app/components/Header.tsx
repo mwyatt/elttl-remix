@@ -1,7 +1,7 @@
 import ElttlEmblem from '~/components/icons/ElttlEmblem'
 import MenuPrimary from '~/components/MenuPrimary'
-import { useState } from 'react'
-import { BiBook, BiCode, BiMap, BiNews, BiQuestionMark, BiTrophy } from 'react-icons/bi'
+import {useState} from 'react'
+import {BiBook, BiCode, BiMap, BiNews, BiQuestionMark, BiTrophy} from 'react-icons/bi'
 import {Link} from "react-router";
 
 export default function Header ({ appName, menuPrimary }) {
@@ -24,7 +24,7 @@ export default function Header ({ appName, menuPrimary }) {
         return <BiBook className='mt-1 mr-2' size={20} />
       case 'Fixtures':
         return <BiCode className='mt-1 mr-2' size={20} />
-      case 'Press Releases':
+      case 'News Updates':
         return <BiNews className='mt-1 mr-2' size={20} />
       case 'Competitions':
         return <BiTrophy className='mt-1 mr-2' size={20} />
@@ -67,7 +67,7 @@ export default function Header ({ appName, menuPrimary }) {
                   {primaryItem.children.map((secondaryItem) => (
                     <div key={secondaryItem.name} className=' lg:p-6 lg:text-lg'>
                       <Link
-                        className='flex py-4 px-4 block text-lg text-primary-500 bg-white font-semibold rounded'
+                        className='flex py-4 px-4 block text-lg text-primary-500 bg-white font-semibold rounded focus:outline-2 focus:outline-stone-500'
                         to={secondaryItem.url}
                         target={secondaryItem.target || '_self'}
                         onClick={() => handleClick(index)}
@@ -81,7 +81,7 @@ export default function Header ({ appName, menuPrimary }) {
                           {secondaryItem.children.map((tertiaryItem) => (
                             <div key={tertiaryItem.name}>
                               <Link
-                                  className='px-4 py-4 block text-lg border-t border-t-neutral-300'
+                                  className='px-4 py-4 block text-lg border-t border-t-neutral-300 focus:outline-2 focus:outline-stone-500'
                                   to={tertiaryItem.url}
                         onClick={() => handleClick(index)}
                               >{tertiaryItem.name}</Link>

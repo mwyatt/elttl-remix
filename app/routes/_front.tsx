@@ -8,6 +8,7 @@ import {PiXLogoFill} from 'react-icons/pi'
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {Link, Outlet} from "react-router";
+import {buttonPrimaryStyles} from "~/styles/ui-classes";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -95,7 +96,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
         children: [
           { name: 'About Us', url: '/about-us' },
           { name: 'Download Handbook', url: '/handbook-2025-2026.pdf', target: '_blank' },
-          { name: 'Press Releases', url: '/press' },
+          { name: 'News Updates', url: '/press' },
           commonLinks.competitions,
           { name: 'Contact us', url: '/contact-us' }
         ]
@@ -151,7 +152,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
               <div className='mt-6 flex justify-end'>
                 {advertisement.action && (
                   <Link
-                    className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize'
+                    className={buttonPrimaryStyles}
                     to={advertisement.url}
                   >{advertisement.action}
                   </Link>

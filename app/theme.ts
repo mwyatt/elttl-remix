@@ -2,6 +2,7 @@ export const colors = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {
+          400: '#2ce0b1',
           500: '#12aa83'
         },
         secondary: {

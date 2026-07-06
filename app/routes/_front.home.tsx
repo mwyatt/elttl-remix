@@ -9,7 +9,7 @@ import Panel from "~/components/home/Panel";
 import UpcomingEventWeek from "~/components/home/UpcomingEventWeek";
 import ThisWeek from "~/components/home/ThisWeek";
 import {Link} from "react-router";
-import {allHomeButtonStyles, linkStyles} from "~/styles/ui-classes";
+import {allHomeButtonStyles, buttonPrimaryStyles, linkStyles} from "~/styles/ui-classes";
 import RelativeTime from "~/components/RelativeTime";
 import SeasonTotals from "~/components/home/SeasonTotals";
 import SessionsToday from "~/components/home/SessionsToday";
@@ -243,7 +243,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Competitions Schedule</h2>
             <p>Find out more about the various competitions being held this season.</p>
             <div className='flex justify-end'>
-              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/competitions'>Competitions</Link>
+              <Link className={buttonPrimaryStyles} to='/competitions'>Competitions</Link>
             </div>
           </div>
         </Panel>
@@ -252,7 +252,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Handicap Calculator</h2>
             <p>Want to know how many points start a player gets in a handicap match? Give our new handicap calculator a try!</p>
             <div className='flex justify-end'>
-              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/handicap-calculator'>Calculator</Link>
+              <Link className={buttonPrimaryStyles} to='/handicap-calculator'>Calculator</Link>
             </div>
           </div>
         </Panel>
@@ -261,7 +261,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Handbook</h2>
             <p>Welcome to the season, download the handbook for fixtures and more.</p>
             <div className='flex justify-end'>
-              <Link className='bg-primary-500 rounded px-3 py-2 text-white font-bold capitalize transition-colors text-lg' to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
+              <Link className={buttonPrimaryStyles} to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
             </div>
           </div>
         </Panel>

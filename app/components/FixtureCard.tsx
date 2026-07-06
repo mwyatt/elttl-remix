@@ -10,7 +10,7 @@ export default function FixtureCard ({ year, teamLeft, teamRight, timeFulfilled 
       to={`/result/${year}/fixture/${teamLeft.slug}/${teamRight.slug}`}
       className={classNames({
         'border-stone-500 border text-stone-500': !timeFulfilled,
-        'border-primary-500 border text-primary-500': timeFulfilled,
+        'border-primary-500 border text-primary-500 focus:outline-2 focus:outline-offset-2 focus:outline-stone-500 active:border-stone-700': timeFulfilled,
         'rounded shadow-md flex flex-col justify-center': true
       })}
     >
