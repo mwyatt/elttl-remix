@@ -36,6 +36,7 @@ export default [
         route("result/:year/:division", "routes/_front.result.$year.$division.tsx"),
         route("result/:year/:division/league", "routes/_front.result.$year.$division.league.tsx"),
         route("result/:year/:division/merit", "routes/_front.result.$year.$division.merit.tsx"),
+        route("result/:year/:division/rank-merit", "routes/_front.result.$year.$division.rank-merit.tsx"),
         route("result/:year/:division/doubles-merit", "routes/_front.result.$year.$division.doubles-merit.tsx"),
 
         route("result/:year/team/:slug", "routes/_front.result.$year.team.$slug.tsx"),

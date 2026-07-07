@@ -36,3 +36,26 @@ export async function getYearDivisionMeritEncounters(
     and tpr.id > 0
   `)
 }
+
+export async function getRankMeritEncountersByDivisionId (db, yearId, divisionId) {
+  const encounters = await db.all(sql`
+    select
+        tte.id,
+        tte.playerIdLeft,
+        tte.playerRankChangeLeft,
+        tte.scoreLeft,
+        tte.playerIdRight,
+        tte.playerRankChangeRight,
+        tte.scoreRight
+    from tennisEncounter tte
+    left join tennisFixture ttf on ttf.id = tte.fixtureId and ttf.yearId = tte.yearId
+    left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
+    where tte.yearId = ${yearId}
+    and status != 'exclude'
+    and tte.playerIdLeft > 0
+    and tte.playerIdRight > 0
+    and ttl.divisionId = ${divisionId}
+  `)
+
+  return encounters
+}

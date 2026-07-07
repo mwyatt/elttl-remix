@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import {sql} from "drizzle-orm";
 
 export async function playerGetMany(db: any, yearId: number, playerIds: number[]) {
   if (playerIds.length === 0) return [];
@@ -6,6 +6,7 @@ export async function playerGetMany(db: any, yearId: number, playerIds: number[]
   return db.all(sql`
     SELECT
       id,
+      nameFirst || ' ' || nameLast AS name,
       tp.rank
     FROM tennisPlayer tp
     WHERE yearId = ${yearId}

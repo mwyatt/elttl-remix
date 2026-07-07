@@ -1,4 +1,4 @@
-import { getOtherSideCapitalized, getSidesCapitalized, rankChangeMap } from '@/constants/encounter.js'
+import {getOtherSideCapitalized, getSidesCapitalized, rankChangeMap} from '@/constants/encounter.js'
 import EncounterStatus from '@/constants/EncounterStatus'
 
 export function getRankChanges (
