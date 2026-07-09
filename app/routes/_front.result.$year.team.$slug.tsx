@@ -13,6 +13,7 @@ import {homeNightMap} from "~/constants/Team";
 import WeeksTimeline from "~/components/WeeksTimeline";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -32,6 +33,7 @@ export function meta({ params }: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, slug } = params
   const currentYear = await parseYearNameGetYear(db, year)
 
@@ -71,29 +73,8 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
         AND teamId = ${team.id}
   `)
 
-  const fixtures = await db.all(sql`
-    select
-        ttl.name teamLeftName,
-        ttl.slug teamLeftSlug,
-        sum(scoreLeft) scoreLeft,
-        ttr.name teamRightName,
-        ttr.slug teamRightSlug,
-        sum(scoreRight) scoreRight,
-        timeFulfilled
-        from tennisEncounter tte
-      inner join tennisFixture ttf on ttf.id = tte.fixtureId
-                                          and ttf.yearId = tte.yearId
-                                          and (ttf.teamIdLeft = ${team.id} OR ttf.teamIdRight = ${team.id})
-                                          and timeFulfilled is not null
-        left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-        left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-    where tte.yearId = ${currentYear.id}
-    and status != 'exclude'
-    group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
-
   const weeks = await getAllWeeksByYear(db, currentYear.id)
-  const teamFixtures = await getFixturesByTeamId(db, currentYear.id, team.id)
+  const teamFixtures = await getFixturesByTeamId(kv, db, currentYear.id, team.id)
 
   // Attach fixtures to weeks
   for (const week of weeks) {
@@ -103,7 +84,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   return Response.json({
     team,
     players,
-    fixtures,
+    fixtures: teamFixtures,
     weeks
   }, { status: StatusCodes.OK })
 }

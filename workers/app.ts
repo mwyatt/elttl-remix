@@ -1,4 +1,4 @@
-import { createRequestHandler, RouterContextProvider } from "react-router";
+import {createRequestHandler, RouterContextProvider} from "react-router";
 
 const requestHandler = createRequestHandler(
   () => import("virtual:react-router/server-build"),
@@ -7,13 +7,16 @@ const requestHandler = createRequestHandler(
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
-    console.log("worker fetch", new URL(request.url).pathname);
 
     // Create the provider instance
     const context = new RouterContextProvider();
 
     // Store Cloudflare bindings on it
-    context.set("cloudflare", { env, ctx });
+    context.set("cloudflare", {
+      env,
+      ctx,
+      kv: env.CACHE
+    });
 
     return requestHandler(request, context);
   },

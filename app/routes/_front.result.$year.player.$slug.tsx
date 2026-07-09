@@ -14,6 +14,7 @@ import RankChange from "~/components/player/RankChange";
 import FixtureCard from "~/components/FixtureCard";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -33,6 +34,7 @@ export function meta({ params }: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, slug } = params
   const currentYear = await parseYearNameGetYear(db, year)
 
@@ -59,26 +61,6 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
 
   const player = players[0]
 
-  const fixtures = await db.all(sql`
-      select ttl.name        teamLeftName,
-             ttl.slug        teamLeftSlug,
-             sum(scoreLeft)  scoreLeft,
-             ttr.name        teamRightName,
-             ttr.slug        teamRightSlug,
-             sum(scoreRight) scoreRight,
-             timeFulfilled
-      from tennisEncounter tte
-               inner join tennisFixture ttf on ttf.id = tte.fixtureId
-          and ttf.yearId = tte.yearId
-          and (ttf.teamIdLeft = ${player.teamId} OR ttf.teamIdRight = ${player.teamId})
-          and timeFulfilled is not null
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-      where tte.yearId = ${currentYear.id}
-        and status != 'exclude'
-      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
-
   const encounters = await db.all(sql`
       select tte.id,
              scoreLeft,
@@ -97,7 +79,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   `)
 
   const weeks = await getAllWeeksByYear(db, currentYear.id)
-  const teamFixtures = await getFixturesByTeamId(db, currentYear.id, player.teamId)
+  const teamFixtures = await getFixturesByTeamId(kv, db, currentYear.id, player.teamId)
 
   // Attach fixtures to weeks
   for (const week of weeks) {
@@ -107,7 +89,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   return Response.json({
     player,
     encounters,
-    fixtures,
+    fixtures: teamFixtures,
     weeks
   }, { status: StatusCodes.OK })
 }

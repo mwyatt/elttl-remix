@@ -25,6 +25,7 @@ import DatePretty from "~/components/DatePretty";
 import dayjs from "dayjs";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({ params, loaderData }: Route.MetaArgs) {
   const { year } = params;
@@ -41,6 +42,7 @@ export function meta({ params, loaderData }: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, id } = params
   const currentYear = await parseYearNameGetYear(db, year)
 
@@ -56,7 +58,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   }
 
   const week = weeks[0]
-  let fixtures = await getFixturesByWeekId(db, currentYear.id, id)
+  let fixtures = await getFixturesByWeekId(kv, db, currentYear.id, id)
 
   let relatedPress = []
   let pressSearchTerm = ''

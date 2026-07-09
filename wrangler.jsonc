@@ -11,5 +11,12 @@
   },
   "vars": {
     "TURSO_URL": "libsql://elttlbackup-04-07-2026-mwyatt.aws-eu-west-1.turso.io",
-  }
+  },
+    "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "ac6a87d6b06547d98763b17c8925ef23",
+      "preview_id": "ac6a87d6b06547d98763b17c8925ef23"
+    }
+  ]
 }

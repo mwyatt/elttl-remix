@@ -16,6 +16,8 @@ import SessionsToday from "~/components/home/SessionsToday";
 import FixtureCard from "~/components/FixtureCard";
 import ImageGallery from "~/components/home/ImageGallery";
 import {buildMeta} from "~/constants/MetaData";
+import {getLatestFixtures} from "~/repositories/fixture.repository.server";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -26,6 +28,7 @@ export function meta({}: Route.MetaArgs) {
 
 export async function loader({context}) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const currentYear = await getCurrentYear(db)
 
   const latestPress = await db.all(sql`
@@ -37,27 +40,7 @@ export async function loader({context}) {
       LIMIT 5
   `)
 
-  const latestFixtures = await db.all(sql`
-      select ttl.name        teamLeftName,
-             ttl.slug        teamLeftSlug,
-             sum(scoreLeft)  scoreLeft,
-             ttr.name        teamRightName,
-             ttr.slug        teamRightSlug,
-             sum(scoreRight) scoreRight,
-             timeFulfilled
-      from tennisEncounter tte
-               inner join tennisFixture ttf on ttf.id = tte.fixtureId
-          and ttf.yearId = tte.yearId
-          and timeFulfilled is not null
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-      where tte.yearId = ${currentYear.id}
-        AND timeFulfilled IS NOT NULL
-        and status != 'exclude'
-      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-      ORDER BY timeFulfilled DESC
-      LIMIT 10
-  `)
+  const latestFixtures = await getLatestFixtures(kv, db, currentYear.id)
 
   latestPress.forEach((press) => {
     press.url = `/press/${press.slug}`

@@ -1,28 +1,38 @@
-export async function getFixturesByWeekId (db, yearId, weekId) {
-  const fixtures = await db.all(`
-    select
-        ttl.name teamLeftName,
-        ttl.slug teamLeftSlug,
-        sum(scoreLeft) scoreLeft,
-        ttr.name teamRightName,
-        ttr.slug teamRightSlug,
-        sum(scoreRight) scoreRight,
-        timeFulfilled,
-        ttd.name divisionName
-        from tennisEncounter tte
-      inner join tennisFixture ttf on ttf.id = tte.fixtureId
-                                          and ttf.yearId = tte.yearId
-                                          and ttf.weekId = ${weekId}
-                                          and timeFulfilled is not null
-        left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-        left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-        left join tennisDivision ttd on ttd.id = ttl.divisionId and ttd.yearId = tte.yearId
-    where tte.yearId = ${yearId}
-    and status != 'exclude'
-    group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, divisionName
-  `)
+export async function getFixturesByWeekId (kv, db, yearId, weekId) {
+  const cacheKey = `fixtures-by-week-id-${yearId}-${weekId}`
+  let cached = await kv.get(cacheKey, { type: "json" });
+  if (!cached) {
+    const fixtures = await db.all(`
+      select
+          ttl.name teamLeftName,
+          ttl.slug teamLeftSlug,
+          sum(scoreLeft) scoreLeft,
+          ttr.name teamRightName,
+          ttr.slug teamRightSlug,
+          sum(scoreRight) scoreRight,
+          timeFulfilled,
+          ttd.name divisionName
+          from tennisEncounter tte
+        inner join tennisFixture ttf on ttf.id = tte.fixtureId
+                                            and ttf.yearId = tte.yearId
+                                            and ttf.weekId = ${weekId}
+                                            and timeFulfilled is not null
+          left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
+          left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
+          left join tennisDivision ttd on ttd.id = ttl.divisionId and ttd.yearId = tte.yearId
+      where tte.yearId = ${yearId}
+      and status != 'exclude'
+      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, divisionName
+    `)
 
-  return fixtures
+    console.warn('cache: setting cache key', cacheKey)
+    await kv.put(cacheKey, JSON.stringify(fixtures))
+    cached = fixtures
+  } else {
+    console.warn('cache: using cache key', cacheKey)
+  }
+
+  return cached
 }
 
 export async function getUnfulfilledFixtures (db, yearId) {
@@ -68,30 +78,76 @@ export async function getUnfulfilledFixturesByWeekId (db, yearId, weekId) {
   return fixtures
 }
 
-export async function getFixturesByTeamId (db, yearId, teamId) {
-  const fixtures = await db.all(`
-      select ttl.name teamLeftName,
-             ttl.slug teamLeftSlug,
-             ttl.homeWeekday,
-             tv.name venueName,
-             tv.slug venueSlug,
-             tv.location venueLocation,
-            sum(scoreLeft) scoreLeft,
-             ttr.name teamRightName,
-             ttr.slug teamRightSlug,
-            sum(scoreRight) scoreRight,
-             timeFulfilled,
-             weekId
-      from tennisFixture ttf
-          left join tennisEncounter te on te.fixtureId = ttf.id
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = ttf.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = ttf.yearId
-               left join tennisWeek tw on tw.id = ttf.weekId and tw.yearId = ttf.yearId
-                left join tennisVenue tv on tv.id = ttl.venueId and tv.yearId = ttl.yearId
-      where ttf.yearId = ${yearId}
-        and (ttf.teamIdLeft = ${teamId} OR ttf.teamIdRight = ${teamId})
-      group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, weekId, ttl.homeWeekday, venueName, venueSlug, venueLocation
-  `)
+export async function getFixturesByTeamId (kv, db, yearId, teamId) {
+  const cacheKey = `fixtures-by-team-id-${yearId}-${teamId}`
+  let cached = await kv.get(cacheKey, { type: "json" });
+  if (!cached) {
+      const fixtures = await db.all(`
+          select ttl.name teamLeftName,
+                 ttl.slug teamLeftSlug,
+                 ttl.homeWeekday,
+                 tv.name venueName,
+                 tv.slug venueSlug,
+                 tv.location venueLocation,
+                sum(scoreLeft) scoreLeft,
+                 ttr.name teamRightName,
+                 ttr.slug teamRightSlug,
+                sum(scoreRight) scoreRight,
+                 timeFulfilled,
+                 weekId
+          from tennisFixture ttf
+              left join tennisEncounter te on te.fixtureId = ttf.id
+                   left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = ttf.yearId
+                   left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = ttf.yearId
+                   left join tennisWeek tw on tw.id = ttf.weekId and tw.yearId = ttf.yearId
+                    left join tennisVenue tv on tv.id = ttl.venueId and tv.yearId = ttl.yearId
+          where ttf.yearId = ${yearId}
+            and (ttf.teamIdLeft = ${teamId} OR ttf.teamIdRight = ${teamId})
+          group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, weekId, ttl.homeWeekday, venueName, venueSlug, venueLocation
+      `)
 
-  return fixtures
+    console.warn('cache: setting cache key', cacheKey)
+    await kv.put(cacheKey, JSON.stringify(fixtures))
+    cached = fixtures
+  } else {
+    console.warn('cache: using cache key', cacheKey)
+  }
+
+  return cached
+}
+
+export async function getLatestFixtures (kv, db, yearId) {
+  const cacheKey = `latest-fixtures-${yearId}`
+  let cached = await kv.get(cacheKey, { type: "json" });
+  if (!cached) {
+    const fixtures = await db.all(`
+      select ttl.name        teamLeftName,
+             ttl.slug        teamLeftSlug,
+             sum(scoreLeft)  scoreLeft,
+             ttr.name        teamRightName,
+             ttr.slug        teamRightSlug,
+             sum(scoreRight) scoreRight,
+             timeFulfilled
+      from tennisEncounter tte
+               inner join tennisFixture ttf on ttf.id = tte.fixtureId
+          and ttf.yearId = tte.yearId
+          and timeFulfilled is not null
+               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
+               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
+      where tte.yearId = ${yearId}
+        AND timeFulfilled IS NOT NULL
+        and status != 'exclude'
+      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
+      ORDER BY timeFulfilled DESC
+      LIMIT 12
+    `)
+
+    console.warn('cache: setting cache key', cacheKey)
+    await kv.put(cacheKey, JSON.stringify(fixtures))
+    cached = fixtures
+  } else {
+    console.warn('cache: using cache key', cacheKey)
+  }
+
+  return cached
 }
