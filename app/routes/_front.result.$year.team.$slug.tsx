@@ -14,6 +14,7 @@ import WeeksTimeline from "~/components/WeeksTimeline";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
 import {getKvFromContext} from "~/kv-context.server";
+import Accordion from "~/components/Accordion";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -123,7 +124,9 @@ team, players, fixtures, weeks
           )}
 
           {weeks.length > 0 && (
+              <Accordion previewHeight={400}>
             <WeeksTimeline yearName={year} weeks={weeks} teamSlug={team.slug} />
+              </Accordion>
           )}
 
         </div>

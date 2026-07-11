@@ -15,6 +15,7 @@ import FixtureCard from "~/components/FixtureCard";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
 import {getKvFromContext} from "~/kv-context.server";
+import Accordion from "~/components/Accordion";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -177,7 +178,9 @@ player, encounters, fixtures, weeks
           )}
 
           {weeks.length > 0 && (
-            <WeeksTimeline yearName={year} weeks={weeks} teamSlug={player.teamSlug} />
+              <Accordion previewHeight={400}>
+                <WeeksTimeline yearName={year} weeks={weeks} teamSlug={player.teamSlug} />
+              </Accordion>
           )}
         </div>
 
@@ -185,6 +188,7 @@ player, encounters, fixtures, weeks
 
           <SubHeading name='Performance' />
 
+              <Accordion previewHeight={400}>
           <div className='grid grid-cols-10'>
 
             {encounters.map((encounter, index) => (
@@ -205,6 +209,7 @@ player, encounters, fixtures, weeks
               </div>
             ))}
           </div>
+              </Accordion>
 
         </div>
 

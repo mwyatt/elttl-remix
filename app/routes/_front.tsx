@@ -40,6 +40,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       title: 'Get the Handbook',
       description: 'Download this seasons handbook.',
       action: 'Download',
+      target: '_blank',
       url: '/handbook-2025-2026.pdf'
     },
     {
@@ -154,6 +155,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
                   <Link
                     className={buttonPrimaryStyles}
                     to={advertisement.url}
+                    target={advertisement.target || '_self'}
                   >{advertisement.action}
                   </Link>
                 )}

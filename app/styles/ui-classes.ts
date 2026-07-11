@@ -8,7 +8,7 @@ export const linkStyles = [
 ]
 
 export const allHomeButtonStyles = [
-  'text-stone-500 border border-stone-400 px-2 py-1 rounded hover:border-stone-600 hover:text-stone-600 focus:outline-2 focus:outline-offset-2 focus:outline-stone-500 active:border-stone-700'
+  'text-stone-500 border border-stone-400 px-2 py-1 rounded hover:border-stone-600 hover:text-stone-600 focus:outline-2 focus:outline-offset-2 focus:outline-stone-500 active:border-stone-700 active:bg-stone-200'
 ]
 
 export const buttonPrimaryStyles = [

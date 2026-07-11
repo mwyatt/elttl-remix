@@ -10,7 +10,6 @@ import UpcomingEventWeek from "~/components/home/UpcomingEventWeek";
 import ThisWeek from "~/components/home/ThisWeek";
 import {Link} from "react-router";
 import {allHomeButtonStyles, buttonPrimaryStyles, linkStyles} from "~/styles/ui-classes";
-import RelativeTime from "~/components/RelativeTime";
 import SeasonTotals from "~/components/home/SeasonTotals";
 import SessionsToday from "~/components/home/SessionsToday";
 import FixtureCard from "~/components/FixtureCard";
@@ -18,6 +17,7 @@ import ImageGallery from "~/components/home/ImageGallery";
 import {buildMeta} from "~/constants/MetaData";
 import {getLatestFixtures} from "~/repositories/fixture.repository.server";
 import {getKvFromContext} from "~/kv-context.server";
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -42,8 +42,12 @@ export async function loader({context}) {
 
   const latestFixtures = await getLatestFixtures(kv, db, currentYear.id)
 
+  dayjs.extend(relativeTime)
+
   latestPress.forEach((press) => {
     press.url = `/press/${press.slug}`
+    press.titleAttr = dayjs.unix(press.timePublished).format('DD/MM/YYYY HH:mm')
+    press.timePublishedRelative = dayjs.unix(press.timePublished).fromNow()
   })
 
   // Divisions - 4
@@ -174,9 +178,9 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <div className='py-4 border-b border-b-neutral-300 border-dashed' key={press.id}>
               <p
                 className='text-sm text-gray-500 mb-2'
-                title={dayjs.unix(press.timePublished).format('DD/MM/YYYY HH:mm')}
+                title={press.titleAttr}
               >
-                <RelativeTime timestamp={press.timePublished} />
+                <span>{press.timePublishedRelative}</span>
               </p>
               <h3 className='text-lg'>
                 <Link
