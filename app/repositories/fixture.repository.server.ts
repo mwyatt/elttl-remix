@@ -37,7 +37,9 @@ export async function getFixturesByWeekId (kv, db, yearId, weekId) {
 
 export async function getUnfulfilledFixtures (db, yearId) {
   const fixtures = await db.all(`
-      select ttl.name teamLeftName,
+      select 
+             ttf.id,
+             ttl.name teamLeftName,
              ttl.slug teamLeftSlug,
              '0'      scoreLeft,
              ttr.name teamRightName,
@@ -150,4 +152,16 @@ export async function getLatestFixtures (kv, db, yearId) {
   }
 
   return cached
+}
+
+export async function getFixtureById (db, yearId, id) {
+      const fixtures = await db.all(`
+          select 
+                 teamIdLeft,
+                 teamIdRight,
+                 timeFulfilled
+          from tennisFixture ttf
+          where ttf.yearId = ${yearId} and ttf.id = ${id}
+      `)
+  return fixtures[0]
 }

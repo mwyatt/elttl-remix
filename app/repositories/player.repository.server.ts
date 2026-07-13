@@ -41,3 +41,17 @@ export async function playerGetAll(db: any, yearId: number) {
     ORDER BY tp.nameLast ASC
   `);
 }
+
+export async function getPlayersByYearId(db: any, yearId: number) {
+  return db.all(sql`
+      SELECT
+          id,
+          concat(nameFirst, ' ', nameLast) AS name,
+          slug,
+          tp.rank,
+          teamId
+      FROM tennisPlayer tp
+      WHERE yearId = ${yearId}
+      order by nameLast
+  `);
+}

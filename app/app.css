@@ -31,3 +31,19 @@ body {
   /*background-repeat: no-repeat;*/
   /*background-position: -70% 0;*/
 }
+
+@layer utilities {
+  @keyframes coin-flip {
+    0%   { transform: rotateX(0deg); }
+    50%  { transform: rotateX(1800deg); }
+    100% { transform: rotateX(3600deg); }
+  }
+
+  .animate-coin-flip-idle {
+    animation: coin-flip 40s ease-in-out infinite;
+  }
+
+  .animate-coin-flip-active {
+    animation: coin-flip 40s ease-in-out infinite;
+  }
+}

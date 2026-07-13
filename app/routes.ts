@@ -2,7 +2,12 @@ import {index, route, type RouteConfig} from "@react-router/dev/routes";
 
 export default [
     route("api/update-password-local", "routes/api.update-password-local.ts"),
-    route("api/test-kv", "routes/api.test-kv.ts"),
+
+    // route("scorecard", "routes/scorecard.tsx"),
+    //     route("api/scorecard/start", "routes/api.scorecard-start.ts"),
+    //     route("api/scorecard/update", "routes/api.scorecard-update.ts"),
+    //
+    // route("scorecard/:passcode", "routes/scorecardEntry.tsx"),
 
     // @todo
     // route("sitemap.xml", "routes/sitemap.xml.tsx"),

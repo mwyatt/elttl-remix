@@ -1,6 +1,6 @@
 import React from 'react'
 import CreatableSelect from 'react-select/creatable'
-import { getSideIndex, SIDE_LEFT, SIDE_RIGHT } from '~/constants/encounter'
+import {getSideIndex, SIDE_LEFT, SIDE_RIGHT} from '~/constants/encounter'
 
 // @todo prevent the same player being selected twice in either team
 export function PlayerSelect ({

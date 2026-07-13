@@ -210,8 +210,6 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
       </footer>
-
-      {/*<CookieBanner isCookieBannerDismissed={isCookieBannerDismissed} />*/}
     </div>
   )
 }

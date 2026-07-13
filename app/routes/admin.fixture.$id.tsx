@@ -1,12 +1,11 @@
-import {useState} from 'react';
-import { Link } from "react-router";
+import {redirect} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
-import { ScoreCardForm } from '~/components/admin/fixture/ScoreCardForm'
+import {ScoreCardForm} from '~/components/admin/fixture/ScoreCardForm'
 import {sql} from "drizzle-orm";
-import { Form, redirect } from "react-router";
 import {createFlashHeaders, getFlashMessage} from "~/auth/session.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import fulfillFixture from "~/services/fulfillFixture.service.server";
+import {getPlayersByYearId} from "~/repositories/player.repository.server";
 
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -37,17 +36,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
   const fixture = fixtures[0]
 
-  const players = await db.all(sql`
-      SELECT
-          id,
-          concat(nameFirst, ' ', nameLast) AS name,
-          slug,
-          tp.rank,
-          teamId
-      FROM tennisPlayer tp
-      WHERE yearId = ${currentYear.id}
-      order by nameLast
-  `)
+  const players = await getPlayersByYearId(db, currentYear.id)
 
   const encounters = await db.all(sql`
       SELECT

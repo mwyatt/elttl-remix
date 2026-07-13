@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react'
 import {useFetcher, useRevalidator} from "react-router";
-import { PlayerSelect } from '~/components/admin/fixture/PlayerSelect'
+import {PlayerSelect} from '~/components/admin/fixture/PlayerSelect'
 import {
   getOtherSideCapitalized,
-  getSideCapitalized, maxEncounters, minEncounters,
+  getSideCapitalized,
+  maxEncounters,
+  minEncounters,
   scorecardStructure,
   SIDE_LEFT,
   SIDE_RIGHT
@@ -12,6 +14,45 @@ import EncounterStatus from '~/constants/EncounterStatus'
 import Feedback from '~/components/Feedback'
 import FullLoader from '~/components/FullLoader'
 import RankChange from '~/components/player/RankChange'
+
+export const handleChangeScore = (e, index, side, encounter, encounterStruct, setEncounterStruct) => {
+    const score = parseInt(e.nativeEvent.key)
+    const maxScore = 3
+    const sideCapitalized = getSideCapitalized(side)
+    const otherSideCapitalized = getOtherSideCapitalized(side)
+    const sideScoreKey = `score${sideCapitalized}`
+    const otherSideScoreKey = `score${otherSideCapitalized}`
+
+    encounter[sideScoreKey] = isNaN(score) ? 0 : score
+
+    // Tidy a score over the max score
+    if (encounter[sideScoreKey] > maxScore) {
+      encounter[sideScoreKey] = maxScore
+    }
+
+    // Chosen score guarantees other score value
+    if (encounter[sideScoreKey] < maxScore) {
+      encounter[otherSideScoreKey] = maxScore
+    }
+
+    // Both scores cannot be max so other reset to 0
+    if (encounter[sideScoreKey] === maxScore && encounter[otherSideScoreKey] === maxScore) {
+      encounter[otherSideScoreKey] = 0
+    }
+
+    const newEncounterStruct = [...encounterStruct]
+    newEncounterStruct[index] = {
+      ...encounter
+    }
+    setEncounterStruct(newEncounterStruct)
+  }
+
+  export const getPlayerName = (players, id) => {
+    const player = players.find(player => player.id === id)
+    return player ? player.name : <span className='opacity-50'>Absent Player</span>
+  }
+
+  export const doublesLabel = <span className='opacity-50'>Doubles</span>
 
 export function ScoreCardForm ({ fixture, players, encounters }) {
   const [playerStruct, setPlayerStruct] = useState(getDefaultPlayerStruct(encounters))
@@ -116,45 +157,6 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
     )
   }
 
-  const handleChangeScore = (e, index, side, encounter) => {
-    const score = parseInt(e.nativeEvent.key)
-    const maxScore = 3
-    const sideCapitalized = getSideCapitalized(side)
-    const otherSideCapitalized = getOtherSideCapitalized(side)
-    const sideScoreKey = `score${sideCapitalized}`
-    const otherSideScoreKey = `score${otherSideCapitalized}`
-
-    encounter[sideScoreKey] = isNaN(score) ? 0 : score
-
-    // Tidy a score over the max score
-    if (encounter[sideScoreKey] > maxScore) {
-      encounter[sideScoreKey] = maxScore
-    }
-
-    // Chosen score guarantees other score value
-    if (encounter[sideScoreKey] < maxScore) {
-      encounter[otherSideScoreKey] = maxScore
-    }
-
-    // Both scores cannot be max so other reset to 0
-    if (encounter[sideScoreKey] === maxScore && encounter[otherSideScoreKey] === maxScore) {
-      encounter[otherSideScoreKey] = 0
-    }
-
-    const newEncounterStruct = [...encounterStruct]
-    newEncounterStruct[index] = {
-      ...encounter
-    }
-    setEncounterStruct(newEncounterStruct)
-  }
-
-  const getPlayerName = (id) => {
-    const player = players.find(player => player.id === id)
-    return player ? player.name : <span className='opacity-50'>Absent Player</span>
-  }
-
-  const doublesLabel = <span className='opacity-50'>Doubles</span>
-
   return (
     <form className='p-6 max-w-4xl mx-auto'>
       <Feedback message={feedbackMessage} />
@@ -252,14 +254,14 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
             />
             <div className='flex-1 flex justify-end'>
               <label>
-                {encounterRow[0] === EncounterStatus.DOUBLES ? doublesLabel : getPlayerName(playerStruct[0][encounterRow[0]])}
+                {encounterRow[0] === EncounterStatus.DOUBLES ? doublesLabel : getPlayerName(players, playerStruct[0][encounterRow[0]])}
                 <RankChange rankChange={encounterStruct[index].playerRankChangeLeft} />
                 <input
                   className='border border-tertiary-500 rounded w-14 text-center text-2xl ml-4 py-1'
                   type='text'
                   value={encounterStruct[index].scoreLeft}
                   onChange={() => {}}
-                  onKeyUp={(e) => handleChangeScore(e, index, SIDE_LEFT, encounterStruct[index])}
+                  onKeyUp={(e) => handleChangeScore(e, index, SIDE_LEFT, encounterStruct[index], encounterStruct, setEncounterStruct)}
                 />
               </label>
             </div>
@@ -271,10 +273,10 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
                 type='text'
                 value={encounterStruct[index].scoreRight}
                 onChange={() => {}}
-                onKeyUp={(e) => handleChangeScore(e, index, SIDE_RIGHT, encounterStruct[index])}
+                onKeyUp={(e) => handleChangeScore(e, index, SIDE_RIGHT, encounterStruct[index], encounterStruct, setEncounterStruct)}
               />
               <RankChange rankChange={encounterStruct[index].playerRankChangeRight} />
-              {encounterRow[0] === EncounterStatus.DOUBLES ? doublesLabel : getPlayerName(playerStruct[1][encounterRow[1]])}
+              {encounterRow[0] === EncounterStatus.DOUBLES ? doublesLabel : getPlayerName(players, playerStruct[1][encounterRow[1]])}
             </label>
           </div>
         </div>
@@ -296,7 +298,7 @@ export function ScoreCardForm ({ fixture, players, encounters }) {
   )
 }
 
-function getDefaultPlayerStruct (encounters) {
+export function getDefaultPlayerStruct (encounters) {
   if (encounters.length > 2) {
     return [
       {
@@ -318,7 +320,7 @@ function getDefaultPlayerStruct (encounters) {
   ]
 }
 
-function getDefaultEncounterStruct (encounters) {
+export function getDefaultEncounterStruct (encounters) {
   if (encounters.length) {
     if (encounters.length === maxEncounters) {
       return encounters
