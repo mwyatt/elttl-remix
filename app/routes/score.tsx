@@ -23,7 +23,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   }
 }
 
-export default function Scorecard({ loaderData }: Route.ComponentProps) {
+export default function Score({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const {
       unfulfilledFixtures,
@@ -50,7 +50,7 @@ export default function Scorecard({ loaderData }: Route.ComponentProps) {
 
     try {
 
-    const response = await fetch(`/api/scorecard/start?fixture-id=${fixture.id}`)
+    const response = await fetch(`/api/score/start?fixture-id=${fixture.id}`)
     const data = await response.json()
       if (response.status === StatusCodes.CONFLICT) {
         setAlreadyScoringIsOpen(true)
@@ -65,17 +65,18 @@ export default function Scorecard({ loaderData }: Route.ComponentProps) {
   }
 
   const handleCloseAlreadingScoringIsOpen = () => setAlreadyScoringIsOpen(false);
+  const handleCloseServerError = () => setServerErrorIsOpen(false);
 
   return (
     <div className={'p-4'}>
                                   <DialogBase
               open={serverErrorIsOpen}
-              onClose={handleCloseAlreadingScoringIsOpen}
+              onClose={handleCloseServerError}
               title="Error starting scoring session"
               actions={
                 <button
                   className={buttonPrimaryStyles}
-                  onClick={handleCloseAlreadingScoringIsOpen}
+                  onClick={handleCloseServerError}
                 >
                   Close
                 </button>

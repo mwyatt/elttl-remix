@@ -20,6 +20,7 @@ import {getPlayersByYearId} from "~/repositories/player.repository.server";
 import {scorecardStructure, SIDE_LEFT, SIDE_RIGHT} from "~/constants/encounter";
 import EncounterStatus from "~/constants/EncounterStatus";
 import RankChange from "~/components/player/RankChange";
+import {useLocalStorage} from "~/hooks/useLocalStorage";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -42,17 +43,20 @@ export async function loader({ context, params }: Route.LoaderArgs) {
 }
 
 export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const {
       activeFulfillment,
       fixture,
       teams,
       players
   } = loaderData
-  const handleClose = () => navigate('/scorecard');
-  const [currentStep, setCurrentStep] = useState(1)
+  const [scorecardLocal, setScorecardLocal] = useLocalStorage(`elttl-scorecard-${activeFulfillment.passcode}`, {
+      currentStep: 1,
+  });
   const [playerStruct, setPlayerStruct] = useState(getDefaultPlayerStruct([]))
   const [encounterStruct, setEncounterStruct] = useState(getDefaultEncounterStruct([]))
+
+  const handleClose = () => navigate('/score');
 
   if (activeFulfillment === undefined) return (
     <DialogBase
@@ -71,6 +75,12 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
       The passcode you entered is invalid. Please check the passcode and try again.
     </DialogBase>
   )
+
+    const handleEncounterStructChange = (encounterStruct) => {
+      // @todo Lets persist into the database so whenever another player makes a change it is reflected in their ui
+
+      setEncounterStruct(encounterStruct)
+    }
 
   const handleChangePlayer = (structPosition, optionValue) => {
     setPlayerStruct(
@@ -100,13 +110,13 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
       }
     })
 
-    setEncounterStruct(newEncounterStruct)
+    handleEncounterStructChange(newEncounterStruct)
   }
 
   const handleUpdateFulfillment = async () => {
         // @todo a subtle spinner to indicate storing data
 
-        const response = await fetch("/api/scorecard/update", {
+        const response = await fetch("/api/score/update", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -128,24 +138,64 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
         console.log(data);
   }
 
+  // const handleUpdateLocalStore = async () => {
+  //       // @todo update / create local store
+  //     // keep track of app position (step)
+  //     // also any scores - score data sent to db at the end?
+  //
+  //       const response = await fetch("/api/score/update", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json"
+  //         },
+  //         body: JSON.stringify({
+  //           passcode: activeFulfillment.passcode,
+  //             scorecardData: {
+  //               encounterStruct,
+  //                 playerSignaturesByTeamId: {
+  //                   [fixture.teamIdLeft]: null,
+  //                   [fixture.teamIdRight]: null,
+  //                 }
+  //             }
+  //         })
+  //       });
+  //
+  //       const data = await response.json();
+  //
+  //       console.log(data);
+  // }
+
   const handlePersistPlayers = async () => {
       await handleUpdateFulfillment()
       stepForward()
   }
 
   const stepForward = () => {
-      setCurrentStep(currentStep + 1)
+      setScorecardLocal(prev => ({
+          ...prev,
+          currentStep: prev.currentStep + 1,
+      }))
   }
 
   const handleBeginScoring = (index) => {
       const encounter = encounterStruct[index]
-
-      console.log(encounter)
-
+      setScorecardLocal(prev => ({
+          ...prev,
+          scoringStep: 1,
+      }))
       stepForward()
   }
 
-  const handleFlipCoin = () => {}
+  const handleFlipCoin = () => {
+      const flipResult = Math.random() < 0.5 ? 0 : 1;
+      setScorecardLocal(prev => ({
+          ...prev,
+          coinFlipResult: flipResult,
+          scoringStep: 2,
+      }))
+  }
+
+  const getTeamById = (id) => teams.find(team => team.id === id)
 
   return (
     <div className={'p-4'}>
@@ -159,12 +209,13 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
             <div>{'breadcrumbs > here'}</div>
         </div>
 
-        {currentStep === 1 && (
+        {scorecardLocal.currentStep === 1 && (
             <>
             <h2>Who is playing?</h2>
             <div>
               <div className='flex gap-4 mb-4'>
                 <div className='flex-1'>
+                    <h3 className={'mb-2 text-xl font-bold'}>{getTeamById(fixture.teamIdLeft).name}</h3>
                   <PlayerSelect
                     teamId={fixture.teamIdLeft}
                     structPosition={[0, 1]}
@@ -175,6 +226,7 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
                   />
                 </div>
                 <div className='flex-1'>
+                    <h3 className={'mb-2 text-xl font-bold'}>{getTeamById(fixture.teamIdRight).name}</h3>
                   <PlayerSelect
                     teamId={fixture.teamIdRight}
                     structPosition={[1, 1]}
@@ -233,7 +285,7 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
                 <button className={buttonPrimaryStyles} onClick={handlePersistPlayers}>Continue</button>
             </>
         )}
-        {currentStep === 2 && (
+        {scorecardLocal.currentStep === 2 && (
             <div>
                 <h2>scorecard</h2>
 
@@ -277,7 +329,7 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
                       ))}
             </div>
         )}
-        {currentStep === 3 && (
+        {(scorecardLocal.currentStep === 3 && scorecardLocal.scoringStep === 1) && (
             <div>
                 <div class="relative w-32 h-32 [transform-style:preserve-3d] animate-coin-flip-idle">
   <div class="absolute inset-0 rounded-full flex items-center justify-center text-4xl font-bold text-white [backface-visibility:hidden] bg-yellow-400">
@@ -292,6 +344,29 @@ export default function ScorecardEntry({ loaderData }: Route.ComponentProps) {
                 <h2>Flip a coin!</h2>
                               <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Flip!</button>
             </div>
+        )}
+
+            scorecardLocal.scoringStep === 2 && (
+            <div>
+                <div class="relative w-32 h-32 [transform-style:preserve-3d] animate-coin-flip-idle">
+                    scorecardLocal.coinFlipResult === 0 && (
+      <div class="absolute inset-0 rounded-full flex items-center justify-center text-4xl font-bold text-white [backface-visibility:hidden] bg-yellow-400">
+        H
+      </div>
+                    )
+                    scorecardLocal.coinFlipResult === 1 && (
+
+  <div class="absolute inset-0 rounded-full flex items-center justify-center text-4xl font-bold text-white [backface-visibility:hidden] bg-blue-500 [transform:rotateY(180deg)]">
+    T
+  </div>
+                    )
+</div>
+
+                <h2>Who won the toss?</h2>
+                              <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Player A</button>
+                              <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Player B</button>
+            </div>
+            )
         )}
 
     </div>
