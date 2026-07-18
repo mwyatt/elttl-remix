@@ -11,6 +11,9 @@ import {linkStyles} from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearDivisionId} from "~/libraries/year";
+import {getDivisionLeagueTable, getTeamsFulfilledFixtures} from "~/repositories/encounter.repository.server";
+import {getKvFromContext} from "~/kv-context.server";
+import {getUnfulfilledFixturesByTeamIds} from "~/repositories/fixture.repository.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -25,6 +28,7 @@ export function meta({ params }: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, division } = params
   const yearDivisionId = await parseYearDivisionId(db, year, division)
 
@@ -45,60 +49,13 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
         AND tt.divisionId = ${yearDivisionId.divisionId}
   `)
 
-  const leagueTable = await db.all(sql`
-      select ttl.name        teamLeftName,
-             ttl.slug        teamLeftSlug,
-             sum(scoreLeft)  scoreLeft,
-             ttr.name        teamRightName,
-             ttr.slug        teamRightSlug,
-             sum(scoreRight) scoreRight
-      from tennisEncounter tte
-               left join tennisFixture ttf on ttf.id = tte.fixtureId and ttf.yearId = tte.yearId
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-      where tte.yearId = ${yearDivisionId.yearId}
-        and status != 'exclude'
-        and ttl.divisionId = ${yearDivisionId.divisionId}
-      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug
-  `)
+  const leagueTable = await getDivisionLeagueTable(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
 
   const teamIds = teams.map(team => team.id)
 
-  const fulfilledFixtures = await db.all(sql`
-      select ttl.name        teamLeftName,
-             ttl.slug        teamLeftSlug,
-             sum(scoreLeft)  scoreLeft,
-             ttr.name        teamRightName,
-             ttr.slug        teamRightSlug,
-             sum(scoreRight) scoreRight,
-             timeFulfilled
-      from tennisEncounter tte
-               inner join tennisFixture ttf on ttf.id = tte.fixtureId
-          and ttf.yearId = tte.yearId
-          and ttf.teamIdLeft in (${sql.join(teamIds, sql`, `)})
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-      where tte.yearId = ${yearDivisionId.yearId}
-        and status != 'exclude'
-      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
+  const fulfilledFixtures = await getTeamsFulfilledFixtures(kv, db, yearDivisionId.yearId, teamIds)
 
-  const unfulfillfedFixtures = await db.all(sql`
-      select ttl.name teamLeftName,
-             ttl.slug teamLeftSlug,
-             '0'      scoreLeft,
-             ttr.name teamRightName,
-             ttr.slug teamRightSlug,
-             '0'      scoreRight,
-             timeFulfilled
-      from tennisFixture ttf
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = ttf.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = ttf.yearId
-      where ttf.yearId = ${yearDivisionId.yearId}
-        and ttf.teamIdLeft in (${sql.join(teamIds, sql`, `)})
-        and ttf.timeFulfilled is null
-      group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
+  const unfulfillfedFixtures = await getUnfulfilledFixturesByTeamIds(kv, db, yearDivisionId.yearId, teamIds)
 
   return Response.json({
     leagueTable,

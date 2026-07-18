@@ -12,6 +12,7 @@ import {getShortPlayerName} from "~/libraries/player";
 import {getYearDivisionMeritEncounters} from "~/repositories/encounter.repository.server";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearDivisionId} from "~/libraries/year";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -26,10 +27,11 @@ export function meta({ params }: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, division } = params
   const yearDivisionId = await parseYearDivisionId(db, year, division)
 
-  const encounters = await getYearDivisionMeritEncounters(db, yearDivisionId.yearId, yearDivisionId.divisionId)
+  const encounters = await getYearDivisionMeritEncounters(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
 
   let stats = getEncounterMerit(encounters)
   const playerIds = stats.map(s => s.player.id)

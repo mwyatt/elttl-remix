@@ -1,3 +1,5 @@
+import {sql} from "drizzle-orm";
+
 export async function getFixturesByWeekId (kv, db, yearId, weekId) {
   const cacheKey = `fixtures-by-week-id-${yearId}-${weekId}`
   let cached = await kv.get(cacheKey, { type: "json" });
@@ -164,4 +166,35 @@ export async function getFixtureById (db, yearId, id) {
           where ttf.yearId = ${yearId} and ttf.id = ${id}
       `)
   return fixtures[0]
+}
+
+export async function getUnfulfilledFixturesByTeamIds (kv, db, yearId, teamIds) {
+  const cacheKey = `teams-unfulfilled-fixtures-${yearId}-${teamIds.join('')}`
+  let cached = await kv.get(cacheKey, { type: "json" });
+  if (!cached) {
+      const fixtures = await db.all(sql`
+      select ttl.name teamLeftName,
+             ttl.slug teamLeftSlug,
+             '0'      scoreLeft,
+             ttr.name teamRightName,
+             ttr.slug teamRightSlug,
+             '0'      scoreRight,
+             timeFulfilled
+      from tennisFixture ttf
+               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = ttf.yearId
+               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = ttf.yearId
+      where ttf.yearId = ${yearId}
+        and ttf.teamIdLeft in (${sql.join(teamIds, sql`, `)})
+        and ttf.timeFulfilled is null
+      group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
+      `)
+
+    console.warn('cache: setting cache key', cacheKey)
+    await kv.put(cacheKey, JSON.stringify(fixtures))
+    cached = fixtures
+  } else {
+    console.warn('cache: using cache key', cacheKey)
+  }
+
+  return cached
 }

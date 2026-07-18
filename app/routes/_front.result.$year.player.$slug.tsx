@@ -16,6 +16,7 @@ import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
 import {getKvFromContext} from "~/kv-context.server";
 import Accordion from "~/components/Accordion";
+import {getPlayerEncounters} from "~/repositories/encounter.repository.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -62,22 +63,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
 
   const player = players[0]
 
-  const encounters = await db.all(sql`
-      select tte.id,
-             scoreLeft,
-             scoreRight,
-             CONCAT(ttpl.nameFirst, ' ', ttpl.nameLast) playerLeftName,
-             ttpl.slug                                  playerLeftSlug,
-             CONCAT(ttpr.nameFirst, ' ', ttpr.nameLast) playerRightName,
-             ttpr.slug                                  playerRightSlug,
-             playerRankChangeLeft,
-             playerRankChangeRight
-      from tennisEncounter tte
-               left join tennisPlayer ttpl on ttpl.id = tte.playerIdLeft and ttpl.yearId = tte.yearId
-               left join tennisPlayer ttpr on ttpr.id = tte.playerIdRight and ttpr.yearId = tte.yearId
-      where tte.yearId = ${currentYear.id}
-        and (tte.playerIdLeft = ${player.id} OR tte.playerIdRight = ${player.id})
-  `)
+  const encounters = await getPlayerEncounters(kv, db, currentYear.id, player.id)
 
   const weeks = await getAllWeeksByYear(db, currentYear.id)
   const teamFixtures = await getFixturesByTeamId(kv, db, currentYear.id, player.teamId)

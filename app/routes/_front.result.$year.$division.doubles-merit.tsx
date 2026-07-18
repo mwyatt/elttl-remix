@@ -1,15 +1,15 @@
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {sql} from "drizzle-orm";
 import {Link} from "react-router";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
 import {linkStyles} from "~/styles/ui-classes";
 import {getOtherSideCapitalized, getSidesCapitalized} from "~/constants/encounter";
-import EncounterStatus from "~/constants/EncounterStatus";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearDivisionId} from "~/libraries/year";
+import {getDoublesMeritTable} from "~/repositories/encounter.repository.server";
+import {getKvFromContext} from "~/kv-context.server";
 
 export function meta({params}: Route.MetaArgs) {
   const { year, division } = params;
@@ -24,27 +24,11 @@ export function meta({params}: Route.MetaArgs) {
 
 export async function loader({ request, context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
+  const kv = getKvFromContext(context)
   const { year, division } = params
 
   const yearDivisionId = await parseYearDivisionId(db, year, division)
-
-  const leagueTable = await db.all(sql`
-    select
-        ttl.name teamLeftName,
-        ttl.slug teamLeftSlug,
-        sum(scoreLeft) scoreLeft,
-        ttr.name teamRightName,
-        ttr.slug teamRightSlug,
-        sum(scoreRight) scoreRight
-        from tennisEncounter tte
-      left join tennisFixture ttf on ttf.id = tte.fixtureId and ttf.yearId = tte.yearId
-        left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-        left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-    where tte.yearId = ${yearDivisionId.yearId}
-    and status = ${EncounterStatus.DOUBLES}
-    and ttl.divisionId = ${yearDivisionId.divisionId}
-    group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug
-  `)
+  const leagueTable = await getDoublesMeritTable(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
 
   const sides = getSidesCapitalized()
   let stats = {}
