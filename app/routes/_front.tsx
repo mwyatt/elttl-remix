@@ -140,7 +140,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
         </div>
       )}
 
-      <div className={`${paddedContent ? 'p-4 sm:p-8' : ''} ${maxWidth ? 'max-w-[1440px] mx-auto' : ''} bg-white/95`}>
+      <div className={`${paddedContent ? 'p-4 sm:p-8' : ''} ${maxWidth ? 'max-w-[1440px] mx-auto' : ''}`}>
         <Outlet />
       </div>
 

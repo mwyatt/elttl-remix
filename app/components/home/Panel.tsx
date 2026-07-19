@@ -8,7 +8,8 @@ export default function Panel ({ children, rowSpan, colSpan }) {
       'p-6 border border-stone-300 sm:rounded': true,
       'sm:shadow-md': true,
       'row-span-2': rowSpan === 2,
-      'col-span-2': colSpan === 2
+      'col-span-2': colSpan === 2,
+      'bg-white/60': true
     })}
     >
       {children}

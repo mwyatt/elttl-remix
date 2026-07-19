@@ -30,7 +30,7 @@ export default function _frontHandicapCalculator({ loaderData }: Route.Component
 
   return (
     <>
-      <div className='max-w-[768px] mx-auto text-sm'>
+      <div className='max-w-[768px] mx-auto'>
         <MainHeading name='Handicap Calculator' />
         <p className='my-4'>Select two players to find out handicaps and what the disadvantaged player gets to start a game with:</p>
         <HandicapCalculator players={players} />

@@ -106,7 +106,7 @@ export default function _frontCommitteeMembers({loaderData}: Route.ComponentProp
 
     return (
         <>
-            <div className='max-w-[768px] mx-auto text-sm'>
+            <div className='max-w-[768px] mx-auto'>
                 <MainHeading name='Committee Members'/>
                 <table className='table-auto w-full mt-4 mb-12'>
                     <thead>

@@ -1,4 +1,4 @@
-import { allHomeButtonStyles } from '~/styles/ui-classes'
+import {allHomeButtonStyles} from '~/styles/ui-classes'
 import {Link} from "react-router";
 
 export default function ThisWeek ({ yearName, week, fixtures = [] }) {

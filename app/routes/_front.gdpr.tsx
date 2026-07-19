@@ -28,7 +28,7 @@ export default function _frontGdpr({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <div className='max-w-[768px] mx-auto text-sm'>
+      <div className='max-w-[768px] mx-auto'>
         <MainHeading name='General Data Protection Rights Policy' />
 
         <p className='my-4'>This outlines the privacy rights of every EU citizen and the ways in which an individual’s

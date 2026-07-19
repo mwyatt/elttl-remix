@@ -81,7 +81,7 @@ export default function AboutUsPage({loaderData}: Route.ComponentProps) {
     const competitionsLink = <QuickLink href='/competitions' name='Competitions'/>
 
     return (
-        <div className='max-w-[768px] mx-auto text-sm'>
+        <div className='max-w-[768px] mx-auto'>
             <MainHeading name='About Us'/>
 
             <p className='my-4'>Our League has been running since 1974, originally being the Hyndburn Table Tennis

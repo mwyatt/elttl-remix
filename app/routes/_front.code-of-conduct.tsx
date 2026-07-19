@@ -42,7 +42,7 @@ export default function _frontCommitteeMembers({ loaderData }: Route.ComponentPr
 
   return (
     <>
-      <div className='max-w-[768px] mx-auto text-sm'>
+      <div className='max-w-[768px] mx-auto'>
         <MainHeading name='Code of Conduct' />
         <SubHeading name='East Lancashire Table Tennis League (“ELTTL”) CODE OF CONDUCT' />
         <SubHeading name='Including Complaints and Disciplinary Process' />

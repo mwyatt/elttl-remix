@@ -18,10 +18,6 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/*html {*/
-/*  font-size: 16px;*/
-/*}*/
-
 body {
   color: #716156;
     font-family: "Open Sans", sans-serif;
@@ -30,10 +26,8 @@ body {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
-  /*background-image: url('/PXL_20250630_203806530.jpg');*/
-  /*background-size: 70%;*/
-  /*background-repeat: no-repeat;*/
-  /*background-position: -70% 0;*/
+  background-image: url('/bg.gif');
+  background-repeat: no-repeat;
 }
 
 @layer utilities {
