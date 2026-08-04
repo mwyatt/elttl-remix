@@ -1,6 +1,8 @@
 import {index, route, type RouteConfig} from "@react-router/dev/routes";
 
 export default [
+
+    // API
     route("api/update-password-local", "routes/api.update-password-local.ts"),
 
     // route("score", "routes/score.tsx"),
@@ -70,5 +72,8 @@ export default [
 
         // @todo
         // route("week", "routes/admin.week.tsx"),
+
+        // API - hiding on live temporarily
+        // route("api/create-season", "routes/admin.api.create-season.ts"),
     ]),
 ] satisfies RouteConfig;

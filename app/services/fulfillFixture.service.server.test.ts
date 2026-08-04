@@ -1,8 +1,7 @@
-import { test, expect, beforeAll, afterEach, afterAll, beforeEach } from "vitest"
-import { getTestDb } from "~/test/db-test.server"
-import { resetTestDb } from "~/test/reset-db.server"
-import { sql } from "drizzle-orm"
-import fulfillFixture, { getPlayerRanks } from '~/services/fulfillFixture.service.server'
+import {afterAll, afterEach, beforeAll, beforeEach, expect, test} from "vitest"
+import {getTestDb, resetTestDb} from "~/test/db-test.server"
+import {sql} from "drizzle-orm"
+import fulfillFixture, {getPlayerRanks} from '~/services/fulfillFixture.service.server'
 import EncounterStatus from '~/constants/EncounterStatus'
 import {getLatestYear} from "~/repositories/year.repository.server";
 
