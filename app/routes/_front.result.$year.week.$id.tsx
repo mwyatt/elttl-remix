@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.week.$id";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -122,7 +123,7 @@ const getHeading = (weekType, weekTimeStart) => {
   return `${weekTypeLabel}${middleBit}${formattedDate}`
 }
 
-export default function _frontResultYearWeekId({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYearWeekId({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
     week,
     fixturesByDivisionName,
@@ -159,6 +160,7 @@ export default function _frontResultYearWeekId({ loaderData, params }: Route.Com
               <SubHeading name={`${divisionName} Division`} />
               <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
                 {fixtures.map((fixture, index) => (
+                  {/* @todo unresolved key component prop? */},
                   <FixtureCard
                     key={index}
                     year={year}

@@ -112,7 +112,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   }
 }
 
-export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
+export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<typeof loader>) {
   const appName = 'East Lancashire Table Tennis League'
   const {
     currentYearName,
@@ -153,7 +153,7 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps) {
               <div className='mt-6 flex justify-end'>
                 {advertisement.action && (
                   <Link
-                    className={buttonPrimaryStyles}
+                    className={buttonPrimaryStyles.join(' ')}
                     to={advertisement.url}
                     target={advertisement.target || '_self'}
                   >{advertisement.action}

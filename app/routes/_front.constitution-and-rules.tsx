@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.constitution-and-rules";
 import {buildMeta} from "~/constants/MetaData";
 
 export function meta({}: Route.MetaArgs) {
@@ -7,7 +8,7 @@ export function meta({}: Route.MetaArgs) {
   });
 }
 
-export default function _frontConstitutionAndRules({ loaderData }: Route.ComponentProps) {
+export default function _frontConstitutionAndRules() {
   return (
     <>
       <div className='max-w-[768px] mx-auto'>

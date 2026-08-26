@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.code-of-conduct";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -25,7 +26,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { players, currentYearName: currentYear.name };
 }
 
-export default function _frontCommitteeMembers({ loaderData }: Route.ComponentProps) {
+export default function _frontCommitteeMembers({ loaderData }: Route.ComponentProps<typeof loader>) {
     const {
     players,
     currentYearName

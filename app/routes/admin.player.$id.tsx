@@ -1,9 +1,9 @@
+import type {Route} from "./+types/admin.player.$id";
 import {useState} from 'react';
-import { Link } from "react-router";
+import {Form, Link, redirect} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import Feedback from '~/components/Feedback'
 import {sql} from "drizzle-orm";
-import { Form, redirect } from "react-router";
 import {createFlashHeaders, getFlashMessage} from "~/auth/session.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 
@@ -155,7 +155,7 @@ const headers = await createFlashHeaders(request, message);
 return redirect(`/admin/player/${affectedPlayerId}`, { headers });
 }
 
-export default function AdminPlayerId({ loaderData }: Route.ComponentProps) {
+export default function AdminPlayerId({ loaderData }: Route.ComponentProps<typeof loader>) {
   const { player, teams, flashMessage } = loaderData
   const [playerData, setPlayerData] = useState(player)
   const isCreate = playerData.id === 'create'

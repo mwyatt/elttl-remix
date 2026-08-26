@@ -1,3 +1,5 @@
+import type {Route} from "./+types/api.score-update";
+
 export async function action({ request, context }: Route.ActionArgs) {
   // Read JSON body from the POST request
   const body = await request.json();

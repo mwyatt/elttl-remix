@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.season";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -23,7 +24,7 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 
-export async function loader({ request, context, params }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const { year } = params
   const requestedYear = await parseYearNameGetYear(db, year)
@@ -40,7 +41,7 @@ const Week = ({ yearName, week }) => {
   const formattedDate = formatDayWithSuffixOfMonth(
     getWeekDate(week.type, week.timeStart)
   )
-  const isEvent = NonEventTypes.includes(week.type) === false
+  const isEvent = !NonEventTypes.includes(week.type)
   const isExactEventDate = ExactDayWeekTypes.includes(week.type)
 
   return (
@@ -55,7 +56,7 @@ const Week = ({ yearName, week }) => {
     })}
     >
       <p className='p-2 text-center bg-stone-100'>
-        {isExactEventDate === false && (
+        {!isExactEventDate && (
           <>
             <span className='border-b border-dashed border-stone-400 text-stone-400' title='Week Commencing'>w/c</span>
             {' '}
@@ -84,7 +85,7 @@ const Week = ({ yearName, week }) => {
   )
 }
 
-export default function _frontResultYearSeason({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYearSeason({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
     weeks
   } = loaderData;
@@ -109,6 +110,7 @@ export default function _frontResultYearSeason({ loaderData, params }: Route.Com
       {weeks.length > 0 && (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
 
+          {/* @todo unresolved key component prop? */}
           {weeks.map((week) => <Week key={week.id} yearName={year} week={week} />)}
 
         </div>

@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import type {Route} from "./+types/admin.players-playing-up-report";
+import {Link} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -12,7 +13,7 @@ import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
 import find from "lodash/find";
 import sortBy from "lodash/sortBy";
-import { getSideIndex, SIDE_LEFT, SIDE_RIGHT } from '~/constants/encounter'
+import {getSideIndex, SIDE_LEFT, SIDE_RIGHT} from '~/constants/encounter'
 
 export async function loader({ context }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -142,7 +143,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 
-export default function AdminPlayersPlayingUpReport({ loaderData }: Route.ComponentProps) {
+export default function AdminPlayersPlayingUpReport({ loaderData }: Route.ComponentProps<typeof loader>) {
     const { playingUps, yearName } = loaderData;
   return (
           <>

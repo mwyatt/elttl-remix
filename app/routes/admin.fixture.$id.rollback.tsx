@@ -1,3 +1,4 @@
+import type {Route} from "./+types/admin.fixture.$id.rollback";
 import {getDbFromContext} from "~/db-context.server";
 import fulfillFixture from "~/services/fulfillFixture.service.server";
 

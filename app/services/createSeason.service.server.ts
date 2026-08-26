@@ -3,8 +3,7 @@ import {sql} from "drizzle-orm"
 
 export default async function createSeason (db) {
   const currentYear = await getCurrentYear(db);
-
-  const newYearName = parseInt(currentYear.name) + 1
+  const newYearName = String(Number(currentYear.name) + 1)
   const newYearId = parseInt(currentYear.id) + 1
 
   await db.transaction(async (tx) => {

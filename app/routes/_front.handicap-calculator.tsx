@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.handicap-calculator";
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
@@ -23,7 +24,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   }, { status: StatusCodes.OK })
 }
 
-export default function _frontHandicapCalculator({ loaderData }: Route.ComponentProps) {
+export default function _frontHandicapCalculator({ loaderData }: Route.ComponentProps<typeof loader>) {
     const {
     players
   } = loaderData;

@@ -1,4 +1,4 @@
-import type {Route} from "./+types/_front";
+import type { Route } from "./+types/admin";
 import React, {useState} from 'react'
 import {getDbFromContext} from "~/db-context.server";
 import {getActiveFulfillmentByPasscode} from "~/repositories/publicFixtureFulfillment.repository.server";
@@ -65,7 +65,7 @@ const navigate = useNavigate();
       title="Invalid Passcode"
       actions={
         <button
-          className={buttonPrimaryStyles}
+          className={buttonPrimaryStyles.join(' ')}
           onClick={handleClose}
         >
           Return
@@ -201,10 +201,10 @@ const navigate = useNavigate();
     <div className={'p-4'}>
         <div>
             <div>
-              <span className={buttonPrimaryStyles}>{activeFulfillment.id}</span>
+              <span className={buttonPrimaryStyles.join(' ')}>{activeFulfillment.id}</span>
 
               {/*@todo share button with qr code*/}
-              <span className={buttonPrimaryStyles}>{activeFulfillment.passcode}</span>
+              <span className={buttonPrimaryStyles.join(' ')}>{activeFulfillment.passcode}</span>
             </div>
             <div>{'breadcrumbs > here'}</div>
         </div>
@@ -282,7 +282,7 @@ const navigate = useNavigate();
           />
         </div>
       </div>
-                <button className={buttonPrimaryStyles} onClick={handlePersistPlayers}>Continue</button>
+                <button className={buttonPrimaryStyles.join(' ')} onClick={handlePersistPlayers}>Continue</button>
             </>
         )}
         {scorecardLocal.currentStep === 2 && (
@@ -324,7 +324,7 @@ const navigate = useNavigate();
                             </label>
                           </div>
                         </div>
-                              <button className={buttonPrimaryStyles} onClick={() => handleBeginScoring(index)}>Score</button>
+                              <button className={buttonPrimaryStyles.join(' ')} onClick={() => handleBeginScoring(index)}>Score</button>
                           </div>
                       ))}
             </div>
@@ -342,7 +342,7 @@ const navigate = useNavigate();
 </div>
 
                 <h2>Flip a coin!</h2>
-                              <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Flip!</button>
+                              <button className={buttonPrimaryStyles.join(' ')} onClick={handleFlipCoin}>Flip!</button>
             </div>
         )}
 
@@ -363,8 +363,8 @@ const navigate = useNavigate();
 </div>
 
                 <h2>Who won the toss?</h2>
-                              <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Player A</button>
-                              <button className={buttonPrimaryStyles} onClick={handleFlipCoin}>Player B</button>
+                              <button className={buttonPrimaryStyles.join(' ')} onClick={handleFlipCoin}>Player A</button>
+                              <button className={buttonPrimaryStyles.join(' ')} onClick={handleFlipCoin}>Player B</button>
             </div>
             )
         )}

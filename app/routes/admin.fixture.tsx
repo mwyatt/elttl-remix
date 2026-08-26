@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import type {Route} from "./+types/admin.fixture";
+import {Link} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {sql} from "drizzle-orm";
@@ -27,7 +28,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 
-export default function AdminFixture({ loaderData }: Route.ComponentProps) {
+export default function AdminFixture({ loaderData }: Route.ComponentProps<typeof loader>) {
       const { fixtures } = loaderData
 
   return (

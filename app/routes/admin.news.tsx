@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import type {Route} from "./+types/admin.news";
+import {Link} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import ContentStatus from '~/constants/ContentStatus'
 import dayjs from "dayjs";
@@ -26,7 +27,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 
-export default function AdminNews({ loaderData }: Route.ComponentProps) {
+export default function AdminNews({ loaderData }: Route.ComponentProps<typeof loader>) {
       const { news } = loaderData
 
   return (

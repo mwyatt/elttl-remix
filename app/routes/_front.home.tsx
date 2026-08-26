@@ -1,4 +1,4 @@
-import type {Route} from "./+types/home";
+import type {Route} from "./+types/_front.home";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {NonEventTypes, WeekTypes} from "~/constants/Week";
@@ -155,7 +155,7 @@ LIMIT 1;
   }, { status: StatusCodes.OK })
 }
 
-export default function HomePage({ loaderData }: Route.ComponentProps) {
+export default function HomePage({ loaderData }: Route.ComponentProps<typeof loader>) {
   const { latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures } = loaderData
   return (
       <div className='sm:p-6 sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
@@ -199,8 +199,8 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         <Panel>
           <SessionsToday yearName={currentYear} />
         </Panel>
-        <Panel colSpan={2}>
           {latestFixtures.length > 0 && (
+        <Panel colSpan={2}>
             <>
               <h2 className='text-2xl mb-6'>Latest Fulfilled Fixtures</h2>
               <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4'>
@@ -220,8 +220,8 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
                                                         />)}
               </div>
             </>
-          )}
         </Panel>
+          )}
         <Panel>
           <ImageGallery />
         </Panel>
@@ -230,7 +230,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Competitions Schedule</h2>
             <p>Find out more about the various competitions being held this season.</p>
             <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles} to='/competitions'>Competitions</Link>
+              <Link className={buttonPrimaryStyles.join(' ')} to='/competitions'>Competitions</Link>
             </div>
           </div>
         </Panel>
@@ -239,7 +239,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Handicap Calculator</h2>
             <p>Want to know how many points start a player gets in a handicap match? Give our new handicap calculator a try!</p>
             <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles} to='/handicap-calculator'>Calculator</Link>
+              <Link className={buttonPrimaryStyles.join(' ')} to='/handicap-calculator'>Calculator</Link>
             </div>
           </div>
         </Panel>
@@ -248,7 +248,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <h2 className='text-2xl'>Handbook</h2>
             <p>Welcome to the season, download the handbook for fixtures and more.</p>
             <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles} to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
+              <Link className={buttonPrimaryStyles.join(' ')} to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
             </div>
           </div>
         </Panel>

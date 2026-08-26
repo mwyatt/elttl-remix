@@ -1,3 +1,4 @@
+import type {Route} from "./+types/admin.fixture.$id";
 import {redirect} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import {ScoreCardForm} from '~/components/admin/fixture/ScoreCardForm'
@@ -89,7 +90,7 @@ const headers = await createFlashHeaders(request, message);
 return redirect(`/admin/fixture/${id}`, { headers });
 }
 
-export default function AdminFixtureId({ loaderData }: Route.ComponentProps) {
+export default function AdminFixtureId({ loaderData }: Route.ComponentProps<typeof loader>) {
   const {     fixture,
     encounters,
     players,

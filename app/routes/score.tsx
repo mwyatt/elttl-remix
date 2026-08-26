@@ -1,4 +1,4 @@
-import type {Route} from "./+types/_front";
+import type {Route} from "./+types/score";
 import React, {Suspense, useState} from 'react'
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
@@ -23,7 +23,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   }
 }
 
-export default function Score({ loaderData }: Route.ComponentProps) {
+export default function Score({ loaderData }: Route.ComponentProps<typeof loader>) {
   const navigate = useNavigate();
   const {
       unfulfilledFixtures,
@@ -75,7 +75,7 @@ export default function Score({ loaderData }: Route.ComponentProps) {
               title="Error starting scoring session"
               actions={
                 <button
-                  className={buttonPrimaryStyles}
+                  className={buttonPrimaryStyles.join(' ')}
                   onClick={handleCloseServerError}
                 >
                   Close
@@ -91,7 +91,7 @@ export default function Score({ loaderData }: Route.ComponentProps) {
               title="Already Scoring"
               actions={
                 <button
-                  className={buttonPrimaryStyles}
+                  className={buttonPrimaryStyles.join(' ')}
                   onClick={handleCloseAlreadingScoringIsOpen}
                 >
                   Close
@@ -116,7 +116,7 @@ export default function Score({ loaderData }: Route.ComponentProps) {
           {!!chosenFixture && (
               <>
               <p>{chosenFixture.teamLeftName} are playing at home and {chosenFixture.teamRightName} are away</p>
-            <button className={buttonPrimaryStyles} onClick={handleBeginScoring}>Begin Scoring</button>
+            <button className={buttonPrimaryStyles.join(' ')} onClick={handleBeginScoring}>Begin Scoring</button>
             </>
           )}
       </div>
@@ -138,7 +138,7 @@ export default function Score({ loaderData }: Route.ComponentProps) {
               console.log(passcode)
             }}
         />
-        <button className={buttonPrimaryStyles} onClick={() => navigate(`/scorecard/${passcode}`)}>Join</button>
+        <button className={buttonPrimaryStyles.join(' ')} onClick={() => navigate(`/scorecard/${passcode}`)}>Join</button>
       </div>
         </div>
     </div>

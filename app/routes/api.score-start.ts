@@ -1,3 +1,4 @@
+import type {Route} from "./+types/api.score-start";
 import {getDbFromContext} from "~/db-context.server";
 import {
   getActivePublicFulfillments,

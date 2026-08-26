@@ -1,6 +1,6 @@
-import { Form, redirect } from "react-router";
-import type { Route } from "./+types/admin.login";
-import { createAdminSession, getSession } from "~/auth/session.server";
+import type {Route} from "./+types/admin.login";
+import {Form, redirect} from "react-router";
+import {createAdminSession, getSession} from "~/auth/session.server";
 import {getUserByEmail} from "~/repositories/user.repository.server";
 import {getDbFromContext} from "~/db-context.server";
 import {verifyPassword} from "~/auth/password.server";
@@ -35,7 +35,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   return { error: "Invalid credentials" };
 }
 
-export default function AdminLogin({ actionData }: Route.ComponentProps) {
+export default function AdminLogin({ actionData }: Route.ComponentProps<typeof action>) {
   return (
     <main className="max-w-md mx-auto p-6">
       <h1 className="text-2xl mb-4">Admin Login</h1>

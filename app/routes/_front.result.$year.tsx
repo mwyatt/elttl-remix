@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -56,7 +57,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   return Response.json({ divisions, teamsByDivisionId }, { status: StatusCodes.OK })
 }
 
-export default function _frontResultYear({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYear({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
     divisions, teamsByDivisionId
   } = loaderData;
@@ -84,6 +85,7 @@ export default function _frontResultYear({ loaderData, params }: Route.Component
       {divisions.map((division) => (
         <div key={division.id}>
           <SubHeading name={`${division.name} Division`} />
+          {/* @todo unresolved key component prop? */}
           <InformationTable yearName={year} teams={teamsByDivisionId[division.id]} key={division.name} />
         </div>
       ))}

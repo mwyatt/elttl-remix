@@ -1,5 +1,5 @@
-import { Link, useRouteLoaderData } from "react-router";
-import type { Route } from "./+types/admin._index";
+import {Link} from "react-router";
+import type {Route} from "./+types/admin._index";
 import {linkStyles} from "~/styles/ui-classes";
 
 type AdminLoaderData = {

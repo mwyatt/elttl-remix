@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.$division.league";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -75,7 +76,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   }, { status: StatusCodes.OK })
 }
 
-export default function _frontResultYearDivisionLeague({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYearDivisionLeague({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
     stats
   } = loaderData;

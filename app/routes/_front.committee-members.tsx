@@ -1,4 +1,4 @@
-import type {Route} from "./+types/about-us";
+import type {Route} from "./+types/_front.committee-members";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -45,7 +45,7 @@ export async function loader({context}: Route.LoaderArgs) {
     return {players};
 }
 
-export default function _frontCommitteeMembers({loaderData}: Route.ComponentProps) {
+export default function _frontCommitteeMembers({loaderData}: Route.ComponentProps<typeof loader>) {
     const {
         players,
     } = loaderData;

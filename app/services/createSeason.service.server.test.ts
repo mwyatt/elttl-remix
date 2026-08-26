@@ -1,6 +1,7 @@
 import {afterAll, beforeAll, expect, test} from "vitest"
 import {getTestDb, resetTestDb} from "~/test/db-test.server"
 import createSeason from "~/services/createSeason.service.server";
+import {getLatestYear} from "~/repositories/year.repository.server";
 
 test('it can create a new season with a copy of the previous years data', async () => {
     const db = getTestDb()
@@ -20,6 +21,11 @@ test('it can create a new season with a copy of the previous years data', async 
 
   const yearsAfter = await db.all('SELECT * FROM tennisYear')
   expect(yearsAfter.length).toBe(3)
+
+  // Get latest year and verify its name is correct, it should be 2025
+  const latestYear = await getLatestYear(db)
+  expect(latestYear.name).toBe('2025')
+
   const divisionsAfter = await db.all('SELECT * FROM tennisDivision')
   expect(divisionsAfter.length).toBe(6)
   const teamsAfter = await db.all('SELECT * FROM tennisTeam')

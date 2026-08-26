@@ -1,6 +1,6 @@
-import { Link } from "react-router";
+import type {Route} from "./+types/admin.player";
+import {Link} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
-import dayjs from "dayjs";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -30,7 +30,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 
-export default function AdminPlayer({ loaderData }: Route.ComponentProps) {
+export default function AdminPlayer({ loaderData }: Route.ComponentProps<typeof loader>) {
       const { players } = loaderData
 
   return (

@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.prepaid-practice-scheme";
 import MainHeading from "~/components/MainHeading";
 import {linkStyles} from "~/styles/ui-classes";
 import {Link} from "react-router";
@@ -10,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
   })
 }
 
-export default function _frontPrepaidPracticeScheme({loaderData}: Route.ComponentProps) {
+export default function _frontPrepaidPracticeScheme({loaderData}: Route.ComponentProps<typeof loader>) {
     return (
         <>
             <div className='max-w-[768px] mx-auto'>

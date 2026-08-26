@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.$division.doubles-merit";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -22,7 +23,7 @@ export function meta({params}: Route.MetaArgs) {
   });
 }
 
-export async function loader({ request, context, params }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const kv = getKvFromContext(context)
   const { year, division } = params
@@ -79,7 +80,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   }, { status: StatusCodes.OK })
 }
 
-export default function _frontResultYearDivisionDoublesMerit({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYearDivisionDoublesMerit({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
     stats
   } = loaderData;

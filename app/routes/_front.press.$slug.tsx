@@ -1,4 +1,4 @@
-import type {Route} from "./+types/about-us";
+import type {Route} from "./+types/_front.press.$slug";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -37,7 +37,7 @@ export async function loader({request, context, params}: Route.LoaderArgs) {
     return Response.json({press: contents[0]}, {status: StatusCodes.OK})
 }
 
-export default function _frontPressSlug({loaderData}: Route.ComponentProps) {
+export default function _frontPressSlug({loaderData}: Route.ComponentProps<typeof loader>) {
     const {
         press
     } = loaderData;

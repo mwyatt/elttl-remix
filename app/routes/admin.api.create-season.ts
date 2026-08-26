@@ -1,4 +1,4 @@
-import type {Route} from "./+types/api.ping";
+import type {Route} from "./+types/admin.api.create-season";
 import {getDbFromContext} from "~/db-context.server";
 import createSeason from "~/services/createSeason.service.server";
 import {requireAdmin} from "~/auth/session.server";

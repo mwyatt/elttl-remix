@@ -1,5 +1,5 @@
+import type {Route} from "./+types/admin";
 import {Form, Link, Outlet} from "react-router";
-import type { Route } from "./+types/admin";
 import {destroySession, requireAdmin} from "~/auth/session.server";
 import ElttlEmblem from '~/components/icons/ElttlEmblem'
 

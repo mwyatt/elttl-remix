@@ -1,4 +1,4 @@
-import type {Route} from "./+types/api.ping";
+import type {Route} from "./+types/api.test-kv";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const cf = context.get("cloudflare")

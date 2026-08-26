@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.venue.$slug";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -57,7 +58,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   }, { status: StatusCodes.OK })
 }
 
-export default function _frontResultYearVenueSlug({ loaderData, params }: Route.ComponentProps) {
+export default function _frontResultYearVenueSlug({ loaderData, params }: Route.ComponentProps<typeof loader>) {
     const {
 teams, venue
   } = loaderData;
@@ -98,10 +99,7 @@ teams, venue
         </div>
         <div className='flex-1'>
           <SubHeading name='Directions' />
-
           <DirectionsButton url={venue.location} />
-          {/*<div className={`mt-16 p-4 bg-tertiary-500 text-white rounded bg-[url(/venue-${venue.slug}.jpg)] bg-cover bg-center bg-no-repeat flex-basis-1/3 md:basis-1/3 min-h-[175px]`} />*/}
-
         </div>
 
       </div>

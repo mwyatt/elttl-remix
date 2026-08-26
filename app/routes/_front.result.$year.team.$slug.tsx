@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result.$year.team.$slug";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -32,7 +33,7 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 
-export async function loader({ request, context, params }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const kv = getKvFromContext(context)
   const { year, slug } = params

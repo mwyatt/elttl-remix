@@ -1,4 +1,4 @@
-import type {Route} from "./+types/about-us";
+import type {Route} from "./+types/_front.about-us";
 import {getDbFromContext} from "~/db-context.server";
 import {playerGetBySlugs} from "~/repositories/player.repository.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -46,7 +46,7 @@ export async function loader({context}: Route.LoaderArgs) {
     return {players, currentYearName: currentYear.name};
 }
 
-export default function AboutUsPage({loaderData}: Route.ComponentProps) {
+export default function AboutUsPage({loaderData}: Route.ComponentProps<typeof loader>) {
     const {
         players,
         currentYearName

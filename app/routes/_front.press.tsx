@@ -1,4 +1,4 @@
-import type {Route} from "./+types/about-us";
+import type {Route} from "./+types/_front.press";
 import {getDbFromContext} from "~/db-context.server";
 import {Link, useSearchParams} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
@@ -38,7 +38,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return Response.json({contents}, { status: StatusCodes.OK })
 }
 
-export default function _frontPress({ loaderData }: Route.ComponentProps) {
+export default function _frontPress({ loaderData }: Route.ComponentProps<typeof loader>) {
     const {
     contents
   } = loaderData;
@@ -46,11 +46,11 @@ export default function _frontPress({ loaderData }: Route.ComponentProps) {
   let page = Number(searchParams.get("page") ?? "1");
 
   const pageMin = 1
-  if (!page || isNaN(page) || parseInt(page) < pageMin) {
+  if (!page || isNaN(page) || page < pageMin) {
     page = pageMin
   }
-  const nextPage = parseInt(page) + 1
-  let prevPage = parseInt(page) - 1
+  const nextPage = page + 1
+  let prevPage = page - 1
 
   if (prevPage < pageMin) {
     prevPage = pageMin

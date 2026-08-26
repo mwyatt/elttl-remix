@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.result";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import {Link} from "react-router";
@@ -13,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
   });
 }
 
-export async function loader({ request, context, params }: Route.LoaderArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
 
     const years = await getAllYears(db)
@@ -21,7 +22,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   return Response.json({years}, { status: StatusCodes.OK })
 }
 
-export default function _frontResult({ loaderData }: Route.ComponentProps) {
+export default function _frontResult({ loaderData }: Route.ComponentProps<typeof loader>) {
     const {
     years
   } = loaderData;

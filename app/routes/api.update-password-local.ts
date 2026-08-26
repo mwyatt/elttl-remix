@@ -1,4 +1,4 @@
-import type { Route } from "./+types/api.ping";
+import type {Route} from "./+types/api.update-password-local";
 import {hashPassword} from "~/auth/password.server";
 import {getUserByEmail, updateUserPassword} from "~/repositories/user.repository.server";
 import {getDbFromContext} from "~/db-context.server";
@@ -11,7 +11,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const isLocal = env?.APP_ENV === "local";
   const db = getDbFromContext(context);
 
-  if (isLocal === false) {
+  if (!isLocal) {
     return Response.json({ ok: false, error: "This endpoint is only available in local environment" }, { status: 403 });
   }
 

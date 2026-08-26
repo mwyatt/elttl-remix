@@ -1,3 +1,4 @@
+import type {Route} from "./+types/admin.week";
 import {getDbFromContext} from "~/db-context.server";
 import {sql} from "drizzle-orm";
 import {getCurrentYear} from "~/repositories/year.repository.server";
@@ -74,7 +75,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   }, { status: StatusCodes.OK })
 }
 
-export default function AdminWeek({ loaderData }: Route.ComponentProps) {
+export default function AdminWeek({ loaderData }: Route.ComponentProps<typeof loader>) {
   const {     divisions, weeks, fixtures,
  flashMessage } = loaderData
 

@@ -1,14 +1,12 @@
-import {useRef, useState} from 'react';
+import type {Route} from "./+types/admin.news.$id";
+import {useState} from 'react';
 import Editor from 'react-simple-wysiwyg';
-import { Link } from "react-router";
+import {Form, Link, redirect} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import ContentStatus from '~/constants/ContentStatus'
 import {ContentTypes} from '~/constants/Content'
 import Feedback from '~/components/Feedback'
-import dayjs from "dayjs";
 import {sql} from "drizzle-orm";
-import FullLoader from "~/components/FullLoader";
-import { Form, redirect } from "react-router";
 import {getUniqueSlugFromTitle} from "~/services/content.service.server";
 import {createFlashHeaders, getFlashMessage, getSessionUser} from "~/auth/session.server";
 import {getUserById} from "~/repositories/user.repository.server";
@@ -102,6 +100,7 @@ export async function action({ request, context, params }: Route.ActionArgs) {
         ${ContentStatus.PUBLISHED}
       )`);
 
+    /* @todo unresolved prop? */
     affectedNewsArticleId = response.lastInsertRowid
   } else {
     await db.run(sql`
@@ -124,7 +123,7 @@ const headers = await createFlashHeaders(request, message);
 return redirect(`/admin/news/${affectedNewsArticleId}`, { headers });
 }
 
-export default function AdminNewsId({ loaderData }: Route.ComponentProps) {
+export default function AdminNewsId({ loaderData }: Route.ComponentProps<typeof action>) {
   const { newsArticle, authorUser, flashMessage } = loaderData
   const [newsArticleData, setNewsArticleData] = useState(newsArticle)
   const isCreate = newsArticleData.id === 'create'

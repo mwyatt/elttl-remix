@@ -1,3 +1,4 @@
+import type {Route} from "./+types/_front.gdpr";
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
@@ -18,7 +19,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { currentYearName: currentYear.name };
 }
 
-export default function _frontGdpr({ loaderData }: Route.ComponentProps) {
+export default function _frontGdpr({ loaderData }: Route.ComponentProps<typeof loader>) {
     const {
     currentYearName
   } = loaderData;

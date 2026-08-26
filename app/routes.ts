@@ -73,7 +73,6 @@ export default [
         // @todo
         // route("week", "routes/admin.week.tsx"),
 
-        // API - hiding on live temporarily
-        // route("api/create-season", "routes/admin.api.create-season.ts"),
+        route("api/create-season", "routes/admin.api.create-season.ts"),
     ]),
 ] satisfies RouteConfig;

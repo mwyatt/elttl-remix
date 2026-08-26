@@ -1,4 +1,4 @@
-import type {Route} from "./+types/about-us";
+import type {Route} from "./+types/_front.sessions";
 import {getDbFromContext} from "~/db-context.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
@@ -25,7 +25,7 @@ export async function loader({context}: Route.LoaderArgs) {
     return {currentYear};
 }
 
-export default function _frontSessions({loaderData}: Route.ComponentProps) {
+export default function _frontSessions({loaderData}: Route.ComponentProps<typeof loader>) {
     const {
         currentYear,
     } = loaderData;
