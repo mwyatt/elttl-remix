@@ -73,6 +73,7 @@ export default [
         // @todo
         // route("week", "routes/admin.week.tsx"),
 
-        route("api/create-season", "routes/admin.api.create-season.ts"),
+        // Only need to uncomment when the route is required
+        // route("api/create-season", "routes/admin.api.create-season.ts"),
     ]),
 ] satisfies RouteConfig;

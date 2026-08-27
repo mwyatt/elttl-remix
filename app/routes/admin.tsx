@@ -28,8 +28,8 @@ export default function AdminLayout() {
           <Link className='text-primary-500 border-b' to='/admin/news'>News</Link>
           <Link className='text-primary-500 border-b' to='/admin/player'>Players</Link>
           <Link className='text-primary-500 border-b' to='/admin/fixture'>Fixtures</Link>
-           <Link className='text-primary-500 border-b' to='/admin/week'>Weeks</Link>
-           <Link className='text-primary-500 border-b' to='/admin/season'>Season</Link>
+           {/*<Link className='text-primary-500 border-b' to='/admin/week'>Weeks</Link>*/}
+           {/*<Link className='text-primary-500 border-b' to='/admin/season'>Season</Link>*/}
         </div>
         <div className='flex justify-end m-6'>
 <div className="flex justify-end m-6">
