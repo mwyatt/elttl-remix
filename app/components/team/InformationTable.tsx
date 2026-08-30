@@ -1,6 +1,7 @@
 import {Link} from "react-router";
 import {linkStyles} from "~/styles/ui-classes";
 import {getShortPlayerName} from "~/libraries/player";
+import {homeNightMap} from "~/constants/Team";
 
 export default function InformationTable ({ yearName, teams }) {
   const getContact = (landline, mobile) => {
@@ -21,6 +22,7 @@ export default function InformationTable ({ yearName, teams }) {
         <tr className='text-left'>
           <th className='p-2 md:p-4'>Team</th>
           <th className='p-2 md:p-4 hidden sm:table-cell'>Venue</th>
+          <th className='p-2 md:p-4 hidden sm:table-cell'>Home Weekday</th>
           <th className='p-2 md:p-4'>Secretary</th>
           <th className='p-2 md:p-4'>Contact</th>
         </tr>
@@ -34,6 +36,9 @@ export default function InformationTable ({ yearName, teams }) {
             </td>
             <td className='p-2 md:p-4 hidden sm:table-cell'>
               <Link className={linkStyles.join(' ')} to={`/result/${yearName}/venue/${team.venueSlug}`}>{team.venueName}</Link>
+            </td>
+            <td className='p-2 md:p-4 hidden sm:table-cell'>
+              {homeNightMap[team.homeWeekday]}
             </td>
             <td className='p-2 md:p-4'>
               {team.secretarySlug && (

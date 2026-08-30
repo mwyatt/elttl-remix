@@ -37,7 +37,8 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
           tp.slug secretarySlug,
           concat(tp.nameFirst, ' ', tp.nameLast) AS secretaryName,
           tp.phoneLandline secretaryPhoneLandline,
-          tp.phoneMobile secretaryPhoneMobile
+          tp.phoneMobile secretaryPhoneMobile,
+          tt.homeWeekday
       FROM tennisTeam tt
            LEFT JOIN tennisVenue tv ON tt.venueId = tv.id AND tv.yearId = ${currentYear.id}
            LEFT JOIN tennisPlayer tp ON tt.secretaryId = tp.id AND tp.yearId = ${currentYear.id}

@@ -37,6 +37,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
       SELECT tt.id,
              tt.name,
              tt.slug,
+             tt.homeWeekday,
              tv.name                                   venueName,
              tv.slug                                   venueSlug,
              tp.slug                                   secretarySlug,
