@@ -41,7 +41,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       description: 'Download this seasons handbook.',
       action: 'Download',
       target: '_blank',
-      url: '/handbook-2025-2026.pdf'
+      url: '/handbook-2026-2027.pdf'
     },
     {
       title: 'Fixtures Generated 2025',
@@ -96,7 +96,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
         url: '/',
         children: [
           { name: 'About Us', url: '/about-us' },
-          { name: 'Download Handbook', url: '/handbook-2025-2026.pdf', target: '_blank' },
+          { name: 'Download Handbook', url: '/handbook-2026-2027.pdf', target: '_blank' },
           { name: 'News Updates', url: '/press' },
           commonLinks.competitions,
           { name: 'Contact us', url: '/contact-us' }

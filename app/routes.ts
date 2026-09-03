@@ -4,6 +4,7 @@ export default [
 
     // API
     route("api/update-password-local", "routes/api.update-password-local.ts"),
+    route("api/result/:year/:division/league", "routes/api.result.$year.$division.$league.ts"),
 
     // route("score", "routes/score.tsx"),
     //     route("api/score/start", "routes/api.score-start.ts"),
@@ -75,5 +76,6 @@ export default [
 
         // Only need to uncomment when the route is required
         // route("api/create-season", "routes/admin.api.create-season.ts"),
+        // route("api/generate-fixtures", "routes/admin.api.generate-fixtures.ts"),
     ]),
 ] satisfies RouteConfig;

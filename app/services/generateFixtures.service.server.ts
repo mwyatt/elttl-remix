@@ -75,6 +75,5 @@ export default async function generateFixtures (db) {
     return;
   });
 
-  return {
-  }
+  return true
 }

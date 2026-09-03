@@ -6,11 +6,10 @@ import {Link} from "react-router";
 import {capitalizeFirstLetter} from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
 import {linkStyles} from "~/styles/ui-classes";
-import {getOtherSideCapitalized, getSidesCapitalized} from "~/constants/encounter";
 import {buildMeta} from "~/constants/MetaData";
 import {parseYearDivisionId} from "~/libraries/year";
-import {getDivisionLeagueTable} from "~/repositories/encounter.repository.server";
 import {getKvFromContext} from "~/kv-context.server";
+import {getTheDivisionLeagueTable} from "~/services/encounter.service.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -22,54 +21,12 @@ export function meta({ params }: Route.MetaArgs) {
   });
 }
 
-export async function loader({ request, context, params }: Route.LoaderArgs) {
+export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context)
   const kv = getKvFromContext(context)
   const { year, division } = params
   const yearDivisionId = await parseYearDivisionId(db, year, division)
-
-  const leagueTable = await getDivisionLeagueTable(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
-
-  const sides = getSidesCapitalized()
-  let stats = {}
-
-  for (const league of leagueTable) {
-    for (const side of sides) {
-      const teamSlug = league[`team${side}Slug`]
-      if (!(teamSlug in stats)) {
-        stats[teamSlug] = {
-          team: {
-            name: league[`team${side}Name`],
-            slug: teamSlug
-          },
-          won: 0,
-          draw: 0,
-          loss: 0,
-          played: 0,
-          points: 0
-        }
-      }
-      const score = parseInt(league[`score${side}`])
-      const opposingScore = parseInt(league[`score${getOtherSideCapitalized(side)}`])
-      stats[teamSlug].played++
-      stats[teamSlug].points += score
-      if (score === opposingScore) {
-        stats[teamSlug].draw++
-      } else if (score > opposingScore) {
-        stats[teamSlug].won++
-      } else {
-        stats[teamSlug].loss++
-      }
-    }
-  }
-
-  // sort stats by points
-  stats = Object.values(stats).sort((a, b) => {
-    if (a.points === b.points) {
-      return a.played - b.played
-    }
-    return b.points - a.points
-  })
+  const stats = await getTheDivisionLeagueTable(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
 
   return Response.json({
     stats

@@ -248,7 +248,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps<typeof loa
             <h2 className='text-2xl'>Handbook</h2>
             <p>Welcome to the season, download the handbook for fixtures and more.</p>
             <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles.join(' ')} to='/handbook-2025-2026.pdf' target={'_blank'}>Download</Link>
+              <Link className={buttonPrimaryStyles.join(' ')} to='/handbook-2026-2027.pdf' target={'_blank'}>Download</Link>
             </div>
           </div>
         </Panel>
