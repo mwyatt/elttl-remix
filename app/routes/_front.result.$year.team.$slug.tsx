@@ -2,13 +2,10 @@ import type {Route} from "./+types/_front.result.$year.team.$slug";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {sql} from "drizzle-orm";
 import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
 import {linkStyles} from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
-import {getAllWeeksByYear} from "~/repositories/week.repository.server";
-import {getFixturesByTeamId} from "~/repositories/fixture.repository.server";
 import MainHeading from "~/components/MainHeading";
 import {homeNightMap} from "~/constants/Team";
 import WeeksTimeline from "~/components/WeeksTimeline";
@@ -16,6 +13,7 @@ import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
 import {getKvFromContext} from "~/kv-context.server";
 import Accordion from "~/components/Accordion";
+import {getCoreTeamInformation} from "~/services/team.service.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -39,63 +37,16 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const { year, slug } = params
   const currentYear = await parseYearNameGetYear(db, year)
 
-  const teams = await db.all(sql`
-      SELECT
-          tt.id,
-          tt.name,
-          tt.slug,
-          tt.homeWeekday,
-          LOWER(td.name) AS divisionSlug,
-          td.name divisionName,
-          tv.name venueName,
-          tv.slug venueSlug,
-      concat(tp.nameFirst, ' ', tp.nameLast) AS secretaryName,
-      tp.slug secretarySlug
-      FROM tennisTeam tt
-               LEFT JOIN tennisDivision td ON tt.divisionId = td.id AND td.yearId = tt.yearId
-               LEFT JOIN tennisVenue tv ON tt.venueId = tv.id AND td.yearId = tt.yearId
-               LEFT JOIN tennisPlayer tp ON tt.secretaryId = tp.id AND tp.yearId = tt.yearId
-      WHERE tt.yearId = ${currentYear.id}
-        AND tt.slug = ${slug}
-  `)
+  const data = await getCoreTeamInformation(kv, db, currentYear.id, slug)
 
-  if (teams.length === 0) {
-    return Response.json(`Unable to find team with slug '${slug}'`, { status: StatusCodes.NOT_FOUND })
-  }
-
-  const team = teams[0]
-
-  const players = await db.all(sql`
-      SELECT
-          concat(nameFirst, ' ', nameLast) AS name,
-          tennisPlayer.rank,
-          slug
-      FROM tennisPlayer
-      WHERE yearId = ${currentYear.id}
-        AND teamId = ${team.id}
-  `)
-
-  const weeks = await getAllWeeksByYear(db, currentYear.id)
-  const teamFixtures = await getFixturesByTeamId(kv, db, currentYear.id, team.id)
-
-  // Attach fixtures to weeks
-  for (const week of weeks) {
-    week.fixtures = teamFixtures.filter(fixture => fixture.weekId === week.id)
-  }
-
-  return Response.json({
-    team,
-    players,
-    fixtures: teamFixtures,
-    weeks
-  }, { status: StatusCodes.OK })
+  return Response.json(data, { status: StatusCodes.OK })
 }
 
 export default function _frontResultYearTeamSlug({ loaderData, params }: Route.ComponentProps) {
     const {
 team, players, fixtures, weeks
   } = loaderData;
-  const { year, slug } = params
+  const { year } = params
 
   return (
     <>

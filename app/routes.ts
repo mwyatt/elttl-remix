@@ -5,6 +5,7 @@ export default [
     // API
     route("api/update-password-local", "routes/api.update-password-local.ts"),
     route("api/result/:year/:division/league", "routes/api.result.$year.$division.$league.ts"),
+    route("api/result/:year/team/:slug", "routes/api.result.$year.team.$slug.ts"),
 
     // route("score", "routes/score.tsx"),
     //     route("api/score/start", "routes/api.score-start.ts"),
