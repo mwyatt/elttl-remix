@@ -2,12 +2,9 @@ import type {Route} from "./+types/_front.result.$year.player.$slug";
 import {getDbFromContext} from "~/db-context.server";
 import {StatusCodes} from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {sql} from "drizzle-orm";
 import {Link} from "react-router";
 import SubHeading from "~/components/SubHeading";
 import MainHeading from "~/components/MainHeading";
-import {getAllWeeksByYear} from "~/repositories/week.repository.server";
-import {getFixturesByTeamId} from "~/repositories/fixture.repository.server";
 import {getShortPlayerName} from "~/libraries/player";
 import {linkStyles} from "~/styles/ui-classes";
 import WeeksTimeline from "~/components/WeeksTimeline";
@@ -17,7 +14,7 @@ import {buildMeta} from "~/constants/MetaData";
 import {parseYearNameGetYear} from "~/libraries/year";
 import {getKvFromContext} from "~/kv-context.server";
 import Accordion from "~/components/Accordion";
-import {getPlayerEncounters} from "~/repositories/encounter.repository.server";
+import {getCorePlayerInformation} from "~/services/player.service.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -41,45 +38,9 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   const { year, slug } = params
   const currentYear = await parseYearNameGetYear(db, year)
 
-  const players = await db.all(sql`
-      SELECT tp.id,
-             concat(nameFirst, ' ', nameLast) AS name,
-             tp.slug,
-             tp.rank,
-             tp.phoneMobile,
-             tp.phoneLandline,
-             teamId,
-             tt.name                          AS teamName,
-             tt.slug                          AS teamSlug,
-             tt.divisionId
-      FROM tennisPlayer tp
-               left join tennisTeam tt on tp.teamId = tt.id and tt.yearId = tp.yearId
-      WHERE tp.yearId = ${currentYear.id}
-        AND tp.slug = ${slug}
-  `)
+    const data = await getCorePlayerInformation(kv, db, currentYear.id, slug)
 
-  if (players.length === 0) {
-    return Response.json(`Unable to find player within year name '${year}' and slug '${slug}'`, { status: StatusCodes.NOT_FOUND })
-  }
-
-  const player = players[0]
-
-  const encounters = await getPlayerEncounters(kv, db, currentYear.id, player.id)
-
-  const weeks = await getAllWeeksByYear(db, currentYear.id)
-  const teamFixtures = await getFixturesByTeamId(kv, db, currentYear.id, player.teamId)
-
-  // Attach fixtures to weeks
-  for (const week of weeks) {
-    week.fixtures = teamFixtures.filter(fixture => fixture.weekId === week.id)
-  }
-
-  return Response.json({
-    player,
-    encounters,
-    fixtures: teamFixtures,
-    weeks
-  }, { status: StatusCodes.OK })
+  return Response.json(data, { status: StatusCodes.OK })
 }
 
 export default function _frontResultYearPlayerSlug({ loaderData, params }: Route.ComponentProps<typeof loader>) {

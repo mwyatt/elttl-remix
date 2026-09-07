@@ -1,0 +1,181 @@
+{
+  "14th Sep": [
+    { "home": 1, "away": 10 },
+    { "home": 2, "away": 9 },
+    { "home": 3, "away": 8 },
+    { "home": 4, "away": 7 },
+    { "home": 5, "away": 6 }
+  ],
+  "21st Sep": [
+    { "home": 10, "away": 5 },
+    { "home": 8, "away": 2 },
+    { "home": 9, "away": 1 },
+    { "home": 7, "away": 3 },
+    { "home": 6, "away": 4 }
+  ],
+  "28th Sep": [
+    { "home": 1, "away": 8 },
+    { "home": 2, "away": 7 },
+    { "home": 3, "away": 6 },
+    { "home": 4, "away": 5 },
+    { "home": 10, "away": 9 }
+  ],
+  "5th Oct": [
+    { "home": 5, "away": 3 },
+    { "home": 6, "away": 2 },
+    { "home": 7, "away": 1 },
+    { "home": 8, "away": 9 },
+    { "home": 4, "away": 10 }
+  ],
+  "12th Oct": {
+    "matches": null,
+    "event": "Fred Holden Preliminary Round"
+  },
+
+  "19th Oct": [
+    { "home": 1, "away": 6 },
+    { "home": 2, "away": 5 },
+    { "home": 3, "away": 4 },
+    { "home": 9, "away": 7 },
+    { "home": 10, "away": 8 }
+  ],
+  "26th Oct": [
+    { "home": 5, "away": 1 },
+    { "home": 6, "away": 9 },
+    { "home": 7, "away": 8 },
+    { "home": 4, "away": 2 },
+    { "home": 3, "away": 10 }
+  ],
+  "2nd Nov": [
+    { "home": 1, "away": 4 },
+    { "home": 2, "away": 3 },
+    { "home": 8, "away": 6 },
+    { "home": 9, "away": 5 },
+    { "home": 10, "away": 7 }
+  ],
+  "9th Nov": [
+    { "home": 3, "away": 1 },
+    { "home": 4, "away": 9 },
+    { "home": 5, "away": 8 },
+    { "home": 6, "away": 7 },
+    { "home": 2, "away": 10 }
+  ],
+  "16th Nov": {
+    "matches": null,
+    "event": "Fred Holden First Round"
+  },
+  "23rd Nov": [
+    { "home": 1, "away": 2 },
+    { "home": 8, "away": 4 },
+    { "home": 9, "away": 3 },
+    { "home": 10, "away": 6 },
+    { "home": 7, "away": 5 }
+  ],
+  "30th Nov": [
+    { "home": 10, "away": 1 },
+    { "home": 9, "away": 2 },
+    { "home": 8, "away": 3 },
+    { "home": 7, "away": 4 },
+    { "home": 6, "away": 5 }
+  ],
+  "7th Dec": [
+    { "home": 5, "away": 10 },
+    { "home": 1, "away": 9 },
+    { "home": 2, "away": 8 },
+    { "home": 3, "away": 7 },
+    { "home": 4, "away": 6 }
+  ],
+  "14th Dec": {
+    "matches": null,
+    "event": "Under 16 Competition, Vets H/C Competition"
+  },
+  "4th Jan": [
+    { "home": 5, "away": 4 },
+    { "home": 8, "away": 1 },
+    { "home": 7, "away": 2 },
+    { "home": 6, "away": 3 },
+    { "home": 9, "away": 10 }
+  ],
+  "11th Jan": {
+    "matches": null,
+    "event": "Fred Holden Second Round"
+  },
+  "18th Jan": [
+    { "home": 10, "away": 4 },
+    { "home": 9, "away": 8 },
+    { "home": 1, "away": 7 },
+    { "home": 2, "away": 6 },
+    { "home": 3, "away": 5 }
+  ],
+  "25th Jan": [
+    { "home": 6, "away": 1 },
+    { "home": 5, "away": 2 },
+    { "home": 4, "away": 3 },
+    { "home": 8, "away": 10 },
+    { "home": 7, "away": 9 }
+  ],
+  "1st Feb": {
+    "matches": null,
+    "event": "Divisional H/C Competition"
+  },
+  "8th Feb": [
+    { "home": 8, "away": 7 },
+    { "home": 10, "away": 3 },
+    { "home": 1, "away": 5 },
+    { "home": 2, "away": 4 },
+    { "home": 9, "away": 6 }
+  ],
+  "15th Feb": {
+    "matches": null,
+    "event": "Fred Holden 3rd Round"
+  },
+  "21st Feb": {
+    "matches": null,
+    "event": "ELTTL Closed"
+  },
+  "22nd Feb": [
+    { "home": 3, "away": 2 },
+    { "home": 4, "away": 1 },
+    { "home": 7, "away": 10 },
+    { "home": 6, "away": 8 },
+    { "home": 5, "away": 9 }
+  ],
+  "1st Mar": [
+    { "home": 9, "away": 4 },
+    { "home": 10, "away": 2 },
+    { "home": 1, "away": 3 },
+    { "home": 8, "away": 5 },
+    { "home": 7, "away": 6 }
+  ],
+  "8th Mar": [
+    { "home": 2, "away": 1 },
+    { "home": 5, "away": 7 },
+    { "home": 4, "away": 8 },
+    { "home": 3, "away": 9 },
+    { "home": 6, "away": 10 }
+  ],
+  "15th March": {
+    "matches": null,
+    "event": "Catchup Week"
+  },
+  "22nd March": {
+    "matches": null,
+    "event": "Catchup Week"
+  },
+  "17th March": {
+    "matches": null,
+    "event": "Fred Holden Semi Finals at Hyndburn"
+  },
+  "31st March": {
+    "matches": null,
+    "event": "Fred Holden Final at Hyndburn"
+  },
+  "1st May": {
+    "matches": null,
+    "event": "Presentation Night"
+  },
+  "12th May": {
+    "matches": null,
+    "event": "AGM"
+  }
+}
