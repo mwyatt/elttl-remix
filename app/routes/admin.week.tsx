@@ -2,8 +2,6 @@ import type {Route} from "./+types/admin.week";
 import {getDbFromContext} from "~/db-context.server";
 import {sql} from "drizzle-orm";
 import {getCurrentYear} from "~/repositories/year.repository.server";
-import {persistWeeks} from "~/repositories/week.repository.server";
-import {StatusCodes} from "http-status-codes";
 import {WeekConfigurator} from "~/components/admin/week/WeekConfigurator";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -22,13 +20,15 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const fixtures = await db.all(sql`
 select
     tf.id,
-     concat(ttl.name, ' vs ', ttr.name) AS fullName,
+     concat(ttl.fixtureMatrixIndex, ' v ', ttr.fixtureMatrixIndex) AS fullName,
     ttl.id as teamLeftId,
     ttl.name as teamLeftName,
+    ttl.fixtureMatrixIndex as teamLeftMatrixIndex,
     ttl.homeWeekday,
     ttl.divisionId,
     ttr.id as teamRightId,
     ttr.name as teamRightName,
+    ttr.fixtureMatrixIndex as teamRightMatrixIndex,
     tf.weekId
 from tennisFixture tf
 join tennisTeam ttl on tf.teamIdLeft = ttl.id
@@ -51,28 +51,6 @@ from tennisDivision td
     weeks,
     fixtures,
   })
-}
-
-export async function action({ request, context }: Route.ActionArgs) {
-  const db = getDbFromContext(context);
-  const formData = await request.formData();
-  const weeksJson = formData.get('weeks');
-  const weeks = JSON.parse(weeksJson as string);
-  const fixturesJson = formData.get('fixtures');
-  const fixtures = JSON.parse(fixturesJson as string);
-
-  try {
-    await persistWeeks(db, weeks, fixtures)
-  } catch (error) {
-    console.error('Error saving weeks:', error)
-    return Response.json({
-      message: error.message
-    }, { status: StatusCodes.UNPROCESSABLE_ENTITY })
-  }
-
-  return Response.json({
-    message: 'Weeks saved successfully!'
-  }, { status: StatusCodes.OK })
 }
 
 export default function AdminWeek({ loaderData }: Route.ComponentProps<typeof loader>) {

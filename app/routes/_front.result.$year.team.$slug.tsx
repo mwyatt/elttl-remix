@@ -108,7 +108,7 @@ team, players, fixtures, weeks
           {/* <SubHeading name='Directions' /> */}
           {/* <DirectionsButton url={data.venue.location} /> */}
 
-          <SubHeading name='Fixtures Fulfilled' />
+          <SubHeading name='Fixtures' />
           <div className='grid gap-3 sm:grid-cols-2 xl:grid-cols-3 '>
 
             {fixtures.map((fixture, index) => (

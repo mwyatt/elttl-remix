@@ -164,7 +164,7 @@ player, encounters, fixtures, weeks
       </div>
 
       {/* @todo make this only fixtures that the player has been involved in */}
-      <SubHeading name='Fulfilled Team Fixtures' />
+      <SubHeading name='Team Fixtures' />
       <div className='grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 '>
 
         {fixtures.map((fixture, index) => (

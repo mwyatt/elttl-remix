@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { WeekTypeLabels, WeekTypes } from '~/constants/Week'
-import { DndContext } from '@dnd-kit/core'
-import { Draggable } from './Draggable'
-import { Droppable } from './Droppable'
+import {useState} from 'react'
+import {WeekTypeLabels, WeekTypes} from '~/constants/Week'
+import {DndContext} from '@dnd-kit/core'
+import {Draggable} from './Draggable'
+import {Droppable} from './Droppable'
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
@@ -23,6 +23,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
   const [currentTeamId, setCurrentTeamId] = useState(0)
   const [weekRange, setWeekRange] = useState({ start: '', end: '' })
   const weeksAreEstablished = weeks.length > 0
+  const [jsonStructure, setJsonStructure] = useState("");
 
   const initWeeks = (weeks) => {
     weeks.forEach(week => {
@@ -33,6 +34,8 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
   }
 
   const [stateWeeks, setWeeks] = useState(initWeeks(weeks))
+
+  console.log({stateWeeks})
 
   const [stateFixtures, setStateFixtures] = useState(fixtures)
 
@@ -123,6 +126,128 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
     setStateFixtures([...stateFixtures])
   }
 
+  const guesstimateYear = (str) => {
+    const thisYearMonths = ['sep', 'oct', 'nov', 'dec'];
+
+    // Extract the month (last word)
+    const month = str.toLowerCase().split(' ').pop();
+
+    // @todo get current and next year here
+    return thisYearMonths.includes(month) ? 2026 : 2027;
+  };
+
+  const parseShortDate = (str) => {
+    if (typeof str !== 'string') {
+      return null;
+    }
+
+    // Remove ordinal suffixes
+    const cleaned = str.replace(/(st|nd|rd|th)/i, "");
+
+    // Parse using Date
+    const date = new Date(cleaned + guesstimateYear(str)); // or any year you want
+
+    return dayjs(date);
+  }
+
+  const previousSunday = (date) => {
+    const d = dayjs(date);
+    const day = d.day();
+    return d.subtract(day, 'day');
+  }
+
+  const getWeekTypeFromJsonDescription = (description) => {
+    switch (description) {
+      case "Fred Holden Preliminary Round":
+        return WeekTypes.fred0;
+      case "Fred Holden First Round":
+        return WeekTypes.fred1;
+      case "Fred Holden Second Round":
+        return WeekTypes.fred2;
+      case "Fred Holden 3rd Round":
+        return WeekTypes.fred3;
+      case "Under 16 Competition, Vets H/C Competition":
+        return WeekTypes.vets;
+      case "Divisional H/C Competition":
+        return WeekTypes.div;
+      case "Fred Holden Semi Finals at Hyndburn":
+        return WeekTypes.fredSemis;
+      case "Fred Holden Final at Hyndburn":
+        return WeekTypes.fredFinal;
+      case "ELTTL Closed":
+        return WeekTypes.closedCompetition;
+      case "Catchup Week":
+        return WeekTypes.catchup;
+      case "Presentation Night":
+        return WeekTypes.presentation;
+      case "AGM":
+        return WeekTypes.agm;
+      default:
+        console.warn(`Unknown event description: ${description}`);
+        return WeekTypes.nothing; // Default to nothing if unknown
+    }
+  }
+
+  const handlePlaceFixturesWithJson = () => {
+    if (!jsonStructure) {
+      return console.warn('No JSON structure provided');
+    }
+
+    const parsedJsonStructure = JSON.parse(jsonStructure);
+
+    console.log('handlePlaceFixturesWithJson ->>>>>>>>>>>>>>>>', {stateWeeks, parsedJsonStructure, stateFixtures})
+
+    Object.keys(parsedJsonStructure).forEach( shortDateKey => {
+      const jsonDate = parseShortDate(shortDateKey);
+      const jsonDateClosestSunday = previousSunday(jsonDate)
+
+      // Get the corresponding week
+      const week = stateWeeks.find(w => {
+        return w.dateStart.isSame(jsonDateClosestSunday, 'day')
+      });
+      let weekType = WeekTypes.nothing;
+
+      if (!week) {
+        console.error(`No week found for date: ${shortDateKey}, setting as nothing week`);
+      } else {
+        const parsedJsonStructureWeek = parsedJsonStructure[shortDateKey];
+
+        // Fixture week
+        if (Array.isArray(parsedJsonStructureWeek)) {
+          weekType = WeekTypes.fixture;
+
+          parsedJsonStructureWeek.forEach(fixture => {
+            const matchingFixtures = stateFixtures.filter(
+              f =>
+                f.teamLeftMatrixIndex === fixture.home &&
+                f.teamRightMatrixIndex === fixture.away
+            )
+
+            matchingFixtures.forEach((matchedFixture) => {
+              matchedFixture.weekId = week.id
+            })
+          })
+
+        // Event or nothing week
+        } else {
+        // @todo Modify timeStart if not a nothing week AND not a monday
+          weekType = getWeekTypeFromJsonDescription(parsedJsonStructureWeek.event);
+          if (jsonDate.day() !== 1) {
+            console.warn(`Event week "${parsedJsonStructureWeek.event}" is not on a Monday. Adjusting timeStart to the the date provided in json "${shortDateKey}".`);
+            week.timeStart = jsonDate.unix();
+            week.dateStart = dayjs.unix(week.timeStart)
+          }
+        }
+      }
+
+      week.type = weekType;
+    })
+
+    // update with mutated objects
+    setStateFixtures([...stateFixtures])
+    setWeeks([...stateWeeks])
+  }
+
   const handleAutoPlaceFixtures = () => {
     console.warn('Auto place will go through all unplaced fixtures and place them using the following rules:')
     console.warn('- Place fixtures only in weeks of type "fixture"')
@@ -167,11 +292,50 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
       }))
     }
 
+    // @todo credentials, headers make reusable, wrapper func to do requests
+    // Default to get
     const response = await fetch('/admin/api/week', {
       method: 'PUT',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        Authentication: cookie
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await response.json()
+
+    setFeedbackMessage(data.message)
+    setIsLoading(false)
+  }
+
+  const handleSaveWeek = async (weekId) => {
+    setIsLoading(true)
+
+    // inject epoch timeStart for backend
+    stateWeeks.forEach(week => {
+      week.timeStart = week.dateStart.unix()
+    })
+
+    const week = stateWeeks.find(week => week.id === weekId)
+    const fixturesWithWeekIds = stateFixtures.filter(fixture => fixture.weekId === week.id)
+
+    const payload = {
+      week: week,
+      fixtures: fixturesWithWeekIds.map(fixture => ({
+        id: fixture.id,
+        weekId: fixture.weekId
+      }))
+    }
+
+    // @todo credentials, headers make reusable, wrapper func to do requests
+    const response = await fetch('/admin/api/week-single', {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify(payload)
     })
@@ -185,7 +349,8 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
   function parseIsoWeek (str) {
     const [year, week] = str.split('-W')
 
-    return dayjs(year)
+    return dayjs()
+      .year(year)
       .isoWeek(week)
       .startOf('week')
   }
@@ -197,6 +362,8 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
     const weeks = []
     let cursor = start.clone()
     let weekId = 1
+
+    console.log('Generating weeks between', start.format('YYYY-MM-DD'), 'and', end.format('YYYY-MM-DD'))
 
     while (cursor.isBefore(end) || cursor.isSame(end)) {
       // const isoYear = cursor.isoWeekYear()
@@ -216,14 +383,18 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
 
   const handleGenerateWeeks = () => {
     if (weeksAreEstablished) {
-      return setFeedbackMessage('Weeks have already been established.')
+      // return setFeedbackMessage('Weeks have already been established.')
     }
 
     if (weekRange.start === '' || weekRange.end === '') {
       return setFeedbackMessage('Please select both start and end weeks')
     }
 
+    console.log(weekRange.start, weekRange.end)
+
     const weeksBetween = getIsoWeeksBetween(weekRange.start, weekRange.end)
+
+    console.log(weeksBetween)
 
     setWeeks(weeksBetween)
   }
@@ -317,8 +488,15 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
           <button className='bg-primary-500 text-white px-2 py-1' onClick={handleRemoveAllWeeks}>Remove All Weeks
           </button>
         </div>
-        <button className='bg-primary-500 text-white px-2 py-1' onClick={handleUnplaceAllFixtures}>Unplace all fixtures</button>
-        <button className='bg-primary-500 text-white px-2 py-1' onClick={handlePlaceAllFixturesRandomly}>Place all fixtures randomly</button>
+        {/*<button className='bg-primary-500 text-white px-2 py-1' onClick={handleUnplaceAllFixtures}>Unplace all fixtures</button>*/}
+        {/*<button className='bg-primary-500 text-white px-2 py-1' onClick={handlePlaceAllFixturesRandomly}>Place all fixtures randomly</button>*/}
+        <button className='bg-primary-500 text-white px-2 py-1' onClick={handlePlaceFixturesWithJson}>Place all fixtures using JSON structure</button>
+        <textarea
+            value={jsonStructure}
+            onChange={(e) => setJsonStructure(e.target.value)}
+            name="jsonStructure" id="jsonStructure" cols="30" rows="10" className={'border border-stone-300 p-2 m-2'}>
+          {/* User places JSON here */}
+        </textarea>
         <button className='bg-primary-500 text-white px-2 py-1' onClick={handleSave}>Save</button>
       </div>
       <div className='flex text-sm'>
@@ -360,7 +538,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
           {stateWeeks.map(week => (
             <div data-week-id={week.id} key={week.id} className='flex flex-col items-center p-1 border border-stone-300'>
               <div>
-                {week.dateStart.day(1).format('DD/MM/YYYY')}
+                {week.dateStart.format('DD/MM/YYYY')}
               </div>
               <div>
                 <select
@@ -378,7 +556,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
                     {droppedFixtureDataByWeekId[week.id].fixtures.map(fixture => (
                       <Draggable key={fixture.id} id={fixture.id}>
                         <div className='border border-stone-300 p-1 rounded'>
-                          {fixture.fullName}
+                          {fixture.fullName} - Division {fixture.divisionId}
                         </div>
                       </Draggable>
                     ))}
@@ -390,6 +568,7 @@ export function WeekConfigurator ({ cookie, divisions, weeks, fixtures }) {
                   )}
                 </>
               )}
+              <button className={'bg-primary-500 text-white px-2 py-1 cursor-pointer'} onClick={() => handleSaveWeek(week.id)}>Save Week {week.id}</button>
             </div>
           ))}
 

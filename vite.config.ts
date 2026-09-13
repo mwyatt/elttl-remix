@@ -1,7 +1,7 @@
-import { reactRouter } from "@react-router/dev/vite";
-import { cloudflare } from "@cloudflare/vite-plugin";
+import {reactRouter} from "@react-router/dev/vite";
+import {cloudflare} from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import path from "node:path";
 
 export default defineConfig({
@@ -17,4 +17,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "app")
     },
   },
+  clearScreen: false,
 });

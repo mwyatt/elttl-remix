@@ -51,25 +51,29 @@ export default async function generateFixtures (db) {
       WHERE yearId = ${currentYear.id}
     `)
 
-    // Generate fixtures for each division
+    // Collect all fixtures to insert
+    const valuesToInsert = [];
+
     for (const division of divisions) {
       const divisionTeams = teams.filter(team => team.divisionId === division.id)
 
-      // Generate fixtures for each team in the division
       for (let i = 0; i < divisionTeams.length; i++) {
         for (let j = 0; j < divisionTeams.length; j++) {
           const homeTeam = divisionTeams[i]
           const awayTeam = divisionTeams[j]
 
-          // Create a fixture if the teams are not the same
           if (homeTeam.id !== awayTeam.id) {
-            await tx.run(sql`
-              INSERT INTO tennisFixture (yearId, teamIdLeft, teamIdRight)
-              VALUES (${currentYear.id}, ${homeTeam.id}, ${awayTeam.id})
-            `)
+            valuesToInsert.push(sql`(${currentYear.id}, ${homeTeam.id}, ${awayTeam.id})`)
           }
         }
       }
+    }
+
+    // Single bulk insert instead of 360+ individual queries
+    if (valuesToInsert.length > 0) {
+      await tx.run(sql`INSERT INTO tennisFixture (yearId, teamIdLeft, teamIdRight)
+        VALUES ${sql.join(valuesToInsert, sql`, `)}`
+      )
     }
 
     return;

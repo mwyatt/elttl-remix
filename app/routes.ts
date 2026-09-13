@@ -74,10 +74,17 @@ export default [
         // route("fixture/:id/rollback", "routes/admin.fixture.$id.rollback.tsx"),
 
         // @todo
-        // route("week", "routes/admin.week.tsx"),
+        route("week", "routes/admin.week.tsx"),
+        route("api/week", "routes/admin.api.week.ts"),
+        route("api/week-single", "routes/admin.api.week-single.ts"),
 
         // Only need to uncomment when the route is required
         // route("api/create-season", "routes/admin.api.create-season.ts"),
         // route("api/generate-fixtures", "routes/admin.api.generate-fixtures.ts"),
+
+        // Helper to clear KV out manually
+        // route("api/kv-clear", "routes/admin.api.kv-clear.ts"),
+
+        route("api/test", "routes/admin.api.test.ts"),
     ]),
 ] satisfies RouteConfig;
