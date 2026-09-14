@@ -1,7 +1,7 @@
 import type {Route} from "./+types/_front.home";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {getDbFromContext} from "~/db-context.server";
-import {NonEventTypes, WeekTypes} from "~/constants/Week";
+import {WeekTypes} from "~/constants/Week";
 import dayjs from "dayjs";
 import {StatusCodes} from "http-status-codes";
 import {sql} from "drizzle-orm";
@@ -92,14 +92,20 @@ export async function loader({context}) {
   const totalFixturesCount = totalFixtures.length
 
   // this week
+  // @todo could this just show the closest week?
   const weeks = await db.all(sql`
       SELECT id,
               timeStart,
               type
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
-        AND timeStart = ${dayjs().startOf('week').unix()}
+        AND timeStart < ${dayjs().unix()}
+            ORDER BY timeStart DESC
+      LIMIT 1
+
   `)
+
+  console.log('homepage closest weeks', {weeks, lookingFor: dayjs().unix()})
 
   let thisWeek = null
   let weekFixtures = []
@@ -117,8 +123,6 @@ export async function loader({context}) {
     }
   }
 
-  const typesSql = Object.values(NonEventTypes).join(',')
-
   // this week
   const upcomingEventWeeks = await db.all(sql`
       SELECT id,
@@ -126,14 +130,16 @@ export async function loader({context}) {
               type
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
-        AND timeStart >= ${dayjs().unix()}
-        AND type NOT IN(${typesSql})
+        AND type != ${WeekTypes.fixture}
+        AND type != ${WeekTypes.catchup}
+        AND type != ${WeekTypes.nothing}
       ORDER BY timeStart
-LIMIT 1;
+      LIMIT 1;
   `)
   let upcomingEventWeek = null
   if (upcomingEventWeeks.length > 0) {
     upcomingEventWeek = upcomingEventWeeks[0]
+    console.log({upcomingEventWeeks})
   }
 
   return Response.json({

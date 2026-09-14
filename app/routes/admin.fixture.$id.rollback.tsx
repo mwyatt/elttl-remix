@@ -1,9 +1,12 @@
 import type {Route} from "./+types/admin.fixture.$id.rollback";
 import {getDbFromContext} from "~/db-context.server";
 import fulfillFixture from "~/services/fulfillFixture.service.server";
+import {getKvFromContext} from "~/kv-context.server";
+import {clearFixtureFulfillKvs} from "~/services/kv.service.server";
 
 export async function action({ request, context, params }: Route.ActionArgs) {
   const db = getDbFromContext(context);
+  const kv = getKvFromContext(context);
   const { id } = params
 
   if (!id) {
@@ -27,6 +30,7 @@ export async function action({ request, context, params }: Route.ActionArgs) {
     const encounterStruct = JSON.parse(encounterStructJson);
 
     await fulfillFixture(db, Number(id), encounterStruct, true);
+    await clearFixtureFulfillKvs(kv, db, id, encounterStruct)
 
     return Response.json(
       { ok: true, message: `Fixture ${id} rolled back successfully!` },

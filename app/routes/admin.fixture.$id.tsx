@@ -7,6 +7,8 @@ import {createFlashHeaders, getFlashMessage} from "~/auth/session.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import fulfillFixture from "~/services/fulfillFixture.service.server";
 import {getPlayersByYearId} from "~/repositories/player.repository.server";
+import {getKvFromContext} from "~/kv-context.server";
+import {clearFixtureFulfillKvs} from "~/services/kv.service.server";
 
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -68,6 +70,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
 export async function action({ request, context, params }: Route.ActionArgs) {
   const db = getDbFromContext(context);
+  const kv = getKvFromContext(context);
   const { id } = params
 
   const formData = await request.formData();
@@ -80,6 +83,12 @@ export async function action({ request, context, params }: Route.ActionArgs) {
 
   try {
     await fulfillFixture(db, id, encounterStruct)
+    await clearFixtureFulfillKvs(kv, db, id, encounterStruct)
+
+    return Response.json(
+      { ok: true, message: `Fixture ${id} fulfilled successfully!` },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error fulfilling fixture:', error)
     message = error.message

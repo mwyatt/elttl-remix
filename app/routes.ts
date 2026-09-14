@@ -65,15 +65,16 @@ export default [
         route("news", "routes/admin.news.tsx"),
         route("news/:id", "routes/admin.news.$id.tsx"),
 
+        // @todo team create / update area - secretaries etc
+
         route("player", "routes/admin.player.tsx"),
         route("player/:id", "routes/admin.player.$id.tsx"),
 
         // @todo
         route("fixture", "routes/admin.fixture.tsx"),
-        // route("fixture/:id", "routes/admin.fixture.$id.tsx"),
-        // route("fixture/:id/rollback", "routes/admin.fixture.$id.rollback.tsx"),
+        route("fixture/:id", "routes/admin.fixture.$id.tsx"),
+        route("fixture/:id/rollback", "routes/admin.fixture.$id.rollback.tsx"),
 
-        // @todo
         route("week", "routes/admin.week.tsx"),
         route("api/week", "routes/admin.api.week.ts"),
         route("api/week-single", "routes/admin.api.week-single.ts"),

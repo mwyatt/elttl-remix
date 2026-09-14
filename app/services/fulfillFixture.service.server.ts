@@ -1,4 +1,4 @@
-import { doesEncounterHaveNoPlayer, getRankChanges } from '~/libraries/encounter.lib'
+import {doesEncounterHaveNoPlayer, getRankChanges} from '~/libraries/encounter.lib'
 import {
   getSideIndex,
   getSidesCapitalized,
@@ -9,10 +9,11 @@ import {
 } from '~/constants/encounter'
 import uniq from "lodash/uniq";
 import filter from "lodash/filter";
-import { playerGetMany } from '~/repositories/player.repository.server'
+import {playerGetMany} from '~/repositories/player.repository.server'
 import {getCurrentYear} from "~/repositories/year.repository.server";
+import {sql} from "drizzle-orm"
+
 const TRACE_RANK_CHANGES = false
-import { sql } from "drizzle-orm"
 
 const logRankChange = (...args) => {
   if (TRACE_RANK_CHANGES) {
@@ -145,7 +146,7 @@ export default async function fulfillFixture (db, fixtureId, encounterStruct, ro
   const updateFixtureData = {
     yearId: currentYear.id,
     fixtureId,
-    timeFulfilled: rollbackOnly ? 0 : nowEpoch.substring(0, nowEpoch.length - 3)
+    timeFulfilled: rollbackOnly ? null : nowEpoch.substring(0, nowEpoch.length - 3)
   }
 
   if (encounterStruct.length < minEncounters) {
@@ -246,4 +247,19 @@ export default async function fulfillFixture (db, fixtureId, encounterStruct, ro
 
   // @todo experiment with this, transaction, to avoid database issues
   // await connection.commit()
+
+  // @todo clear any related KV
+
+  //   const cacheKey = `division-merit-encounters-${yearId}-${divisionId}`
+  // const cacheKey = `division-league-table-${yearId}-${divisionId}`
+  // const cacheKey = `doubles-merit-table-${yearId}-${divisionId}`
+  // const cacheKey = `fixtures-by-team-id-${yearId}-${teamId}`
+  // const cacheKey = `latest-fixtures-${yearId}`
+  // const cacheKey = `fixtures-by-week-id-${yearId}-${weekId}`
+    // const cacheKey = `encounters-by-player-id-${yearId}-${playerId}`
+
+  // Let
+  // const cacheKey = `teams-unfulfilled-fixtures-${yearId}-${teamIds.join('')}`
+  // const cacheKey = `teams-fulfilled-fixtures-${yearId}-${teamIds.join('')}`
+
 }
