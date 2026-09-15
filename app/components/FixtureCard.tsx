@@ -22,11 +22,11 @@ export default function FixtureCard ({ year, teamLeft, teamRight, timeFulfilled 
         )}
         <span className='flex gap-2 border-b border-b-neutral-300 border-dashed px-2'>
           <span className='flex-grow'>{teamLeft.name}</span>
-          <span className=''>{teamLeft.score}</span>
+            {timeFulfilled && (<span className=''>{teamLeft.score}</span>)}
         </span>
         <span className='flex gap-2 px-2 pb-1'>
           <span className='flex-grow'>{teamRight.name}</span>
-          <span className=''>{teamRight.score}</span>
+            {timeFulfilled && (<span className=''>{teamRight.score}</span>)}
         </span>
       </>
     </Link>

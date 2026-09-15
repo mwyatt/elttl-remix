@@ -35,7 +35,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const currentYear = await parseYearNameGetYear(db, year)
 
   const teamLefts = await db.all(sql`
-      select id, name, venueId
+      select id, name, slug, venueId
       from tennisTeam
       where slug = ${teamLeftSlug}
         and yearId = ${currentYear.id}
@@ -48,7 +48,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const teamLeft = teamLefts[0]
 
   const teamRights = await db.all(sql`
-      select id, name
+      select id, slug, name
       from tennisTeam
       where slug = ${teamRightSlug}
         and yearId = ${currentYear.id}
@@ -162,7 +162,27 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({ loade
       />
 
       <div className='max-w-[768px] mx-auto'>
-        <MainHeading name={`${teamLeft.name} vs ${teamRight.name}`} />
+        <MainHeading
+          name={(
+              <>
+            <Link
+              to={`/result/${year}/team/${teamLeft.slug}`}
+              className='border-primary-500 text-primary-500'
+              key={teamLeft.slug}
+            >
+              {teamLeft.name}
+            </Link>
+                {" vs "}
+                <Link
+              to={`/result/${year}/team/${teamRight.slug}`}
+              className='border-primary-500 text-primary-500'
+              key={teamRight.slug}
+            >
+              {teamRight.name}
+            </Link>
+            </>
+          )}
+        />
         <p className='mb-8'>
           Home team venue
           {' '}
