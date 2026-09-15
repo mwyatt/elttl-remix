@@ -1,14 +1,9 @@
-import { ExactDayWeekTypes, WeekTypeLabels } from '~/constants/Week'
-import { formatDayWithSuffixOfMonth } from '~/libraries/date'
-import { getWeekDate } from '~/libraries/week'
-import { GiTrophyCup } from 'react-icons/gi'
+import {ExactDayWeekTypes, WeekTypeLabels} from '~/constants/Week'
+import {GiTrophyCup} from 'react-icons/gi'
 import {Link} from "react-router";
 
 export default function UpcomingEventWeek ({ yearName, week }) {
   const isExactEventDate = ExactDayWeekTypes.includes(week.type)
-  const formattedDate = formatDayWithSuffixOfMonth(
-    getWeekDate(week.type, week.timeStart)
-  )
 
   return (
     <div className='flex flex-col items-center justify-center gap-6 h-full'>
@@ -25,7 +20,7 @@ export default function UpcomingEventWeek ({ yearName, week }) {
                 {' '}
               </>
             )}
-            {formattedDate}
+            {week.dateStartWithSuffix}
           </p>
         </div>
       </div>

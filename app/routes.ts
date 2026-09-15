@@ -83,9 +83,10 @@ export default [
         // route("api/create-season", "routes/admin.api.create-season.ts"),
         // route("api/generate-fixtures", "routes/admin.api.generate-fixtures.ts"),
 
-        // Helper to clear KV out manually
+        // Helper to clear KV out manually - problem with this route name?
         // route("api/kv-clear", "routes/admin.api.kv-clear.ts"),
 
+        // Helper to clear KV out manually
         route("api/test", "routes/admin.api.test.ts"),
     ]),
 ] satisfies RouteConfig;

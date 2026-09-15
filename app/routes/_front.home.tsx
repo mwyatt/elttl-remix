@@ -18,6 +18,8 @@ import {buildMeta} from "~/constants/MetaData";
 import {getLatestFixtures} from "~/repositories/fixture.repository.server";
 import {getKvFromContext} from "~/kv-context.server";
 import relativeTime from 'dayjs/plugin/relativeTime'
+import {formatDayWithSuffixOfMonth} from "~/libraries/date";
+import {getWeekDate} from "~/libraries/week";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -139,7 +141,12 @@ export async function loader({context}) {
   let upcomingEventWeek = null
   if (upcomingEventWeeks.length > 0) {
     upcomingEventWeek = upcomingEventWeeks[0]
-    console.log({upcomingEventWeeks})
+    upcomingEventWeek.dateStartWithSuffix = formatDayWithSuffixOfMonth(
+      getWeekDate(upcomingEventWeek.type, upcomingEventWeek.timeStart)
+    )
+    console.log({
+      upcomingEventWeek
+    })
   }
 
   return Response.json({

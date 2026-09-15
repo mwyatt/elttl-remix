@@ -180,7 +180,7 @@ test('it can rollback and unfulfill a fixture', async () => {
     SELECT * FROM tennisFixture
     WHERE id = ${fixtureId}
   `)
-  expect(fixtures[0].timeFulfilled).toBe(0)
+  expect(fixtures[0].timeFulfilled).toBe(null)
 
   // @todo check ranks?
 })

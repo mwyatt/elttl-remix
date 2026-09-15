@@ -141,23 +141,23 @@ export default function AboutUsPage({loaderData}: Route.ComponentProps<typeof lo
                     <p className='my-4'>Whalley Table Tennis Club, Village Hall, Whalley - contact {colinHooperLink}
                     </p>
                 </li>
-                <li>
+                {/*<li>*/}
 
-                    <p className='my-4'>Doals Community Centre, Weir, Bacup - contact {neilHepworthLink}
-                    </p>
-                </li>
+                {/*    <p className='my-4'>Doals Community Centre, Weir, Bacup - contact {neilHepworthLink}*/}
+                {/*    </p>*/}
+                {/*</li>*/}
                 <li>
 
                     <p className='my-4'>Vanguard Table Tennis Club, Burnley - contact {darrenWrightLink};
                         website: <QuickLink href='https://www.vanguardttclub.co.uk' external/>
                     </p>
                 </li>
-                <li>
+                {/*<li>*/}
 
-                    <p className='my-4'>Ramsbottom Cricket Club – contact {bryanEdwardsLink}
-                    </p>
+                {/*    <p className='my-4'>Ramsbottom Cricket Club – contact {bryanEdwardsLink}*/}
+                {/*    </p>*/}
 
-                </li>
+                {/*</li>*/}
             </ul>
 
             <SubHeading name='League Participation and Membership'/>

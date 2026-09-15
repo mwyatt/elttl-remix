@@ -44,8 +44,8 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       url: '/handbook-2026-2027.pdf'
     },
     {
-      title: 'Fixtures Generated 2025',
-      description: 'The fixtures have been generated for the 2025 season, take a look!',
+      title: `Fixtures Generated ${currentYear.name}`,
+      description: `The fixtures have been generated for the ${currentYear.name} season, take a look!`,
       action: 'Season Overview',
       url: `/result/${currentYear.name}/season`
     },
