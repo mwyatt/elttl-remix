@@ -10,16 +10,16 @@ import {getDbFromContext} from "~/db-context.server";
 import {Link, Outlet} from "react-router";
 import {buttonPrimaryStyles} from "~/styles/ui-classes";
 
-export async function loader({ context, params }: Route.LoaderArgs) {
+export async function loader({context, params}: Route.LoaderArgs) {
   const db = getDbFromContext(context);
   const currentYear = await getCurrentYear(db);
-  const { year } = params
+  const {year} = params
   const isVisitingArchive = year !== undefined && (currentYear.name !== year)
   const visitingYearName = year !== undefined ? year : currentYear.name
 
-    const divisions = await db.all<{ name: string }>(sql`  SELECT name
-      FROM tennisDivision
-      WHERE yearId = ${currentYear.id}`);
+  const divisions = await db.all<{ name: string }>(sql`  SELECT name
+                                                         FROM tennisDivision
+                                                         WHERE yearId = ${currentYear.id}`);
 
   const divisionsChildren = []
 
@@ -28,9 +28,9 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       name: `${division.name} Division Overview`,
       url: `/result/${currentYear.name}/${division.name.toLowerCase()}`,
       children: [
-        { name: 'League Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/league` },
-        { name: 'Merit Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/merit` },
-        { name: 'Doubles Merit Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/doubles-merit` }
+        {name: 'League Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/league`},
+        {name: 'Merit Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/merit`},
+        {name: 'Doubles Merit Table', url: `/result/${currentYear.name}/${division.name.toLowerCase()}/doubles-merit`}
       ]
     })
   })
@@ -50,56 +50,57 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       url: `/result/${currentYear.name}/season`
     },
     {
-      title: 'Results Archive',
-      description: 'Browse all past and current seasons of the league.',
+      title: 'Service Rules',
+      description: 'Get familiar with the table tennis service rules we must all follow for fair play.',
       action: 'View',
-      url: '/result/'
+      url: '/service-rules'
     }
   ]
 
   const commonLinks = {
-    prePractice: { name: 'Prepaid Practice Scheme', url: '/prepaid-practice-scheme' },
-    competitions: { name: 'Competitions', url: '/competitions' },
-    resultArchive: { name: 'Results Archive', url: '/result' },
-    contactUs: { name: 'Contact Us', url: '/contact-us' },
-    townTeams: { name: 'Town Teams', url: '/page/town-teams' },
+    prePractice: {name: 'Prepaid Practice Scheme', url: '/prepaid-practice-scheme'},
+    competitions: {name: 'Competitions', url: '/competitions'},
+    resultArchive: {name: 'Results Archive', url: '/result'},
+    contactUs: {name: 'Contact Us', url: '/contact-us'},
+    townTeams: {name: 'Town Teams', url: '/page/town-teams'},
     lancsCountyTTAssoc: {
       name: 'Lancashire County TT Assoc',
       url: 'https://lancashirecounty.ttleagues.com/page/affiliationtolancashirecountytta',
       target: '_blank'
     },
-    gdpr: { name: 'GDPR', url: '/gdpr' },
-    diciplineProcedure: { name: 'Code of Conduct', url: '/code-of-conduct' },
-    safeguardingPolicy: { name: 'Safeguarding Policy', url: '/safeguarding-guidance-2020.pdf', target: '_blank' }
+    gdpr: {name: 'GDPR', url: '/gdpr'},
+    diciplineProcedure: {name: 'Code of Conduct', url: '/code-of-conduct'},
+    safeguardingPolicy: {name: 'Safeguarding Policy', url: '/safeguarding-guidance-2020.pdf', target: '_blank'}
   }
 
   return {
     currentYearName: currentYear.name,
     footLinks: [
-      { area: 1, name: 'About Us', url: '/about-us' },
-      { area: 1, name: 'Committee Members', url: '/committee-members' },
-      { area: 1, name: 'Coaching & Sessions', url: '/sessions' },
-      { area: 1, ...commonLinks.prePractice },
-      { area: 1, ...commonLinks.competitions },
-      { area: 1, name: 'Schools', url: '/schools' },
-      { area: 1, name: 'Constitution & Rules', url: '/constitution-and-rules' },
-      { area: 2, ...commonLinks.lancsCountyTTAssoc },
-      { area: 2, ...commonLinks.gdpr },
-      { area: 2, ...commonLinks.diciplineProcedure },
-      { area: 2, ...commonLinks.safeguardingPolicy },
-      { area: 2, name: 'Handicap Calculator', url: '/handicap-calculator' },
-      { area: 2, ...commonLinks.contactUs }
+      {area: 1, name: 'About Us', url: '/about-us'},
+      {area: 1, name: 'Committee Members', url: '/committee-members'},
+      {area: 1, name: 'Coaching & Sessions', url: '/sessions'},
+      {area: 1, ...commonLinks.prePractice},
+      {area: 1, ...commonLinks.competitions},
+      {area: 1, name: 'Schools', url: '/schools'},
+      {area: 1, name: 'Constitution & Rules', url: '/constitution-and-rules'},
+      {area: 2, ...commonLinks.lancsCountyTTAssoc},
+      {area: 2, ...commonLinks.gdpr},
+      {area: 2, ...commonLinks.diciplineProcedure},
+      {area: 2, ...commonLinks.safeguardingPolicy},
+      {area: 2, name: 'Handicap Calculator', url: '/handicap-calculator'},
+      {area: 2, name: 'Results Archive', url: '/result'},
+      {area: 2, ...commonLinks.contactUs}
     ],
     menuPrimary: [
       {
         name: 'The League',
         url: '/',
         children: [
-          { name: 'About Us', url: '/about-us' },
-          { name: 'Download Handbook', url: '/handbook-2026-2027.pdf', target: '_blank' },
-          { name: 'News Updates', url: '/press' },
+          {name: 'About Us', url: '/about-us'},
+          {name: 'Download Handbook', url: '/handbook-2026-2027.pdf', target: '_blank'},
+          {name: 'News Updates', url: '/press'},
           commonLinks.competitions,
-          { name: 'Contact us', url: '/contact-us' }
+          {name: 'Contact us', url: '/contact-us'}
         ]
       },
       {
@@ -112,24 +113,24 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   }
 }
 
-export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<typeof loader>) {
+export default function FrontLayoutRoute({loaderData}: Route.ComponentProps<typeof loader>) {
   const appName = 'East Lancashire Table Tennis League'
   const {
     currentYearName,
-      visitingYearName,
+    visitingYearName,
     menuPrimary,
     footLinks,
     advertisementsSecondary,
-      isVisitingArchive
+    isVisitingArchive
   } = loaderData
 
-    // @todo these were set based on page before
-    const paddedContent = true
-    const maxWidth = true
+// @todo these were set based on page before
+  const paddedContent = true
+  const maxWidth = true
 
   return (
     <div>
-      <Header appName={appName} menuPrimary={menuPrimary} />
+      <Header appName={appName} menuPrimary={menuPrimary}/>
 
       {isVisitingArchive && (
         <div className='bg-amber-400 text-amber-900 text-center p-4'>
@@ -141,13 +142,14 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<ty
       )}
 
       <div className={`${paddedContent ? 'p-4 sm:p-8' : ''} ${maxWidth ? 'max-w-[1440px] mx-auto' : ''}`}>
-        <Outlet />
+        <Outlet/>
       </div>
 
       <div className='ml-4 mr-4 mb-8 mt-16'>
         <div className='max-w-[1440px] mx-auto flex flex-col md:flex-row gap-4 lg:pl-4 lg:pr-4'>
           {advertisementsSecondary.map((advertisement, index) => (
-            <div key={index} className='p-4 bg-stone-300 text-secondary-700 bg-[url(/table-lip.png)] bg-right-bottom bg-no-repeat flex-basis-1/3 md:basis-1/3 rounded'>
+            <div key={index}
+                 className='p-4 bg-stone-300 text-secondary-700 bg-[url(/table-lip.png)] bg-right-bottom bg-no-repeat flex-basis-1/3 md:basis-1/3 rounded'>
               <h2 className='mb-4 text-2xl font-bold'>{advertisement.title}</h2>
               <p className='my-3 text-lg'>{advertisement.description}</p>
               <div className='mt-6 flex justify-end'>
@@ -169,13 +171,14 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<ty
         <div className='md:flex max-w-[1440px] mx-auto'>
           <div className='basis-1/4 p-4 text-white'>
             <div className='mb-1'><Link to='/contact-us' className='underline font-bold'>&copy; {appName}</Link></div>
-            <Address />
+            <Address/>
           </div>
           <div className='basis-1/4 p-4'>
             <nav className='bg-secondary-500 rounded'>
               {footLinks.filter((item) => item.area === 1).map((item) => (
                 <Link
-                  className='block px-3 py-2 border-b border-dashed border-tertiary-500 hover:bg-tertiary-500 text-white' key={item.name}
+                  className='block px-3 py-2 border-b border-dashed border-tertiary-500 hover:bg-tertiary-500 text-white'
+                  key={item.name}
                   to={item.url}
                 >{item.name}
                 </Link>
@@ -186,7 +189,8 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<ty
             <nav className='bg-secondary-500 rounded'>
               {footLinks.filter((item) => item.area === 2).map((item) => (
                 <Link
-                  className='block px-3 py-2 border-b border-dashed border-tertiary-500 hover:bg-tertiary-500 text-white' key={item.name}
+                  className='block px-3 py-2 border-b border-dashed border-tertiary-500 hover:bg-tertiary-500 text-white'
+                  key={item.name}
                   to={item.url}
                   target={item.target || '_self'}
                 >{item.name}
@@ -195,15 +199,20 @@ export default function FrontLayoutRoute({ loaderData }: Route.ComponentProps<ty
             </nav>
           </div>
           <div className='basis-1/4 mt-4'>
-            <Link to='https://x.com/eastlancstt' target='_blank' className='p-2 bg-stone-100 rounded-full m-2 inline-block' rel='noreferrer'>
-              <PiXLogoFill size={30} />
+            <Link to='https://x.com/eastlancstt' target='_blank'
+                  className='p-2 bg-stone-100 rounded-full m-2 inline-block' rel='noreferrer'>
+              <PiXLogoFill size={30}/>
             </Link>
-            <Link to='https://www.facebook.com/pages/East-Lancashire-Table-Tennis-League/118206128284149' target='_blank' className='p-2 bg-stone-100 rounded-full m-2 inline-block' rel='noreferrer'>
-              <BiLogoFacebook size={30} />
+            <Link to='https://www.facebook.com/pages/East-Lancashire-Table-Tennis-League/118206128284149'
+                  target='_blank' className='p-2 bg-stone-100 rounded-full m-2 inline-block' rel='noreferrer'>
+              <BiLogoFacebook size={30}/>
             </Link>
-            <Link to='http://tabletennisengland.co.uk/' target='_blank' className='inline-block m-2 w-32 h-auto' rel='noreferrer'>
+            <Link to='http://tabletennisengland.co.uk/' target='_blank' className='inline-block m-2 w-32 h-auto'
+                  rel='noreferrer'>
               <img
-                className='block w-20 md:w-32 h-auto' src='https://www.tabletennisengland.co.uk/content/themes/table-tennis-england/img/main-logo.svg' alt='Table Tennnis England logo'
+                className='block w-20 md:w-32 h-auto'
+                src='https://www.tabletennisengland.co.uk/content/themes/table-tennis-england/img/main-logo.svg'
+                alt='Table Tennnis England logo'
                 width={0} height={0}
               />
             </Link>

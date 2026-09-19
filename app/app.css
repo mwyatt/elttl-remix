@@ -10,6 +10,7 @@
   --color-primary-500: #12aa83;
   --color-secondary-500: #818073;
   --color-tertiary-500: #6e6464;
+  --color-text: var(--color-stone-600);
 }
 
 :root {
@@ -19,15 +20,15 @@
 }
 
 body {
-  color: #716156;
+  color: var(--color-text);
     font-family: "Open Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
-  background-image: url('/bg.gif');
-  background-repeat: no-repeat;
+  /*background-image: url('/bg.gif');*/
+  /*background-repeat: no-repeat;*/
 }
 
 @layer utilities {

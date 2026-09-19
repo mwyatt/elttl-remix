@@ -13,13 +13,13 @@ import {allHomeButtonStyles, buttonPrimaryStyles, linkStyles} from "~/styles/ui-
 import SeasonTotals from "~/components/home/SeasonTotals";
 import SessionsToday from "~/components/home/SessionsToday";
 import FixtureCard from "~/components/FixtureCard";
-import ImageGallery from "~/components/home/ImageGallery";
 import {buildMeta} from "~/constants/MetaData";
 import {getLatestFixtures} from "~/repositories/fixture.repository.server";
 import {getKvFromContext} from "~/kv-context.server";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {formatDayWithSuffixOfMonth} from "~/libraries/date";
 import {getWeekDate} from "~/libraries/week";
+import {BiSolidInfoCircle} from "react-icons/bi";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -38,8 +38,7 @@ export async function loader({context}) {
       FROM content
       WHERE type = 'press'
         AND status = 1
-      ORDER BY timePublished DESC
-      LIMIT 5
+      ORDER BY timePublished DESC LIMIT 5
   `)
 
   const latestFixtures = await getLatestFixtures(kv, db, currentYear.id)
@@ -97,13 +96,12 @@ export async function loader({context}) {
   // @todo could this just show the closest week?
   const weeks = await db.all(sql`
       SELECT id,
-              timeStart,
-              type
+             timeStart,
+             type
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
         AND timeStart < ${dayjs().unix()}
-            ORDER BY timeStart DESC
-      LIMIT 1
+      ORDER BY timeStart DESC LIMIT 1
 
   `)
 
@@ -116,11 +114,11 @@ export async function loader({context}) {
     if (theWeek && theWeek.type === WeekTypes.fixture) {
       thisWeek = theWeek
       const thisWeekFixtures = await db.all(sql`
-            SELECT id
-            FROM tennisFixture
-            WHERE yearId = ${currentYear.id}
-              AND weekId = ${thisWeek.id}
-        `)
+          SELECT id
+          FROM tennisFixture
+          WHERE yearId = ${currentYear.id}
+            AND weekId = ${thisWeek.id}
+      `)
       weekFixtures = thisWeekFixtures
     }
   }
@@ -128,15 +126,15 @@ export async function loader({context}) {
   // this week
   const upcomingEventWeeks = await db.all(sql`
       SELECT id,
-              timeStart,
-              type
+             timeStart,
+             type
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
         AND type != ${WeekTypes.fixture}
         AND type != ${WeekTypes.catchup}
         AND type != ${WeekTypes.nothing}
       ORDER BY timeStart
-      LIMIT 1;
+          LIMIT 1;
   `)
   let upcomingEventWeek = null
   if (upcomingEventWeeks.length > 0) {
@@ -165,106 +163,112 @@ export async function loader({context}) {
     thisWeek,
     upcomingEventWeek,
     weekFixtures
-  }, { status: StatusCodes.OK })
+  }, {status: StatusCodes.OK})
 }
 
-export default function HomePage({ loaderData }: Route.ComponentProps<typeof loader>) {
-  const { latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures } = loaderData
+export default function HomePage({loaderData}: Route.ComponentProps<typeof loader>) {
+  const {latestPress, latestFixtures, currentYear, seasonTotals, thisWeek, upcomingEventWeek, weekFixtures} = loaderData
   return (
-      <div className='sm:p-6 sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-        {upcomingEventWeek && (
-          <Panel>
-            <UpcomingEventWeek yearName={currentYear} week={upcomingEventWeek} />
-          </Panel>
-        )}
-        <Panel>
-          <ThisWeek yearName={currentYear} week={thisWeek} fixtures={weekFixtures} />
-        </Panel>
-        <Panel rowSpan={2}>
-          <div className='flex items-center'>
-            <h2 className='text-2xl grow'>News Updates</h2>
-            <div>
-              <Link className={allHomeButtonStyles.join(' ')} to='/press/'>All News</Link>
-            </div>
+    <div className='sm:p-6 sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      <Panel>
+        <div className='flex flex-col gap-4 relative h-full'>
+          <BiSolidInfoCircle className={'absolute top-0 right-0 text-4xl'}/>
+          <h2 className='text-3xl font-bold'>Service Rules</h2>
+          <div className={'grow'}>
+            <p>Get familiar with the table tennis service rules we must all follow for fair
+              play.</p>
           </div>
-          {latestPress.map((press) => (
-            <div className='py-4 border-b border-b-neutral-300 border-dashed' key={press.id}>
-              <p
-                className='text-sm text-gray-500 mb-2'
-                title={press.titleAttr}
+          <div className='flex justify-end'>
+            <Link className={buttonPrimaryStyles.join(' ')} to='/service-rules'>View Rules</Link>
+          </div>
+        </div>
+      </Panel>
+      {upcomingEventWeek && (
+        <Panel>
+          <span className={'absolute top-0 right-0 bg-secondary-500 p-1 text-white text-sm rounded'}>Next Event</span>
+          <UpcomingEventWeek yearName={currentYear} week={upcomingEventWeek}/>
+        </Panel>
+      )}
+      <Panel>
+        <ThisWeek yearName={currentYear} week={thisWeek} fixtures={weekFixtures}/>
+      </Panel>
+      <Panel rowSpan={2}>
+        <div className='flex items-center'>
+          <h2 className='text-2xl grow'>News Updates</h2>
+          <div>
+            <Link className={allHomeButtonStyles.join(' ')} to='/press/'>All News</Link>
+          </div>
+        </div>
+        {latestPress.map((press) => (
+          <div className='py-4 border-b border-b-neutral-300 border-dashed' key={press.id}>
+            <p
+              className='text-sm text-gray-500 mb-2'
+              title={press.titleAttr}
+            >
+              <span>{press.timePublishedRelative}</span>
+            </p>
+            <h3 className='text-lg'>
+              <Link
+                className={linkStyles.join(' ')}
+                to={press.url}
               >
-                <span>{press.timePublishedRelative}</span>
-              </p>
-              <h3 className='text-lg'>
-                <Link
-                  className={linkStyles.join(' ')}
-                  to={press.url}
-                >
-                  {press.title}
-                </Link>
-              </h3>
-            </div>
-          ))}
-        </Panel>
+                {press.title}
+              </Link>
+            </h3>
+          </div>
+        ))}
+      </Panel>
+      <Panel colSpan={2}>
+        <SeasonTotals totals={seasonTotals} yearName={currentYear}/>
+      </Panel>
+      <Panel>
+        <SessionsToday yearName={currentYear}/>
+      </Panel>
+      {latestFixtures.length > 0 && (
         <Panel colSpan={2}>
-          <SeasonTotals totals={seasonTotals} yearName={currentYear} />
-        </Panel>
-        <Panel>
-          <SessionsToday yearName={currentYear} />
-        </Panel>
-          {latestFixtures.length > 0 && (
-        <Panel colSpan={2}>
-            <>
-              <h2 className='text-2xl mb-6'>Latest Fulfilled Fixtures</h2>
-              <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4'>
-                {latestFixtures.map((fixture, index) => <FixtureCard
-                  key={index}
-                  year={currentYear} teamLeft={{
-                    name: fixture.teamLeftName,
-                    slug: fixture.teamLeftSlug,
-                    score: fixture.scoreLeft
-                  }}
-                  teamRight={{
-                    name: fixture.teamRightName,
-                    slug: fixture.teamRightSlug,
-                    score: fixture.scoreRight
-                  }}
-                  timeFulfilled={fixture.timeFulfilled}
-                                                        />)}
-              </div>
-            </>
-        </Panel>
-          )}
-        <Panel>
-          <ImageGallery />
-        </Panel>
-        <Panel>
-          <div className='flex flex-col gap-4'>
-            <h2 className='text-2xl'>Competitions Schedule</h2>
-            <p>Find out more about the various competitions being held this season.</p>
-            <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles.join(' ')} to='/competitions'>Competitions</Link>
+          <>
+            <h2 className='text-2xl mb-6'>Latest Fulfilled Fixtures</h2>
+            <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4'>
+              {latestFixtures.map((fixture, index) => <FixtureCard
+                key={index}
+                year={currentYear} teamLeft={{
+                name: fixture.teamLeftName,
+                slug: fixture.teamLeftSlug,
+                score: fixture.scoreLeft
+              }}
+                teamRight={{
+                  name: fixture.teamRightName,
+                  slug: fixture.teamRightSlug,
+                  score: fixture.scoreRight
+                }}
+                timeFulfilled={fixture.timeFulfilled}
+              />)}
             </div>
-          </div>
+          </>
         </Panel>
-        <Panel>
-          <div className='flex flex-col gap-4'>
-            <h2 className='text-2xl'>Handicap Calculator</h2>
-            <p>Want to know how many points start a player gets in a handicap match? Give our new handicap calculator a try!</p>
-            <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles.join(' ')} to='/handicap-calculator'>Calculator</Link>
-            </div>
+      )}
+      {/*<Panel>*/}
+      {/*  <ImageGallery/>*/}
+      {/*</Panel>*/}
+      <Panel>
+        <div className='flex flex-col gap-4'>
+          <h2 className='text-2xl'>Competitions Schedule</h2>
+          <p>Find out more about the various competitions being held this season.</p>
+          <div className='flex justify-end'>
+            <Link className={buttonPrimaryStyles.join(' ')} to='/competitions'>Competitions</Link>
           </div>
-        </Panel>
-        <Panel>
-          <div className='flex flex-col gap-4'>
-            <h2 className='text-2xl'>Handbook</h2>
-            <p>Welcome to the season, download the handbook for fixtures and more.</p>
-            <div className='flex justify-end'>
-              <Link className={buttonPrimaryStyles.join(' ')} to='/handbook-2026-2027.pdf' target={'_blank'}>Download</Link>
-            </div>
+        </div>
+      </Panel>
+      <Panel>
+        <div className='flex flex-col gap-4'>
+          <h2 className='text-2xl'>Handicap Calculator</h2>
+          <p>Want to know how many points start a player gets in a handicap match? Give our new handicap calculator a
+            try!</p>
+          <div className='flex justify-end'>
+            <Link className={buttonPrimaryStyles.join(' ')} to='/handicap-calculator'>Calculator</Link>
           </div>
-        </Panel>
-      </div>
+        </div>
+      </Panel>
+    </div>
   )
 }
