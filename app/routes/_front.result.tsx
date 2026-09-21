@@ -1,43 +1,70 @@
-import type {Route} from "./+types/_front.result";
-import {getDbFromContext} from "~/db-context.server";
-import {StatusCodes} from "http-status-codes";
-import {Link} from "react-router";
+import type { Route } from "./+types/_front.result.$year";
+import { getDbFromContext } from "~/db-context.server";
+import { StatusCodes } from "http-status-codes";
+import { sql } from "drizzle-orm";
+import { Link } from "react-router";
 import MainHeading from "~/components/MainHeading";
-import {buildMeta} from "~/constants/MetaData";
-import {getAllYears} from "~/repositories/year.repository.server";
+import { buildMeta } from "~/constants/MetaData";
+import { getCurrentYear } from "~/repositories/year.repository.server";
+import { getSeasonName } from "~/libraries/year";
+import { buttonPrimaryStyles } from "~/styles/ui-classes";
+import classNames from "classnames";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ params }: Route.MetaArgs) {
+  const { year } = params;
+
   return buildMeta({
-    title: "Results by Season",
-    description:
-      "Browse all past and current seasons of the East Lancashire Table Tennis League, with quick access to yearly results, divisions, teams, fixtures, and performance summaries.",
+    title: `${year} Divisions`,
+    description: ``,
   });
 }
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const db = getDbFromContext(context)
+export async function loader({ request, context, params }: Route.LoaderArgs) {
+  const db = getDbFromContext(context);
+  const currentYear = await getCurrentYear(db);
 
-    const years = await getAllYears(db)
+  const divisions = await db.all(sql`
+      SELECT id, name
+      FROM tennisDivision
+      WHERE yearId = ${currentYear.id}
+  `);
 
-  return Response.json({years}, { status: StatusCodes.OK })
+  return Response.json({ divisions, currentYear }, { status: StatusCodes.OK });
 }
 
-export default function _frontResult({ loaderData }: Route.ComponentProps<typeof loader>) {
-    const {
-    years
-  } = loaderData;
+export default function _frontResult({
+  loaderData,
+  params,
+}: Route.ComponentProps<typeof loader>) {
+  const { divisions, currentYear } = loaderData;
 
   return (
     <>
-      <MainHeading name='Results by Season' />
-      <p>Here are all the seasons past and present.</p>
-      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-8 text-center'>
-        {years.map((season) => (
-          <Link to={`/result/${season.name}`} key={season.name} className='px-6 py-3 border border-primary-500 rounded font-bold'>
-            {season.name}
+      {/*<Breadcrumbs*/}
+      {/*  items={[*/}
+      {/*    { name: "Results", href: "/result" },*/}
+      {/*    { name: year, href: `/result/${year}` },*/}
+      {/*  ]}*/}
+      {/*/>*/}
+      <MainHeading name={`${getSeasonName(currentYear.name)}`} />
+      <p>
+        Here are all the divisions for the current season. To view the teams
+        within each division, select one of the divisions below.
+      </p>
+      <div className="flex flex-col gap-2 mt-8">
+        {divisions.map((division) => (
+          <Link
+            className={classNames({
+              [buttonPrimaryStyles.join(" ")]: true,
+              "block w-full": true,
+            })}
+            to={`/result/${currentYear.name}/${division.name.toLowerCase()}`}
+            key={division.name}
+          >
+            {division.name} Division
           </Link>
         ))}
       </div>
     </>
-  )
+  );
 }

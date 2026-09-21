@@ -15,6 +15,7 @@
     "typecheck": "wrangler types && react-router typegen && tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prettier": "prettier .",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

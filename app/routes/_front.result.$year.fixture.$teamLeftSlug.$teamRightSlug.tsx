@@ -1,26 +1,31 @@
-import type {Route} from "./+types/_front.result.$year.fixture.$teamLeftSlug.$teamRightSlug";
-import {getDbFromContext} from "~/db-context.server";
-import {StatusCodes} from "http-status-codes";
+import type { Route } from "./+types/_front.result.$year.fixture.$teamLeftSlug.$teamRightSlug";
+import { getDbFromContext } from "~/db-context.server";
+import { StatusCodes } from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {sql} from "drizzle-orm";
-import {Link} from "react-router";
+import { sql } from "drizzle-orm";
+import { Link } from "react-router";
 import SubHeading from "~/components/SubHeading";
 import MainHeading from "~/components/MainHeading";
-import {getShortPlayerName} from "~/libraries/player";
-import {linkStyles} from "~/styles/ui-classes";
+import { getShortPlayerName } from "~/libraries/player";
+import { linkStyles } from "~/styles/ui-classes";
 import RankChange from "~/components/player/RankChange";
-import {getSideCapitalized, scorecardStructure, SIDE_LEFT, SIDE_RIGHT} from "~/constants/encounter";
+import {
+  getSideCapitalized,
+  scorecardStructure,
+  SIDE_LEFT,
+  SIDE_RIGHT,
+} from "~/constants/encounter";
 import EncounterStatus from "~/constants/EncounterStatus";
 import classNames from "classnames";
 import FixtureEncounterChart from "~/components/FixtureEncounterChart";
-import {buildMeta} from "~/constants/MetaData";
-import {parseYearNameGetYear} from "~/libraries/year";
+import { buildMeta } from "~/constants/MetaData";
+import { parseYearNameGetYear } from "~/repositories/year.repository.server";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, teamLeftSlug, teamRightSlug } = params;
 
-  const teamLeftName = teamLeftSlug.replace(/-/g, ' ');
-  const teamRightName = teamRightSlug.replace(/-/g, ' ');
+  const teamLeftName = teamLeftSlug.replace(/-/g, " ");
+  const teamRightName = teamRightSlug.replace(/-/g, " ");
 
   return buildMeta({
     title: `${teamLeftName} vs ${teamRightName} – ${year} Fixture Result`,
@@ -28,45 +33,50 @@ export function meta({ params }: Route.MetaArgs) {
   });
 }
 
-
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const db = getDbFromContext(context)
-  const { year, teamLeftSlug, teamRightSlug } = params
-  const currentYear = await parseYearNameGetYear(db, year)
+  const db = getDbFromContext(context);
+  const { year, teamLeftSlug, teamRightSlug } = params;
+  const currentYear = await parseYearNameGetYear(db, year);
 
   const teamLefts = await db.all(sql`
       select id, name, slug, venueId
       from tennisTeam
       where slug = ${teamLeftSlug}
         and yearId = ${currentYear.id}
-  `)
+  `);
 
   if (teamLefts.length === 0) {
-    return Response.json(`Unable to find teamLeft with slug '${teamLeftSlug}'`, { status: StatusCodes.NOT_FOUND })
+    return Response.json(
+      `Unable to find teamLeft with slug '${teamLeftSlug}'`,
+      { status: StatusCodes.NOT_FOUND },
+    );
   }
 
-  const teamLeft = teamLefts[0]
+  const teamLeft = teamLefts[0];
 
   const teamRights = await db.all(sql`
       select id, slug, name
       from tennisTeam
       where slug = ${teamRightSlug}
         and yearId = ${currentYear.id}
-  `)
+  `);
 
   if (teamRights.length === 0) {
-    return Response.json(`Unable to find teamRight with slug '${teamRightSlug}'`, { status: StatusCodes.NOT_FOUND })
+    return Response.json(
+      `Unable to find teamRight with slug '${teamRightSlug}'`,
+      { status: StatusCodes.NOT_FOUND },
+    );
   }
 
-  const teamRight = teamRights[0]
+  const teamRight = teamRights[0];
 
   const venuess = await db.all(sql`
       select name, slug
       from tennisVenue
       where id = ${teamLeft.venueId}
         and yearId = ${currentYear.id}
-  `)
-  const venue = venuess[0]
+  `);
+  const venue = venuess[0];
 
   const fixtures = await db.all(sql`
       select id, timeFulfilled
@@ -74,8 +84,8 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       where teamIdLeft = ${teamLeft.id}
         and teamIdRight = ${teamRight.id}
         and yearId = ${currentYear.id}
-  `)
-  const fixture = fixtures[0]
+  `);
+  const fixture = fixtures[0];
 
   const encounters = await db.all(sql`
       select CONCAT(tp.nameFirst, ' ', tp.nameLast)   AS playerLeftName,
@@ -92,147 +102,182 @@ export async function loader({ context, params }: Route.LoaderArgs) {
                left join tennisPlayer tpr on te.playerIdRight = tpr.id AND tpr.yearId = ${currentYear.id}
       where te.fixtureId = ${fixture.id}
         and te.yearId = ${currentYear.id}
-  `)
+  `);
 
-  return Response.json({
-    teamLeft,
-    teamRight,
-    venue,
-    fixture,
-    encounters
-  }, { status: StatusCodes.OK })
+  return Response.json(
+    {
+      teamLeft,
+      teamRight,
+      venue,
+      fixture,
+      encounters,
+    },
+    { status: StatusCodes.OK },
+  );
 }
 
-export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({ loaderData, params }: Route.ComponentProps) {
-    const {
-    teamLeft,
-    teamRight,
-    venue,
-    encounters
-  } = loaderData;
-  const { year, teamLeftSlug, teamRightSlug } = params
+export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
+  loaderData,
+  params,
+}: Route.ComponentProps) {
+  const { teamLeft, teamRight, venue, encounters } = loaderData;
+  const { year, teamLeftSlug, teamRightSlug } = params;
 
-  const fixtureFulfilled = encounters.length > 0
+  const fixtureFulfilled = encounters.length > 0;
 
   const getGrandTotal = (side) => {
-    const sideCapitalized = getSideCapitalized(side)
-    const sideScoreKey = `score${sideCapitalized}`
-    let score = 0
+    const sideCapitalized = getSideCapitalized(side);
+    const sideScoreKey = `score${sideCapitalized}`;
+    let score = 0;
 
     encounters.forEach((encounter) => {
       if (encounter.status === EncounterStatus.EXCLUDE) {
-        return
+        return;
       }
-      score += parseInt(encounter[sideScoreKey])
-    })
+      score += parseInt(encounter[sideScoreKey]);
+    });
 
-    return score
-  }
+    return score;
+  };
 
-  const getPlayerLink = (playerSlug, playerName, status, isAwayPlayer = false) => {
+  const getPlayerLink = (
+    playerSlug,
+    playerName,
+    status,
+    isAwayPlayer = false,
+  ) => {
     if (status === EncounterStatus.DOUBLES) {
-      return ''
+      return "";
     }
     if (!playerSlug) {
-      return <span className='text-gray-500 line-through'>Absent<span className='hidden sm:inline'> Player</span></span>
+      return (
+        <span className="text-gray-500 line-through">
+          Absent<span className="hidden sm:inline"> Player</span>
+        </span>
+      );
     }
     return (
       <Link
         className={[
-          linkStyles.join(' '),
-          isAwayPlayer ? 'text-tertiary-500 border-b-tertiary-500' : ''
-        ].join(' ')} to={`/result/${year}/player/${playerSlug}`}
+          linkStyles.join(" "),
+          isAwayPlayer ? "text-tertiary-500 border-b-tertiary-500" : "",
+        ].join(" ")}
+        to={`/result/${year}/player/${playerSlug}`}
       >
-        <span className='sm:hidden'>{getShortPlayerName(playerName)}</span>
-        <span className='hidden sm:inline'>{playerName}</span>
+        <span className="sm:hidden">{getShortPlayerName(playerName)}</span>
+        <span className="hidden sm:inline">{playerName}</span>
       </Link>
-    )
-  }
+    );
+  };
 
   return (
     <>
       <Breadcrumbs
-        items={
-          [
-            { name: 'Results', href: '/result' },
-            { name: year, href: `/result/${year}` },
-            { name: `${teamLeft.name} vs ${teamRight.name}` }
-          ]
-        }
+        items={[
+          { name: "Results", href: "/result" },
+          { name: year, href: `/result/${year}` },
+          { name: `${teamLeft.name} vs ${teamRight.name}` },
+        ]}
       />
 
-      <div className='max-w-[768px] mx-auto'>
+      <div className="max-w-[768px] mx-auto">
         <MainHeading
-          name={(
-              <>
-            <Link
-              to={`/result/${year}/team/${teamLeft.slug}`}
-              className='border-primary-500 text-primary-500'
-              key={teamLeft.slug}
-            >
-              {teamLeft.name}
-            </Link>
-                {" vs "}
-                <Link
-              to={`/result/${year}/team/${teamRight.slug}`}
-              className='border-primary-500 text-primary-500'
-              key={teamRight.slug}
-            >
-              {teamRight.name}
-            </Link>
+          name={
+            <>
+              <Link
+                to={`/result/${year}/team/${teamLeft.slug}`}
+                className="border-primary-500 text-primary-500"
+                key={teamLeft.slug}
+              >
+                {teamLeft.name}
+              </Link>
+              {" vs "}
+              <Link
+                to={`/result/${year}/team/${teamRight.slug}`}
+                className="border-primary-500 text-primary-500"
+                key={teamRight.slug}
+              >
+                {teamRight.name}
+              </Link>
             </>
-          )}
+          }
         />
-        <p className='mb-8'>
-          Home team venue
-          {' '}
+        <p className="mb-8">
+          Home team venue{" "}
           <Link
-            className={linkStyles.join(' ')}
+            className={linkStyles.join(" ")}
             to={`/result/${year}/venue/${venue.slug}`}
-          >{venue.name}
+          >
+            {venue.name}
           </Link>
         </p>
         {!fixtureFulfilled && (
           <p>Fixture has not yet been fulfilled, please check back later.</p>
         )}
         {encounters.map((row, index) => (
-          <div key={index} className='flex gap-4 mt-4 border-b border-dashed border-gray-300 pb-3'>
-            <div className='w-2/6'>
-              <span className={classNames({
-                'max-md:hidden': scorecardStructure[index][0] !== EncounterStatus.DOUBLES,
-                'mr-4': true
-              })}
+          <div
+            key={index}
+            className="flex gap-4 mt-4 border-b border-dashed border-gray-300 pb-3"
+          >
+            <div className="w-2/6">
+              <span
+                className={classNames({
+                  "max-md:hidden":
+                    scorecardStructure[index][0] !== EncounterStatus.DOUBLES,
+                  "mr-4": true,
+                })}
               >
-                {scorecardStructure[index][0] === EncounterStatus.DOUBLES
-                  ? 'Doubles'
-                  : (
-                    <>{scorecardStructure[index][0]} v {scorecardStructure[index][1]}</>
-                    )}
+                {scorecardStructure[index][0] === EncounterStatus.DOUBLES ? (
+                  "Doubles"
+                ) : (
+                  <>
+                    {scorecardStructure[index][0]} v{" "}
+                    {scorecardStructure[index][1]}
+                  </>
+                )}
               </span>
 
-              {getPlayerLink(row.playerLeftSlug, row.playerLeftName, row.status)}
+              {getPlayerLink(
+                row.playerLeftSlug,
+                row.playerLeftName,
+                row.status,
+              )}
               <RankChange rankChange={row.playerRankChangeLeft} />
             </div>
-            <div className='w-1/6 flex-grow font-bold text-right text-xl pr-4 border-r'>{row.scoreLeft}</div>
-            <div className='w-1/6 flex-grow font-bold text-xl pl-2'>{row.scoreRight}</div>
-            <div className='w-2/6 text-right'>
+            <div className="w-1/6 flex-grow font-bold text-right text-xl pr-4 border-r">
+              {row.scoreLeft}
+            </div>
+            <div className="w-1/6 flex-grow font-bold text-xl pl-2">
+              {row.scoreRight}
+            </div>
+            <div className="w-2/6 text-right">
               <RankChange rankChange={row.playerRankChangeRight} />
-              {getPlayerLink(row.playerRightSlug, row.playerRightName, row.status, true)}
+              {getPlayerLink(
+                row.playerRightSlug,
+                row.playerRightName,
+                row.status,
+                true,
+              )}
             </div>
           </div>
         ))}
         {fixtureFulfilled && (
           <>
-            <div className='text-4xl flex p-6 mb-12 gap-10 bg-white rounded-bl rounded-br border border-dashed border-stone-300 border-t-0'>
-              <div className='w-1/2 text-right'>{getGrandTotal(SIDE_LEFT)}</div>
-              <div className='w-1/2 '>{getGrandTotal(SIDE_RIGHT)}</div>
+            <div className="text-4xl flex p-6 mb-12 gap-10 bg-white rounded-bl rounded-br border border-dashed border-stone-300 border-t-0">
+              <div className="w-1/2 text-right">{getGrandTotal(SIDE_LEFT)}</div>
+              <div className="w-1/2 ">{getGrandTotal(SIDE_RIGHT)}</div>
             </div>
 
-            <SubHeading name='Performance' />
-            <FixtureEncounterChart year={year} teamLeftName={teamLeft.name} teamRightName={teamRight.name} encounters={encounters} />
+            <SubHeading name="Performance" />
+            <FixtureEncounterChart
+              year={year}
+              teamLeftName={teamLeft.name}
+              teamRightName={teamRight.name}
+              encounters={encounters}
+            />
           </>
         )}
       </div>
     </>
-  )
+  );
 }

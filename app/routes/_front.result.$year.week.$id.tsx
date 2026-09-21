@@ -1,32 +1,37 @@
-import type {Route} from "./+types/_front.result.$year.week.$id";
-import {getDbFromContext} from "~/db-context.server";
-import {StatusCodes} from "http-status-codes";
+import type { Route } from "./+types/_front.result.$year.week.$id";
+import { getDbFromContext } from "~/db-context.server";
+import { StatusCodes } from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {Link} from "react-router";
+import { Link } from "react-router";
 import SubHeading from "~/components/SubHeading";
-import {linkStyles} from "~/styles/ui-classes";
+import { linkStyles } from "~/styles/ui-classes";
 import FixtureCard from "~/components/FixtureCard";
 import {
   getFixturesByWeekId,
   getUnfulfilledFixtures,
-  getUnfulfilledFixturesByWeekId
+  getUnfulfilledFixturesByWeekId,
 } from "~/repositories/fixture.repository.server";
 import MainHeading from "~/components/MainHeading";
-import {ExactDayWeekTypes, FredHoldenCupWeekTypes, getWeekTypeLabel, WeekTypes} from "~/constants/Week";
-import {getPressByTitleLikeAndPublishedAfter} from "~/repositories/content.repository.server";
-import {formatDayWithSuffixOfMonth} from "~/libraries/date";
-import {getWeekDate} from "~/libraries/week";
+import {
+  ExactDayWeekTypes,
+  FredHoldenCupWeekTypes,
+  getWeekTypeLabel,
+  WeekTypes,
+} from "~/constants/Week";
+import { getPressByTitleLikeAndPublishedAfter } from "~/repositories/content.repository.server";
+import { formatDayWithSuffixOfMonth } from "~/libraries/date";
+import { getWeekDate } from "~/libraries/week";
 import {
   AnnualClosedCompetitionContent,
   DivisionalHandicapCompetitionContent,
   FredHoldenCupCompetitionContent,
-  VetsCompetitionContent
+  VetsCompetitionContent,
 } from "~/components/CompetitionsContent";
 import DatePretty from "~/components/DatePretty";
 import dayjs from "dayjs";
-import {buildMeta} from "~/constants/MetaData";
-import {parseYearNameGetYear} from "~/libraries/year";
-import {getKvFromContext} from "~/kv-context.server";
+import { buildMeta } from "~/constants/MetaData";
+import { getKvFromContext } from "~/kv-context.server";
+import { parseYearNameGetYear } from "~/repositories/year.repository.server";
 
 export function meta({ params, loaderData }: Route.MetaArgs) {
   const { year } = params;
@@ -40,186 +45,226 @@ export function meta({ params, loaderData }: Route.MetaArgs) {
   });
 }
 
-
 export async function loader({ request, context, params }: Route.LoaderArgs) {
-  const db = getDbFromContext(context)
-  const kv = getKvFromContext(context)
-  const { year, id } = params
-  const currentYear = await parseYearNameGetYear(db, year)
+  const db = getDbFromContext(context);
+  const kv = getKvFromContext(context);
+  const { year, id } = params;
+  const currentYear = await parseYearNameGetYear(db, year);
 
   const weeks = await db.all(`
       SELECT type, timeStart
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
         AND id = ${id}
-  `)
+  `);
 
   if (weeks.length === 0) {
-    return Response.json(`Unable to find week with id '${id}'`, { status: StatusCodes.NOT_FOUND })
+    return Response.json(`Unable to find week with id '${id}'`, {
+      status: StatusCodes.NOT_FOUND,
+    });
   }
 
-  const week = weeks[0]
-  let fixtures = await getFixturesByWeekId(kv, db, currentYear.id, id)
+  const week = weeks[0];
+  let fixtures = await getFixturesByWeekId(kv, db, currentYear.id, id);
 
-  let relatedPress = []
-  let pressSearchTerm = ''
+  let relatedPress = [];
+  let pressSearchTerm = "";
 
   if (FredHoldenCupWeekTypes.includes(week.type)) {
-    pressSearchTerm = 'fred'
+    pressSearchTerm = "fred";
   }
   if (week.type === WeekTypes.div) {
-    pressSearchTerm = 'handicap competition'
+    pressSearchTerm = "handicap competition";
   }
   if (week.type === WeekTypes.closedCompetition) {
-    pressSearchTerm = 'annual closed'
+    pressSearchTerm = "annual closed";
   }
   if (week.type === WeekTypes.presentation) {
-    pressSearchTerm = 'presentation'
+    pressSearchTerm = "presentation";
   }
   if (week.type === WeekTypes.agm) {
-    pressSearchTerm = 'agm'
+    pressSearchTerm = "agm";
   }
 
   if (pressSearchTerm) {
-    relatedPress = await getPressByTitleLikeAndPublishedAfter(db, pressSearchTerm, dayjs().subtract(40, 'weeks'))
+    relatedPress = await getPressByTitleLikeAndPublishedAfter(
+      db,
+      pressSearchTerm,
+      dayjs().subtract(40, "weeks"),
+    );
   }
 
-  let unfulfilledFixtures = []
+  let unfulfilledFixtures = [];
   if (week.type === WeekTypes.catchup) {
-    unfulfilledFixtures = await getUnfulfilledFixtures(db, currentYear.id)
+    unfulfilledFixtures = await getUnfulfilledFixtures(db, currentYear.id);
   } else {
-    fixtures = fixtures.concat(await getUnfulfilledFixturesByWeekId(db, currentYear.id, id))
+    fixtures = fixtures.concat(
+      await getUnfulfilledFixturesByWeekId(db, currentYear.id, id),
+    );
   }
 
-  const fixturesByDivisionName = {}
-  fixtures.forEach(fixture => {
+  const fixturesByDivisionName = {};
+  fixtures.forEach((fixture) => {
     if (!fixturesByDivisionName[fixture.divisionName]) {
-      fixturesByDivisionName[fixture.divisionName] = []
+      fixturesByDivisionName[fixture.divisionName] = [];
     }
-    fixturesByDivisionName[fixture.divisionName].push(fixture)
-  })
+    fixturesByDivisionName[fixture.divisionName].push(fixture);
+  });
 
-  return Response.json({
-    week,
-    fixturesByDivisionName,
-    relatedPress,
-    unfulfilledFixtures
-  }, { status: StatusCodes.OK })
+  return Response.json(
+    {
+      week,
+      fixturesByDivisionName,
+      relatedPress,
+      unfulfilledFixtures,
+    },
+    { status: StatusCodes.OK },
+  );
 }
 
 const getHeading = (weekType, weekTimeStart) => {
-  const weekTypeLabel = getWeekTypeLabel(weekType)
+  const weekTypeLabel = getWeekTypeLabel(weekType);
   const formattedDate = formatDayWithSuffixOfMonth(
-    getWeekDate(weekType, weekTimeStart)
-  )
-  let middleBit = ' Week Commencing '
+    getWeekDate(weekType, weekTimeStart),
+  );
+  let middleBit = " Week Commencing ";
 
   if (ExactDayWeekTypes.includes(weekType)) {
-    middleBit = ' on '
+    middleBit = " on ";
   } else if (weekType === WeekTypes.catchup) {
-    middleBit = ' Commencing '
+    middleBit = " Commencing ";
   }
 
-  return `${weekTypeLabel}${middleBit}${formattedDate}`
-}
+  return `${weekTypeLabel}${middleBit}${formattedDate}`;
+};
 
-export default function _frontResultYearWeekId({ loaderData, params }: Route.ComponentProps<typeof loader>) {
-    const {
-    week,
-    fixturesByDivisionName,
-    relatedPress,
-    unfulfilledFixtures
-  } = loaderData;
-  const { year, id } = params
-  const weekTypeLabel = getWeekTypeLabel(week.type)
+export default function _frontResultYearWeekId({
+  loaderData,
+  params,
+}: Route.ComponentProps<typeof loader>) {
+  const { week, fixturesByDivisionName, relatedPress, unfulfilledFixtures } =
+    loaderData;
+  const { year, id } = params;
+  const weekTypeLabel = getWeekTypeLabel(week.type);
 
   return (
     <>
-      <Breadcrumbs items={
-          [
-            { name: 'Season', href: `/result/${year}/season` },
-            { name: `Week - ${weekTypeLabel}` }
-          ]
-        }
+      <Breadcrumbs
+        items={[
+          { name: "Results", href: "/result" },
+          { name: "Season", href: `/result/${year}/season` },
+          { name: `Week - ${weekTypeLabel}` },
+        ]}
       />
 
       <MainHeading name={getHeading(week.type, week.timeStart)} />
 
       {week.type === WeekTypes.nothing && (
-        <p className='mb-12'>Nothing has been scheduled for this week.</p>
+        <p className="mb-12">Nothing has been scheduled for this week.</p>
       )}
-      {week.type === WeekTypes.vets && (
-        <VetsCompetitionContent />
-      )}
+      {week.type === WeekTypes.vets && <VetsCompetitionContent />}
       {week.type === WeekTypes.fixture && (
         <>
-          <p className='mb-12'>This week, the following {fixturesByDivisionName.length} fixtures are scheduled to be played:</p>
+          <p className="mb-12">
+            This week, the following {fixturesByDivisionName.length} fixtures
+            are scheduled to be played:
+          </p>
 
-          {Object.entries(fixturesByDivisionName).map(([divisionName, fixtures]) => (
-            <div key={divisionName}>
-              <SubHeading name={`${divisionName} Division`} />
-              <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-                {fixtures.map((fixture, index) => (
-                  {/* @todo unresolved key component prop? */},
-                  <FixtureCard
-                    key={index}
-                    year={year}
-                    teamLeft={{ name: fixture.teamLeftName, slug: fixture.teamLeftSlug, score: fixture.scoreLeft }}
-                    teamRight={{ name: fixture.teamRightName, slug: fixture.teamRightSlug, score: fixture.scoreRight }}
-                    timeFulfilled={fixture.timeFulfilled}
-                  />
-                ))}
+          {Object.entries(fixturesByDivisionName).map(
+            ([divisionName, fixtures]) => (
+              <div key={divisionName}>
+                <SubHeading name={`${divisionName} Division`} />
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  {fixtures.map(
+                    (fixture, index) => (
+                      {/* @todo unresolved key component prop? */},
+                      (
+                        <FixtureCard
+                          key={index}
+                          year={year}
+                          teamLeft={{
+                            name: fixture.teamLeftName,
+                            slug: fixture.teamLeftSlug,
+                            score: fixture.scoreLeft,
+                          }}
+                          teamRight={{
+                            name: fixture.teamRightName,
+                            slug: fixture.teamRightSlug,
+                            score: fixture.scoreRight,
+                          }}
+                          timeFulfilled={fixture.timeFulfilled}
+                        />
+                      )
+                    ),
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-
+            ),
+          )}
         </>
       )}
       {FredHoldenCupWeekTypes.includes(week.type) && (
         <FredHoldenCupCompetitionContent />
       )}
-      {week.type === WeekTypes.div && (
-        <DivisionalHandicapCompetitionContent />
-      )}
+      {week.type === WeekTypes.div && <DivisionalHandicapCompetitionContent />}
       {week.type === WeekTypes.presentation && (
         <>
-          <p className='my-4'>
-            The Annual Presentation is usually held at Accrington Golf Club, Oswaldtwistle from 7.00 for 7.30 pm. Juniors pay half price for the meal. There will be a vegetarian option.
+          <p className="my-4">
+            The Annual Presentation is usually held at Accrington Golf Club,
+            Oswaldtwistle from 7.00 for 7.30 pm. Juniors pay half price for the
+            meal. There will be a vegetarian option.
           </p>
-          <p className='my-4'>
-            Please support this event and celebrate with the winners of the various competition run throughout the year.
+          <p className="my-4">
+            Please support this event and celebrate with the winners of the
+            various competition run throughout the year.
           </p>
-          <p className='my-4'>
-            It might be your turn next year.
-          </p>
+          <p className="my-4">It might be your turn next year.</p>
         </>
       )}
       {week.type === WeekTypes.agm && (
         <>
-          <p className='my-4'>The AGM of the East Lancashire Table Tennis League is to be held at The Hyndburn Leisure Centre from 7.30 pm. onwards.</p>
-          <p className='my-4'>All players are welcome to this meeting. Officers will be elected and rule changes can be made to facilitate the effective running of the League.<br />It is important to note that rule changes, amendments must be forwarded to the Secretary before April.</p>
+          <p className="my-4">
+            The AGM of the East Lancashire Table Tennis League is to be held at
+            The Hyndburn Leisure Centre from 7.30 pm. onwards.
+          </p>
+          <p className="my-4">
+            All players are welcome to this meeting. Officers will be elected
+            and rule changes can be made to facilitate the effective running of
+            the League.
+            <br />
+            It is important to note that rule changes, amendments must be
+            forwarded to the Secretary before April.
+          </p>
         </>
       )}
       {week.type === WeekTypes.catchup && (
         <>
-          <p className='my-4'>
-            This week teams will have the opportunity to play any fixtures they may have missed earlier in the season. Here are the currently outstanding fixtures to be played:
+          <p className="my-4">
+            This week teams will have the opportunity to play any fixtures they
+            may have missed earlier in the season. Here are the currently
+            outstanding fixtures to be played:
           </p>
           {unfulfilledFixtures.length > 0 && (
-            <div className='grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {unfulfilledFixtures.map((fixture, index) => (
                 <FixtureCard
                   key={index}
                   year={year}
-                  teamLeft={{ name: fixture.teamLeftName, slug: fixture.teamLeftSlug, score: fixture.scoreLeft }}
-                  teamRight={{ name: fixture.teamRightName, slug: fixture.teamRightSlug, score: fixture.scoreRight }}
+                  teamLeft={{
+                    name: fixture.teamLeftName,
+                    slug: fixture.teamLeftSlug,
+                    score: fixture.scoreLeft,
+                  }}
+                  teamRight={{
+                    name: fixture.teamRightName,
+                    slug: fixture.teamRightSlug,
+                    score: fixture.scoreRight,
+                  }}
                   timeFulfilled={fixture.timeFulfilled}
                 />
               ))}
             </div>
           )}
-
         </>
       )}
       {week.type === WeekTypes.closedCompetition && (
@@ -228,21 +273,27 @@ export default function _frontResultYearWeekId({ loaderData, params }: Route.Com
 
       {relatedPress.length > 0 && (
         <>
-          <h3 className='text-lg font-semibold mb-3 mt-5'>Related News</h3>
-          <div className='space-y-4'>
+          <h3 className="text-lg font-semibold mb-3 mt-5">Related News</h3>
+          <div className="space-y-4">
             {relatedPress.map((content, index) => (
-              <div className='p-4 border-b' key={index}>
-                <p className='text-sm text-gray-500 mb-2'>
+              <div className="p-4 border-b" key={index}>
+                <p className="text-sm text-gray-500 mb-2">
                   <DatePretty time={content.timePublished} />
                 </p>
-                <h2><Link className={linkStyles.join(' ')} to={`/press/${content.slug}`}>{content.title}</Link></h2>
-                <h3 className='mt-2'>{content.author}</h3>
+                <h2>
+                  <Link
+                    className={linkStyles.join(" ")}
+                    to={`/press/${content.slug}`}
+                  >
+                    {content.title}
+                  </Link>
+                </h2>
+                <h3 className="mt-2">{content.author}</h3>
               </div>
             ))}
           </div>
         </>
       )}
-
     </>
-  )
+  );
 }

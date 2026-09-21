@@ -1,12 +1,17 @@
-import {index, route, type RouteConfig} from "@react-router/dev/routes";
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
-
   // API
   route("api/update-password-local", "routes/api.update-password-local.ts"),
-  route("api/result/:year/:division/league", "routes/api.result.$year.$division.$league.ts"),
+  route(
+    "api/result/:year/:division/league",
+    "routes/api.result.$year.$division.$league.ts",
+  ),
   route("api/result/:year/team/:slug", "routes/api.result.$year.team.$slug.ts"),
-  route("api/result/:year/player/:slug", "routes/api.result.$year.player.$slug.ts"),
+  route(
+    "api/result/:year/player/:slug",
+    "routes/api.result.$year.player.$slug.ts",
+  ),
 
   // route("score", "routes/score.tsx"),
   //     route("api/score/start", "routes/api.score-start.ts"),
@@ -18,7 +23,6 @@ export default [
   // route("sitemap.xml", "routes/sitemap.xml.tsx"),
 
   route("/", "routes/_front.tsx", [
-
     index("routes/_front.home.tsx"),
 
     route("press", "routes/_front.press.tsx"),
@@ -31,37 +35,67 @@ export default [
 
     route("committee-members", "routes/_front.committee-members.tsx"),
     route("sessions", "routes/_front.sessions.tsx"),
-    route("prepaid-practice-scheme", "routes/_front.prepaid-practice-scheme.tsx"),
+    route(
+      "prepaid-practice-scheme",
+      "routes/_front.prepaid-practice-scheme.tsx",
+    ),
     route("schools", "routes/_front.schools.tsx"),
     route("constitution-and-rules", "routes/_front.constitution-and-rules.tsx"),
     route("gdpr", "routes/_front.gdpr.tsx"),
     route("code-of-conduct", "routes/_front.code-of-conduct.tsx"),
     route("handicap-calculator", "routes/_front.handicap-calculator.tsx"),
 
-
     route("result", "routes/_front.result.tsx"),
+    route("result-archive", "routes/_front.result-archive.tsx"),
     route("result/:year", "routes/_front.result.$year.tsx"),
 
     route("result/:year/season", "routes/_front.result.$year.season.tsx"),
     route("result/:year/week/:id", "routes/_front.result.$year.week.$id.tsx"),
 
     route("result/:year/:division", "routes/_front.result.$year.$division.tsx"),
-    route("result/:year/:division/league", "routes/_front.result.$year.$division.league.tsx"),
-    route("result/:year/:division/merit", "routes/_front.result.$year.$division.merit.tsx"),
-    route("result/:year/:division/rank-merit", "routes/_front.result.$year.$division.rank-merit.tsx"),
-    route("result/:year/:division/doubles-merit", "routes/_front.result.$year.$division.doubles-merit.tsx"),
+    route(
+      "result/:year/:division/league",
+      "routes/_front.result.$year.$division.league.tsx",
+    ),
+    route(
+      "result/:year/:division/merit",
+      "routes/_front.result.$year.$division.merit.tsx",
+    ),
+    route(
+      "result/:year/:division/rank-merit",
+      "routes/_front.result.$year.$division.rank-merit.tsx",
+    ),
+    route(
+      "result/:year/:division/doubles-merit",
+      "routes/_front.result.$year.$division.doubles-merit.tsx",
+    ),
 
-    route("result/:year/team/:slug", "routes/_front.result.$year.team.$slug.tsx"),
-    route("result/:year/venue/:slug", "routes/_front.result.$year.venue.$slug.tsx"),
-    route("result/:year/player/:slug", "routes/_front.result.$year.player.$slug.tsx"),
-    route("result/:year/fixture/:teamLeftSlug/:teamRightSlug", "routes/_front.result.$year.fixture.$teamLeftSlug.$teamRightSlug.tsx"),
+    route(
+      "result/:year/team/:slug",
+      "routes/_front.result.$year.team.$slug.tsx",
+    ),
+    route(
+      "result/:year/venue/:slug",
+      "routes/_front.result.$year.venue.$slug.tsx",
+    ),
+    route(
+      "result/:year/player/:slug",
+      "routes/_front.result.$year.player.$slug.tsx",
+    ),
+    route(
+      "result/:year/fixture/:teamLeftSlug/:teamRightSlug",
+      "routes/_front.result.$year.fixture.$teamLeftSlug.$teamRightSlug.tsx",
+    ),
   ]),
 
   route("admin/login", "routes/admin.login.tsx"),
   route("admin", "routes/admin.tsx", [
     index("routes/admin._index.tsx"),
 
-    route("report/players-playing-up", "routes/admin.players-playing-up-report.tsx"),
+    route(
+      "report/players-playing-up",
+      "routes/admin.players-playing-up-report.tsx",
+    ),
 
     route("news", "routes/admin.news.tsx"),
     route("news/:id", "routes/admin.news.$id.tsx"),

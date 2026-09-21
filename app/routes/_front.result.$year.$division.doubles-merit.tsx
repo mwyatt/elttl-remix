@@ -1,18 +1,21 @@
-import type {Route} from "./+types/_front.result.$year.$division.doubles-merit";
-import {getDbFromContext} from "~/db-context.server";
-import {StatusCodes} from "http-status-codes";
+import type { Route } from "./+types/_front.result.$year.$division.doubles-merit";
+import { getDbFromContext } from "~/db-context.server";
+import { StatusCodes } from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {Link} from "react-router";
-import {capitalizeFirstLetter} from "~/libraries/misc";
+import { Link } from "react-router";
+import { capitalizeFirstLetter } from "~/libraries/misc";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
-import {linkStyles} from "~/styles/ui-classes";
-import {getOtherSideCapitalized, getSidesCapitalized} from "~/constants/encounter";
-import {buildMeta} from "~/constants/MetaData";
-import {parseYearDivisionId} from "~/libraries/year";
-import {getDoublesMeritTable} from "~/repositories/encounter.repository.server";
-import {getKvFromContext} from "~/kv-context.server";
+import { linkStyles } from "~/styles/ui-classes";
+import {
+  getOtherSideCapitalized,
+  getSidesCapitalized,
+} from "~/constants/encounter";
+import { buildMeta } from "~/constants/MetaData";
+import { getDoublesMeritTable } from "~/repositories/encounter.repository.server";
+import { getKvFromContext } from "~/kv-context.server";
+import { parseYearDivisionId } from "~/repositories/year.repository.server";
 
-export function meta({params}: Route.MetaArgs) {
+export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
 
   const divisionName = capitalizeFirstLetter(division);
@@ -24,42 +27,49 @@ export function meta({params}: Route.MetaArgs) {
 }
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const db = getDbFromContext(context)
-  const kv = getKvFromContext(context)
-  const { year, division } = params
+  const db = getDbFromContext(context);
+  const kv = getKvFromContext(context);
+  const { year, division } = params;
 
-  const yearDivisionId = await parseYearDivisionId(db, year, division)
-  const leagueTable = await getDoublesMeritTable(kv, db, yearDivisionId.yearId, yearDivisionId.divisionId)
+  const yearDivisionId = await parseYearDivisionId(db, year, division);
+  const leagueTable = await getDoublesMeritTable(
+    kv,
+    db,
+    yearDivisionId.yearId,
+    yearDivisionId.divisionId,
+  );
 
-  const sides = getSidesCapitalized()
-  let stats = {}
+  const sides = getSidesCapitalized();
+  let stats = {};
 
   for (const league of leagueTable) {
     for (const side of sides) {
-      const teamSlug = league[`team${side}Slug`]
+      const teamSlug = league[`team${side}Slug`];
       if (!(teamSlug in stats)) {
         stats[teamSlug] = {
           team: {
             name: league[`team${side}Name`],
-            slug: teamSlug
+            slug: teamSlug,
           },
           won: 0,
           draw: 0,
           loss: 0,
           played: 0,
-          points: 0
-        }
+          points: 0,
+        };
       }
-      const score = parseInt(league[`score${side}`])
-      const opposingScore = parseInt(league[`score${getOtherSideCapitalized(side)}`])
-      stats[teamSlug].played++
-      stats[teamSlug].points += score
+      const score = parseInt(league[`score${side}`]);
+      const opposingScore = parseInt(
+        league[`score${getOtherSideCapitalized(side)}`],
+      );
+      stats[teamSlug].played++;
+      stats[teamSlug].points += score;
       if (score === opposingScore) {
-        stats[teamSlug].draw++
+        stats[teamSlug].draw++;
       } else if (score > opposingScore) {
-        stats[teamSlug].won++
+        stats[teamSlug].won++;
       } else {
-        stats[teamSlug].loss++
+        stats[teamSlug].loss++;
       }
     }
   }
@@ -68,69 +78,94 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   stats = Object.values(stats).sort((a, b) => {
     if (a.points === b.points) {
       if (a.won === b.won) {
-        return a.played - b.played // optional: fewest games played
+        return a.played - b.played; // optional: fewest games played
       }
-      return b.won - a.won // most wins
+      return b.won - a.won; // most wins
     }
-    return b.points - a.points // most points
-  })
+    return b.points - a.points; // most points
+  });
 
-  return Response.json({
-    stats
-  }, { status: StatusCodes.OK })
+  return Response.json(
+    {
+      stats,
+    },
+    { status: StatusCodes.OK },
+  );
 }
 
-export default function _frontResultYearDivisionDoublesMerit({ loaderData, params }: Route.ComponentProps<typeof loader>) {
-    const {
-    stats
-  } = loaderData;
-  const { year, division } = params
+export default function _frontResultYearDivisionDoublesMerit({
+  loaderData,
+  params,
+}: Route.ComponentProps<typeof loader>) {
+  const { stats } = loaderData;
+  const { year, division } = params;
 
   return (
     <>
       <Breadcrumbs
-        items={
-          [
-            { name: 'Results', href: '/result' },
-            { name: year, href: `/result/${year}` },
-            { name: capitalizeFirstLetter(division), href: `/result/${year}/${division}` },
-            { name: 'Doubles Merit', href: `/result/${year}/${division}/doubles-merit` }
-          ]
-        }
+        items={[
+          { name: "Results", href: "/result" },
+          { name: year, href: `/result/${year}` },
+          {
+            name: capitalizeFirstLetter(division),
+            href: `/result/${year}/${division}`,
+          },
+          {
+            name: "Doubles Merit",
+            href: `/result/${year}/${division}/doubles-merit`,
+          },
+        ]}
       />
-      <h2 className='text-3xl mb-4 sm:text-4xl sm:mb-8'>
-        <span className='capitalize'>{division}</span> Division Doubles Merit Table
+      <h2 className="text-3xl mb-4 sm:text-4xl sm:mb-8">
+        <span className="capitalize">{division}</span> Division Doubles Merit
+        Table
       </h2>
-      <p>This is the doubles merit table for the <span className='capitalize'>{division}</span> division.</p>
+      <p>
+        This is the doubles merit table for the{" "}
+        <span className="capitalize">{division}</span> division.
+      </p>
       <DivisionalSubMenu year={year} division={division} />
-      <table className='table-auto w-full mt-4'>
+      <table className="table-auto w-full mt-4">
         <thead>
           <tr>
-            <th className='p-2 md:p-4'>Name</th>
-            <th className='p-2 md:p-4'>W<span className='hidden sm:inline'>on</span></th>
-            <th className='p-2 md:p-4'>D<span className='hidden sm:inline'>raw</span></th>
-            <th className='p-2 md:p-4'>L<span className='hidden sm:inline'>oss</span></th>
-            <th className='p-2 md:p-4'>Pl<span className='hidden sm:inline'>aye</span>d</th>
-            <th className='p-2 md:p-4'>P<span className='hidden sm:inline'>oin</span>ts</th>
+            <th className="p-2 md:p-4">Name</th>
+            <th className="p-2 md:p-4">
+              W<span className="hidden sm:inline">on</span>
+            </th>
+            <th className="p-2 md:p-4">
+              D<span className="hidden sm:inline">raw</span>
+            </th>
+            <th className="p-2 md:p-4">
+              L<span className="hidden sm:inline">oss</span>
+            </th>
+            <th className="p-2 md:p-4">
+              Pl<span className="hidden sm:inline">aye</span>d
+            </th>
+            <th className="p-2 md:p-4">
+              P<span className="hidden sm:inline">oin</span>ts
+            </th>
           </tr>
         </thead>
         <tbody>
-
           {stats.map((stat, index) => (
-            <tr key={index} className='border-t border-dashed'>
-              <td className='p-2 md:p-4'>
-                <Link className={linkStyles.join(' ')} to={`/result/${year}/team/${stat.team.slug}`}>{stat.team.name}</Link>
+            <tr key={index} className="border-t border-dashed">
+              <td className="p-2 md:p-4">
+                <Link
+                  className={linkStyles.join(" ")}
+                  to={`/result/${year}/team/${stat.team.slug}`}
+                >
+                  {stat.team.name}
+                </Link>
               </td>
-              <td className='p-2 md:p-4 text-center'>{stat.won}</td>
-              <td className='p-2 md:p-4 text-center'>{stat.draw}</td>
-              <td className='p-2 md:p-4 text-center'>{stat.loss}</td>
-              <td className='p-2 md:p-4 text-center'>{stat.played}</td>
-              <td className='p-2 md:p-4 text-center'>{stat.points}</td>
+              <td className="p-2 md:p-4 text-center">{stat.won}</td>
+              <td className="p-2 md:p-4 text-center">{stat.draw}</td>
+              <td className="p-2 md:p-4 text-center">{stat.loss}</td>
+              <td className="p-2 md:p-4 text-center">{stat.played}</td>
+              <td className="p-2 md:p-4 text-center">{stat.points}</td>
             </tr>
           ))}
-
         </tbody>
       </table>
     </>
-  )
+  );
 }
