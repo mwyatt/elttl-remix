@@ -14,6 +14,7 @@ import { getYearDivisionMeritEncounters } from "~/repositories/encounter.reposit
 import { buildMeta } from "~/constants/MetaData";
 import { getKvFromContext } from "~/kv-context.server";
 import { parseYearDivisionId } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -97,7 +98,7 @@ export default function _frontResultYearDivisionMerit({
   const { year, division } = params;
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -176,6 +177,6 @@ export default function _frontResultYearDivisionMerit({
           ))}
         </tbody>
       </table>
-    </>
+    </ContentBody>
   );
 }

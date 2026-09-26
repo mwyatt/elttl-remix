@@ -2,6 +2,8 @@ import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { allHomeButtonStyles, buttonPrimaryStyles } from "~/styles/ui-classes";
+import { BiCaretLeft } from "react-icons/bi";
+import classNames from "classnames";
 
 type BreadcrumbItemType = {
   name: string;
@@ -79,8 +81,12 @@ function Dropdown({
       {tempIsLink && (
         <Link
           to={items[items.length - 2].href}
-          className={allHomeButtonStyles.join(" ")}
+          className={classNames({
+            [allHomeButtonStyles.join(" ")]: true,
+            "flex items-center": true,
+          })}
         >
+          <BiCaretLeft size={21} className="mr-1" />
           {items[items.length - 2].name}
         </Link>
       )}

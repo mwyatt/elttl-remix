@@ -1,7 +1,14 @@
 import { sql } from "drizzle-orm";
 import type { Route } from "./+types/_front";
 import React from "react";
-import { BiLogoFacebook } from "react-icons/bi";
+import {
+  BiBall,
+  BiBook,
+  BiBookOpen,
+  BiCalendar,
+  BiLogoFacebook,
+  BiSolidInfoCircle,
+} from "react-icons/bi";
 import Address from "~/components/Address";
 import { PiXLogoFill } from "react-icons/pi";
 import { getCurrentYear } from "~/repositories/year.repository.server";
@@ -44,29 +51,6 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       ],
     });
   });
-
-  const advertisementsSecondary = [
-    {
-      title: "Get the Handbook",
-      description: "Download this seasons handbook",
-      action: "Download",
-      target: "_blank",
-      url: "/handbook-2026-2027.pdf",
-    },
-    {
-      title: `Season ${getSeasonName(currentYear.name)}`,
-      description: `The new ${getSeasonName(currentYear.name)} season has begun`,
-      action: "Season Overview",
-      url: `/result/${currentYear.name}/season`,
-    },
-    {
-      title: "Service Rules",
-      description:
-        "Get familiar with the table tennis service rules we must all follow for fair play",
-      action: "View",
-      url: "/service-rules",
-    },
-  ];
 
   const commonLinks = {
     prePractice: {
@@ -131,7 +115,6 @@ export async function loader({ context, params }: Route.LoaderArgs) {
         children: divisionsChildren,
       },
     ],
-    advertisementsSecondary,
     isVisitingArchive,
     visitingYearName,
   };
@@ -146,13 +129,8 @@ export default function FrontLayoutRoute({
     visitingYearName,
     menuPrimary,
     footLinks,
-    advertisementsSecondary,
     isVisitingArchive,
   } = loaderData;
-
-  // @todo these were set based on page before
-  const paddedContent = true;
-  const maxWidth = true;
 
   return (
     <div>
@@ -172,35 +150,12 @@ export default function FrontLayoutRoute({
         </div>
       )}
 
-      <div
-        className={`${paddedContent ? "p-4 sm:p-8" : ""} ${maxWidth ? "max-w-[1440px] mx-auto" : ""}`}
-      >
+      <div className={`max-w-[1440px] mx-auto`}>
         <Outlet />
       </div>
 
-      <div className="ml-4 mr-4 mb-8 mt-16">
-        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row gap-4 lg:pl-4 lg:pr-4">
-          {advertisementsSecondary.map((advertisement, index) => (
-            <div
-              key={index}
-              className="p-4 bg-stone-300 text-secondary-700 bg-[url(/table-lip.png)] bg-right-bottom bg-no-repeat flex-basis-1/3 md:basis-1/3 rounded"
-            >
-              <h2 className="mb-4 text-2xl font-bold">{advertisement.title}</h2>
-              <p className="my-3 text-lg">{advertisement.description}</p>
-              <div className="mt-6 flex justify-end">
-                {advertisement.action && (
-                  <Link
-                    className={buttonPrimaryStyles.join(" ")}
-                    to={advertisement.url}
-                    target={advertisement.target || "_self"}
-                  >
-                    {advertisement.action}
-                  </Link>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="mb-8 mt-16">
+        <BannersSecondary currentYearName={currentYearName} />
       </div>
 
       <footer className="bg-tertiary-500">
@@ -278,6 +233,62 @@ export default function FrontLayoutRoute({
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function BannersSecondary({ currentYearName }: { currentYearName: string }) {
+  const advertisements = [
+    {
+      title: "Get the Handbook",
+      description: "Download this seasons handbook",
+      action: "Download",
+      target: "_blank",
+      url: "/handbook-2026-2027.pdf",
+      icon: <BiBookOpen />,
+    },
+    {
+      title: `Season ${getSeasonName(currentYearName)}`,
+      description: `The new ${getSeasonName(currentYearName)} season has begun`,
+      action: "Season Overview",
+      url: `/result/${currentYearName}/season`,
+      icon: <BiCalendar />,
+    },
+    {
+      title: "Service Rules",
+      description:
+        "Get familiar with the table tennis service rules we must all follow for fair play",
+      action: "View",
+      url: "/service-rules",
+      icon: <BiSolidInfoCircle />,
+    },
+  ];
+
+  return (
+    <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row gap-4 lg:pl-4 lg:pr-4 px-6">
+      {advertisements.map((advertisement, index) => (
+        <div
+          key={index}
+          className="flex flex-col p-4 bg-primary-100 text-secondary-700 flex-basis-1/3 md:basis-1/3 rounded relative"
+        >
+          <div className={"text-6xl absolute top-3 right-3 text-white"}>
+            {advertisement.icon}
+          </div>
+          <h2 className="text-2xl font-bold mr-18">{advertisement.title}</h2>
+          <p className="mt-2 text-lg grow mr-18">{advertisement.description}</p>
+          <div className="mt-2 flex justify-end">
+            {advertisement.action && (
+              <Link
+                className={buttonPrimaryStyles.join(" ")}
+                to={advertisement.url}
+                target={advertisement.target || "_self"}
+              >
+                {advertisement.action}
+              </Link>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -18,7 +18,7 @@ import {
   getWeekTypeLabel,
   WeekTypes,
 } from "~/constants/Week";
-import { getPressByTitleLikeAndPublishedAfter } from "~/repositories/content.repository.server";
+import { getPressByTitleLikeAndPublishedBetween } from "~/repositories/content.repository.server";
 import { formatDayWithSuffixOfMonth } from "~/libraries/date";
 import { getWeekDate } from "~/libraries/week";
 import {
@@ -32,6 +32,9 @@ import dayjs from "dayjs";
 import { buildMeta } from "~/constants/MetaData";
 import { getKvFromContext } from "~/kv-context.server";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
+import fredHoldenCupData from "~/data/fred-holden-cup.json";
+import { getAllWeeksByYear } from "~/repositories/week.repository.server";
 
 export function meta({ params, loaderData }: Route.MetaArgs) {
   const { year } = params;
@@ -50,6 +53,8 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   const kv = getKvFromContext(context);
   const { year, id } = params;
   const currentYear = await parseYearNameGetYear(db, year);
+  const fredHoldenCupRounds = fredHoldenCupData[year];
+  let teamsBySlug = {};
 
   const weeks = await db.all(`
       SELECT type, timeStart
@@ -86,11 +91,17 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
     pressSearchTerm = "agm";
   }
 
+  // @todo get season week start and week end
+  const seasonWeeks = await getAllWeeksByYear(db, currentYear.id);
+  const seasonStart = seasonWeeks[0].timeStart;
+  const seasonEnd = seasonWeeks[seasonWeeks.length - 1].timeStart;
+
   if (pressSearchTerm) {
-    relatedPress = await getPressByTitleLikeAndPublishedAfter(
+    relatedPress = await getPressByTitleLikeAndPublishedBetween(
       db,
       pressSearchTerm,
-      dayjs().subtract(40, "weeks"),
+      dayjs.unix(seasonStart),
+      dayjs.unix(seasonEnd),
     );
   }
 
@@ -111,12 +122,42 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
     fixturesByDivisionName[fixture.divisionName].push(fixture);
   });
 
+  if (FredHoldenCupWeekTypes.includes(week.type)) {
+    if (Array.isArray(fredHoldenCupRounds)) {
+      const slugs = [
+        ...new Set(
+          Object.values(fredHoldenCupRounds)
+            .flat()
+            .flatMap((round) =>
+              round.fixtures.flatMap((fixture) => [
+                fixture.teamLeftSlug,
+                fixture.teamRightSlug,
+              ]),
+            ),
+        ),
+      ];
+
+      const teams = await db.all(`
+        SELECT name, slug
+        FROM tennisTeam
+        WHERE yearId = ${currentYear.id}
+    `);
+
+      teamsBySlug = {};
+      teams.forEach((team) => {
+        teamsBySlug[team.slug] = team;
+      });
+    }
+  }
+
   return Response.json(
     {
       week,
       fixturesByDivisionName,
       relatedPress,
       unfulfilledFixtures,
+      fredHoldenCupRounds,
+      teamsBySlug,
     },
     { status: StatusCodes.OK },
   );
@@ -142,13 +183,19 @@ export default function _frontResultYearWeekId({
   loaderData,
   params,
 }: Route.ComponentProps<typeof loader>) {
-  const { week, fixturesByDivisionName, relatedPress, unfulfilledFixtures } =
-    loaderData;
+  const {
+    week,
+    fixturesByDivisionName,
+    relatedPress,
+    unfulfilledFixtures,
+    fredHoldenCupRounds,
+    teamsBySlug,
+  } = loaderData;
   const { year, id } = params;
   const weekTypeLabel = getWeekTypeLabel(week.type);
 
   return (
-    <>
+    <ContentBody isNarrow={FredHoldenCupWeekTypes.includes(week.type)}>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -204,7 +251,11 @@ export default function _frontResultYearWeekId({
         </>
       )}
       {FredHoldenCupWeekTypes.includes(week.type) && (
-        <FredHoldenCupCompetitionContent />
+        <FredHoldenCupCompetitionContent
+          year={year}
+          rounds={fredHoldenCupRounds}
+          teamsBySlug={teamsBySlug}
+        />
       )}
       {week.type === WeekTypes.div && <DivisionalHandicapCompetitionContent />}
       {week.type === WeekTypes.presentation && (
@@ -272,11 +323,12 @@ export default function _frontResultYearWeekId({
       )}
 
       {relatedPress.length > 0 && (
-        <>
+        <div className="mt-12">
+          <hr />
           <h3 className="text-lg font-semibold mb-3 mt-5">Related News</h3>
           <div className="space-y-4">
             {relatedPress.map((content, index) => (
-              <div className="p-4 border-b" key={index}>
+              <div className="p-4 border-b border-b-stone-200" key={index}>
                 <p className="text-sm text-gray-500 mb-2">
                   <DatePretty time={content.timePublished} />
                 </p>
@@ -292,8 +344,8 @@ export default function _frontResultYearWeekId({
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
-    </>
+    </ContentBody>
   );
 }

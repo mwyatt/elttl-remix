@@ -1,0 +1,57 @@
+{
+  "2026": [
+    {
+      "name": "Preliminary Round",
+      "fixtures": [
+        {
+          "teamLeftSlug": "gladiators",
+          "teamLeftScore": null,
+          "teamRightSlug": "whalley-harriers",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "spartans",
+          "teamLeftScore": null,
+          "teamRightSlug": "whalley-eagles",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "whalley-falcons",
+          "teamLeftScore": null,
+          "teamRightSlug": "ksb-d",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "whalley-hawks",
+          "teamLeftScore": null,
+          "teamRightSlug": "whalley-kestrels",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-pumas-jun",
+          "teamLeftScore": null,
+          "teamRightSlug": "brierfield",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-g",
+          "teamLeftScore": null,
+          "teamRightSlug": "burnley-scorpions",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "burnley-hornets",
+          "teamLeftScore": null,
+          "teamRightSlug": "ksb-leopards-jun",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "whalley-merlins",
+          "teamLeftScore": null,
+          "teamRightSlug": "vanguard-phantoms",
+          "teamRightScore": null
+        }
+      ]
+    }
+  ]
+}

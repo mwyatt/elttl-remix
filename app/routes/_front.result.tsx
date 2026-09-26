@@ -9,6 +9,8 @@ import { getCurrentYear } from "~/repositories/year.repository.server";
 import { getSeasonName } from "~/libraries/year";
 import { buttonPrimaryStyles } from "~/styles/ui-classes";
 import classNames from "classnames";
+import DivisionalSubMenu from "~/components/DivisionalSubMenu";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year } = params;
@@ -39,32 +41,28 @@ export default function _frontResult({
   const { divisions, currentYear } = loaderData;
 
   return (
-    <>
-      {/*<Breadcrumbs*/}
-      {/*  items={[*/}
-      {/*    { name: "Results", href: "/result" },*/}
-      {/*    { name: year, href: `/result/${year}` },*/}
-      {/*  ]}*/}
-      {/*/>*/}
-      <MainHeading name={`${getSeasonName(currentYear.name)}`} />
-      <p>
-        Here are all the divisions for the current season. To view the teams
-        within each division, select one of the divisions below.
-      </p>
+    <ContentBody isNarrow>
+      <MainHeading name={`Results`} />
       <div className="flex flex-col gap-2 mt-8">
         {divisions.map((division) => (
-          <Link
-            className={classNames({
-              [buttonPrimaryStyles.join(" ")]: true,
-              "block w-full": true,
-            })}
-            to={`/result/${currentYear.name}/${division.name.toLowerCase()}`}
-            key={division.name}
-          >
-            {division.name} Division
-          </Link>
+          <>
+            <Link
+              className={classNames({
+                [buttonPrimaryStyles.join(" ")]: true,
+                "block w-full": true,
+              })}
+              to={`/result/${currentYear.name}/${division.name.toLowerCase()}`}
+              key={division.name}
+            >
+              {division.name} Division
+            </Link>
+            <DivisionalSubMenu
+              division={division.name.toLowerCase()}
+              year={currentYear.name}
+            />
+          </>
         ))}
       </div>
-    </>
+    </ContentBody>
   );
 }

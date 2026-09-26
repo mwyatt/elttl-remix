@@ -13,6 +13,7 @@ import { buildMeta } from "~/constants/MetaData";
 import { getDivisionLeagueTable } from "~/repositories/encounter.repository.server";
 import { getKvFromContext } from "~/kv-context.server";
 import { parseYearDivisionId } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -84,7 +85,7 @@ export default function _frontResultYearDivision({
   };
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -178,6 +179,6 @@ export default function _frontResultYearDivision({
         </Link>
         .
       </p>
-    </>
+    </ContentBody>
   );
 }

@@ -1,7 +1,7 @@
-import {sql} from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
-export async function getFixturesByWeekId (kv, db, yearId, weekId) {
-  const cacheKey = `fixtures-by-week-id-${yearId}-${weekId}`
+export async function getFixturesByWeekId(kv, db, yearId, weekId) {
+  const cacheKey = `fixtures-by-week-id-${yearId}-${weekId}`;
   let cached = await kv.get(cacheKey, { type: "json" });
   if (!cached) {
     const fixtures = await db.all(`
@@ -25,19 +25,19 @@ export async function getFixturesByWeekId (kv, db, yearId, weekId) {
       where tte.yearId = ${yearId}
       and status != 'exclude'
       group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, divisionName
-    `)
+    `);
 
-    console.warn('cache: setting cache key', cacheKey)
-    await kv.put(cacheKey, JSON.stringify(fixtures))
-    cached = fixtures
+    console.warn("cache: setting cache key", cacheKey);
+    await kv.put(cacheKey, JSON.stringify(fixtures));
+    cached = fixtures;
   } else {
-    console.warn('cache: using cache key', cacheKey)
+    console.warn("cache: using cache key", cacheKey);
   }
 
-  return cached
+  return cached;
 }
 
-export async function getUnfulfilledFixtures (db, yearId) {
+export async function getUnfulfilledFixtures(db, yearId) {
   const fixtures = await db.all(`
       select 
              ttf.id,
@@ -54,12 +54,12 @@ export async function getUnfulfilledFixtures (db, yearId) {
       where ttf.yearId = ${yearId}
         and ttf.timeFulfilled is null
       group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
+  `);
 
-  return fixtures
+  return fixtures;
 }
 
-export async function getUnfulfilledFixturesByWeekId (db, yearId, weekId) {
+export async function getUnfulfilledFixturesByWeekId(db, yearId, weekId) {
   const fixtures = await db.all(`
       select ttl.name teamLeftName,
              ttl.slug teamLeftSlug,
@@ -77,16 +77,16 @@ export async function getUnfulfilledFixturesByWeekId (db, yearId, weekId) {
         and ttf.weekId = ${weekId}
         and ttf.timeFulfilled is null
       group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, divisionName
-  `)
+  `);
 
-  return fixtures
+  return fixtures;
 }
 
-export async function getFixturesByTeamId (kv, db, yearId, teamId) {
-  const cacheKey = `fixtures-by-team-id-${yearId}-${teamId}`
+export async function getFixturesByTeamId(kv, db, yearId, teamId) {
+  const cacheKey = `fixtures-by-team-id-${yearId}-${teamId}`;
   let cached = await kv.get(cacheKey, { type: "json" });
   if (!cached) {
-      const fixtures = await db.all(`
+    const fixtures = await db.all(`
           select ttl.name teamLeftName,
                  ttl.slug teamLeftSlug,
                  ttl.homeWeekday,
@@ -108,20 +108,20 @@ export async function getFixturesByTeamId (kv, db, yearId, teamId) {
           where ttf.yearId = ${yearId}
             and (ttf.teamIdLeft = ${teamId} OR ttf.teamIdRight = ${teamId})
           group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, weekId, ttl.homeWeekday, venueName, venueSlug, venueLocation
-      `)
+      `);
 
-    console.warn('cache: setting cache key', cacheKey)
-    await kv.put(cacheKey, JSON.stringify(fixtures))
-    cached = fixtures
+    console.warn("cache: setting cache key", cacheKey);
+    await kv.put(cacheKey, JSON.stringify(fixtures));
+    cached = fixtures;
   } else {
-    console.warn('cache: using cache key', cacheKey)
+    console.warn("cache: using cache key", cacheKey);
   }
 
-  return cached
+  return cached;
 }
 
-export async function getLatestFixtures (kv, db, yearId) {
-  const cacheKey = `latest-fixtures-${yearId}`
+export async function getLatestFixtures(kv, db, yearId) {
+  const cacheKey = `latest-fixtures-${yearId}`;
   let cached = await kv.get(cacheKey, { type: "json" });
   if (!cached) {
     const fixtures = await db.all(`
@@ -144,35 +144,35 @@ export async function getLatestFixtures (kv, db, yearId) {
       group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
       ORDER BY timeFulfilled DESC
       LIMIT 12
-    `)
+    `);
 
-    console.warn('cache: setting cache key', cacheKey)
-    await kv.put(cacheKey, JSON.stringify(fixtures))
-    cached = fixtures
+    console.warn("cache: setting cache key", cacheKey);
+    await kv.put(cacheKey, JSON.stringify(fixtures));
+    cached = fixtures;
   } else {
-    console.warn('cache: using cache key', cacheKey)
+    console.warn("cache: using cache key", cacheKey);
   }
 
-  return cached
+  return cached;
 }
 
-export async function getFixtureById (db, yearId, id) {
-      const fixtures = await db.all(`
+export async function getFixtureById(db, yearId, id) {
+  const fixtures = await db.all(`
           select 
                  teamIdLeft,
                  teamIdRight,
                  timeFulfilled
           from tennisFixture ttf
           where ttf.yearId = ${yearId} and ttf.id = ${id}
-      `)
-  return fixtures[0]
+      `);
+  return fixtures[0];
 }
 
-export async function getUnfulfilledFixturesByTeamIds (kv, db, yearId, teamIds) {
-  const cacheKey = `teams-unfulfilled-fixtures-${yearId}-${teamIds.join('')}`
+export async function getUnfulfilledFixturesByTeamIds(kv, db, yearId, teamIds) {
+  const cacheKey = `teams-unfulfilled-fixtures-${yearId}-${teamIds.join("")}`;
   let cached = await kv.get(cacheKey, { type: "json" });
   if (!cached) {
-      const fixtures = await db.all(sql`
+    const fixtures = await db.all(sql`
       select ttl.name teamLeftName,
              ttl.slug teamLeftSlug,
              '0'      scoreLeft,
@@ -187,14 +187,14 @@ export async function getUnfulfilledFixturesByTeamIds (kv, db, yearId, teamIds) 
         and ttf.teamIdLeft in (${sql.join(teamIds, sql`, `)})
         and ttf.timeFulfilled is null
       group by ttf.id, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-      `)
+      `);
 
-    console.warn('cache: setting cache key', cacheKey)
-    await kv.put(cacheKey, JSON.stringify(fixtures))
-    cached = fixtures
+    console.warn("cache: setting cache key", cacheKey);
+    await kv.put(cacheKey, JSON.stringify(fixtures));
+    cached = fixtures;
   } else {
-    console.warn('cache: using cache key', cacheKey)
+    console.warn("cache: using cache key", cacheKey);
   }
 
-  return cached
+  return cached;
 }

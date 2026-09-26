@@ -1,31 +1,34 @@
-import type {Route} from "./+types/_front.press";
-import {getDbFromContext} from "~/db-context.server";
-import {Link, useSearchParams} from "react-router";
-import {linkStyles} from "~/styles/ui-classes";
+import type { Route } from "./+types/_front.press";
+import { getDbFromContext } from "~/db-context.server";
+import { Link, useSearchParams } from "react-router";
+import { linkStyles } from "~/styles/ui-classes";
 import MainHeading from "~/components/MainHeading";
 import ContentStatus from "~/constants/ContentStatus";
-import {StatusCodes} from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import Breadcrumbs from "~/components/Breadcrumbs";
-import {BiCaretLeft, BiCaretRight} from "react-icons/bi";
+import { BiCaretLeft, BiCaretRight } from "react-icons/bi";
 import DatePretty from "~/components/DatePretty";
-import {sql} from "drizzle-orm";
-import {buildMeta} from "~/constants/MetaData";
+import { sql } from "drizzle-orm";
+import { buildMeta } from "~/constants/MetaData";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({}: Route.MetaArgs) {
-      return buildMeta({
-    title: 'News Updates',
-    description: "Browse the latest news updates from the East Lancashire Table Tennis League, including press articles, team announcements, fixture updates, and important league information."
-  })
+  return buildMeta({
+    title: "News Updates",
+    description:
+      "Browse the latest news updates from the East Lancashire Table Tennis League, including press articles, team announcements, fixture updates, and important league information.",
+  });
 }
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-    const url = new URL(request.url);
+  const url = new URL(request.url);
   const page = Number(url.searchParams.get("page") ?? "1");
   const db = getDbFromContext(context);
-  const limit = 10
-  const offset = (page - 1) * limit
+  const limit = 10;
+  const offset = (page - 1) * limit;
 
-  const contents = await db.all(sql`
+  const contents = await db.all(
+    sql`
       SELECT title, timePublished, slug, CONCAT(user.nameFirst, ' ', user.nameLast) AS author
       FROM content
                LEFT JOIN user ON content.userId = user.id
@@ -33,57 +36,65 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         and status = ${ContentStatus.PUBLISHED}
       order by timePublished desc
           LIMIT ${limit} OFFSET ${offset}
-  `<any>)
+  `<any>,
+  );
 
-  return Response.json({contents}, { status: StatusCodes.OK })
+  return Response.json({ contents }, { status: StatusCodes.OK });
 }
 
-export default function _frontPress({ loaderData }: Route.ComponentProps<typeof loader>) {
-    const {
-    contents
-  } = loaderData;
+export default function _frontPress({
+  loaderData,
+}: Route.ComponentProps<typeof loader>) {
+  const { contents } = loaderData;
   const [searchParams] = useSearchParams();
   let page = Number(searchParams.get("page") ?? "1");
 
-  const pageMin = 1
+  const pageMin = 1;
   if (!page || isNaN(page) || page < pageMin) {
-    page = pageMin
+    page = pageMin;
   }
-  const nextPage = page + 1
-  let prevPage = page - 1
+  const nextPage = page + 1;
+  let prevPage = page - 1;
 
   if (prevPage < pageMin) {
-    prevPage = pageMin
+    prevPage = pageMin;
   }
 
   return (
-      <div className='max-w-[768px] mx-auto'>
-        <Breadcrumbs items={
-          [
-            { name: 'News Updates' }
-          ]
-        }
-        />
-        <MainHeading name='News Updates' />
-        <div className='flex justify-between my-6'>
-          <Link className='flex items-center border border-primary-500 text-primary-500 py-1 pr-3 pl-2 rounded' to={`/press?page=${prevPage}`}>
-            <BiCaretLeft size={21} className='mr-1' />
-            Previous
-          </Link>
-          <Link className='flex items-center border border-primary-500 text-primary-500 py-1 pr-2 pl-3 rounded' to={`/press?page=${nextPage}`}>
-            Next
-            <BiCaretRight size={21} className='ml-2' />
-          </Link>
-        </div>
-        {contents.map((content, index) => (
-          <div className='p-4 border-b' key={index}>
-            <p className='text-sm text-gray-500 mb-2'>
-              <DatePretty time={content.timePublished} />
-            </p>
-            <h2><Link className={linkStyles.join(' ')} to={`/press/${content.slug}`}>{content.title}</Link></h2>
-            <h3 className='mt-2'>{content.author}</h3>
-          </div>
-        ))}
+    <ContentBody isNarrow>
+      <MainHeading name="News Updates" />
+      <div className="flex justify-between my-6">
+        <Link
+          className="flex items-center border border-primary-500 text-primary-500 py-1 pr-3 pl-2 rounded"
+          to={`/press?page=${prevPage}`}
+        >
+          <BiCaretLeft size={21} className="mr-1" />
+          Previous
+        </Link>
+        <Link
+          className="flex items-center border border-primary-500 text-primary-500 py-1 pr-2 pl-3 rounded"
+          to={`/press?page=${nextPage}`}
+        >
+          Next
+          <BiCaretRight size={21} className="ml-2" />
+        </Link>
       </div>
-  )
+      {contents.map((content, index) => (
+        <div className="p-4 border-b" key={index}>
+          <p className="text-sm text-gray-500 mb-2">
+            <DatePretty time={content.timePublished} />
+          </p>
+          <h2>
+            <Link
+              className={linkStyles.join(" ")}
+              to={`/press/${content.slug}`}
+            >
+              {content.title}
+            </Link>
+          </h2>
+          <h3 className="mt-2">{content.author}</h3>
+        </div>
+      ))}
+    </ContentBody>
+  );
 }

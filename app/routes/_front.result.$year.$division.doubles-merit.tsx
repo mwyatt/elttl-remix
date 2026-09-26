@@ -14,6 +14,7 @@ import { buildMeta } from "~/constants/MetaData";
 import { getDoublesMeritTable } from "~/repositories/encounter.repository.server";
 import { getKvFromContext } from "~/kv-context.server";
 import { parseYearDivisionId } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, division } = params;
@@ -101,7 +102,7 @@ export default function _frontResultYearDivisionDoublesMerit({
   const { year, division } = params;
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -166,6 +167,6 @@ export default function _frontResultYearDivisionDoublesMerit({
           ))}
         </tbody>
       </table>
-    </>
+    </ContentBody>
   );
 }

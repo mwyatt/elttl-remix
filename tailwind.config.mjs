@@ -9,7 +9,7 @@ const config = {
 ],
   theme: {
     extend: {
-      colors: colors
+      colors: colors,
     }
   },
   plugins: []

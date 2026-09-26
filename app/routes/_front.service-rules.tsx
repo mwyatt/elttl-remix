@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import classNames from "classnames";
 import { buttonPrimaryStyles, linkStyles } from "~/styles/ui-classes";
 import { BiSolidVideos } from "react-icons/bi";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({}) {
   return buildMeta({
@@ -14,7 +15,7 @@ export function meta({}) {
 
 export default function _frontServiceRules() {
   return (
-    <div className="max-w-[768px] mx-auto">
+    <ContentBody isNarrow>
       <section className="space-y-12">
         <div className="space-y-4">
           <MainHeading name="Table Tennis Service Rules" />
@@ -179,6 +180,6 @@ export default function _frontServiceRules() {
           </div>
         </div>
       </section>
-    </div>
+    </ContentBody>
   );
 }

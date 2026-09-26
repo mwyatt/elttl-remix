@@ -3,57 +3,57 @@ import SubHeading from "~/components/SubHeading";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import Address from "~/components/Address";
 import DirectionsButton from "~/components/DirectionsButton";
-import {linkStyles} from "~/styles/ui-classes";
-import {buildMeta, DeveloperEmail} from "~/constants/MetaData";
-import {Link} from "react-router";
+import { linkStyles } from "~/styles/ui-classes";
+import { buildMeta, DeveloperEmail } from "~/constants/MetaData";
+import { Link } from "react-router";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({}) {
-    return buildMeta({
-        title: 'Contact Us',
-        description: `Get in touch with the East Lancashire Table Tennis League for venue information, directions, league enquiries, or website feedback. Contact the League Secretary or reach the website maintainer directly by email.`
-    })
+  return buildMeta({
+    title: "Contact Us",
+    description: `Get in touch with the East Lancashire Table Tennis League for venue information, directions, league enquiries, or website feedback. Contact the League Secretary or reach the website maintainer directly by email.`,
+  });
 }
 
 export default function _frontContactUs() {
-    const hyndburnLink = 'https://maps.app.goo.gl/EwvviMzKi7HQpyom6'
+  const hyndburnLink = "https://maps.app.goo.gl/EwvviMzKi7HQpyom6";
 
-    return (
-        <>
-            <Breadcrumbs
-                items={
-                    [
-                        {name: 'Contact us'}
-                    ]
-                }
-            />
+  return (
+    <ContentBody>
+      <MainHeading name="Contact us" />
 
-            <MainHeading name='Contact us'/>
+      <div className="sm:flex gap-16">
+        <div className="flex-1">
+          <div className="my-6">
+            <SubHeading name="Address" />
+            <Address />
+          </div>
+          <div className="my-6">
+            <SubHeading name="Directions" />
 
-            <div className='sm:flex gap-16'>
-                <div className='flex-1'>
+            <DirectionsButton url={hyndburnLink} />
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="pb-12 mb-12 border-b border-stone-300 border-dashed">
+            <SubHeading name="League Secretary" />
+            <h3 className="">David Heys - 01254 608565</h3>
+          </div>
 
-                    <div className='my-6'>
-                        <SubHeading name='Address'/>
-                        <Address/>
-                    </div>
-                    <div className='my-6'>
-                        <SubHeading name='Directions'/>
-
-                        <DirectionsButton url={hyndburnLink}/>
-                    </div>
-                </div>
-                <div className='flex-1'>
-                    <div className='pb-12 mb-12 border-b border-stone-300 border-dashed'>
-                        <SubHeading name='League Secretary'/>
-                        <h3 className=''>David Heys - 01254 608565</h3>
-
-                    </div>
-
-                    <SubHeading name='Website Maintainer'/>
-                    <p>Always open to ideas and criticism of the website so please provide any feedback to <Link
-                        className={linkStyles.join(' ')} to={`mailto:${DeveloperEmail}`}>{DeveloperEmail}</Link>.</p>
-                </div>
-            </div>
-        </>
-    )
+          <SubHeading name="Website Maintainer" />
+          <p>
+            Always open to ideas and criticism of the website so please provide
+            any feedback to{" "}
+            <Link
+              className={linkStyles.join(" ")}
+              to={`mailto:${DeveloperEmail}`}
+            >
+              {DeveloperEmail}
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
+    </ContentBody>
+  );
 }

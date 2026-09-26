@@ -1,195 +1,256 @@
-import type {Route} from "./+types/_front.about-us";
-import {getDbFromContext} from "~/db-context.server";
-import {playerGetBySlugs} from "~/repositories/player.repository.server";
-import {getCurrentYear} from "~/repositories/year.repository.server";
+import type { Route } from "./+types/_front.about-us";
+import { getDbFromContext } from "~/db-context.server";
+import { playerGetBySlugs } from "~/repositories/player.repository.server";
+import { getCurrentYear } from "~/repositories/year.repository.server";
 import MainHeading from "~/components/MainHeading";
 import SubHeading from "~/components/SubHeading";
-import {buildMeta} from "~/constants/MetaData";
-import {getPlayerBySlug} from "~/libraries/player";
+import { buildMeta } from "~/constants/MetaData";
+import { getPlayerBySlug } from "~/libraries/player";
 import QuickLink from "~/components/QuickLink";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({}: Route.MetaArgs) {
-    return buildMeta({
-        title: 'About us',
-        description: "Learn about the East Lancashire Table Tennis League, its history since 1974, local venues, coaching opportunities, affiliated clubs, and how players of all abilities can get involved across Hyndburn, Burnley and the wider East Lancashire area."
-    })
+  return buildMeta({
+    title: "About us",
+    description:
+      "Learn about the East Lancashire Table Tennis League, its history since 1974, local venues, coaching opportunities, affiliated clubs, and how players of all abilities can get involved across Hyndburn, Burnley and the wider East Lancashire area.",
+  });
 }
 
-export async function loader({context}: Route.LoaderArgs) {
-    const db = getDbFromContext(context);
-    const currentYear = await getCurrentYear(db)
-    const players = await playerGetBySlugs(db, currentYear.id, [
-        'david-heys',
-        'mick-moir',
-        'bryan-edwards',
-        'darren-wright',
-        'neil-hepworth',
-        'colin-hooper',
-        'trevor-elkington',
-        'ian-pickles',
-        'robin-willoughby',
-        'harry-rawcliffe',
-        'fred-wade',
-        'adam-hek',
-        'ged-simpson',
-        'martin-ormsby',
-        'bernard-milnes',
-        'mike-turner',
-        'catherine-lawson',
-        'martin-wyatt',
-        'grant-saggers',
-        'colin-hooper',
-        'shamir-bose',
-        'chris-freely',
-        'jason-pilling'
-    ])
-    return {players, currentYearName: currentYear.name};
+export async function loader({ context }: Route.LoaderArgs) {
+  const db = getDbFromContext(context);
+  const currentYear = await getCurrentYear(db);
+  const players = await playerGetBySlugs(db, currentYear.id, [
+    "david-heys",
+    "mick-moir",
+    "bryan-edwards",
+    "darren-wright",
+    "neil-hepworth",
+    "colin-hooper",
+    "trevor-elkington",
+    "ian-pickles",
+    "robin-willoughby",
+    "harry-rawcliffe",
+    "fred-wade",
+    "adam-hek",
+    "ged-simpson",
+    "martin-ormsby",
+    "bernard-milnes",
+    "mike-turner",
+    "catherine-lawson",
+    "martin-wyatt",
+    "grant-saggers",
+    "colin-hooper",
+    "shamir-bose",
+    "chris-freely",
+    "jason-pilling",
+  ]);
+  return { players, currentYearName: currentYear.name };
 }
 
-export default function AboutUsPage({loaderData}: Route.ComponentProps<typeof loader>) {
-    const {
-        players,
-        currentYearName
-    } = loaderData;
+export default function AboutUsPage({
+  loaderData,
+}: Route.ComponentProps<typeof loader>) {
+  const { players, currentYearName } = loaderData;
 
-    const nextYearName = parseInt(currentYearName) + 1
-    const handbookLink = <QuickLink href={`/handbook-${currentYearName}-${nextYearName}.pdf`} name='Handbook' external/>
+  const nextYearName = parseInt(currentYearName) + 1;
+  const handbookLink = (
+    <QuickLink
+      href={`/handbook-${currentYearName}-${nextYearName}.pdf`}
+      name="Handbook"
+      external
+    />
+  );
 
-    const davidHeys = getPlayerBySlug('david-heys', players)
-    const mickMoir = getPlayerBySlug('mick-moir', players)
-    const bryanEdwards = getPlayerBySlug('bryan-edwards', players)
-    const darrenWright = getPlayerBySlug('darren-wright', players)
-    const neilHepworth = getPlayerBySlug('neil-hepworth', players)
-    const colinHooper = getPlayerBySlug('colin-hooper', players)
-    const trevorElkington = getPlayerBySlug('trevor-elkington', players)
+  const davidHeys = getPlayerBySlug("david-heys", players);
+  const mickMoir = getPlayerBySlug("mick-moir", players);
+  const bryanEdwards = getPlayerBySlug("bryan-edwards", players);
+  const darrenWright = getPlayerBySlug("darren-wright", players);
+  const neilHepworth = getPlayerBySlug("neil-hepworth", players);
+  const colinHooper = getPlayerBySlug("colin-hooper", players);
+  const trevorElkington = getPlayerBySlug("trevor-elkington", players);
 
-    const davidHeysLink = <QuickLink href={`/result/${currentYearName}/player/${davidHeys.slug}`}
-                                     name={davidHeys.name}/>
-    const mickMoirLink = <QuickLink href={`/result/${currentYearName}/player/${mickMoir.slug}`} name={mickMoir.name}/>
-    const bryanEdwardsLink = <QuickLink href={`/result/${currentYearName}/player/${bryanEdwards.slug}`}
-                                        name={bryanEdwards.name}/>
-    const darrenWrightLink = <QuickLink href={`/result/${currentYearName}/player/${darrenWright.slug}`}
-                                        name={darrenWright.name}/>
-    const neilHepworthLink = <QuickLink href={`/result/${currentYearName}/player/${neilHepworth.slug}`}
-                                        name={neilHepworth.name}/>
-    const colinHooperLink = <QuickLink href={`/result/${currentYearName}/player/${colinHooper.slug}`}
-                                       name={colinHooper.name}/>
-    const trevorElkingtonLink = <QuickLink href={`/result/${currentYearName}/player/${trevorElkington.slug}`}
-                                           name={trevorElkington.name}/>
+  const davidHeysLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${davidHeys.slug}`}
+      name={davidHeys.name}
+    />
+  );
+  const mickMoirLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${mickMoir.slug}`}
+      name={mickMoir.name}
+    />
+  );
+  const bryanEdwardsLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${bryanEdwards.slug}`}
+      name={bryanEdwards.name}
+    />
+  );
+  const darrenWrightLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${darrenWright.slug}`}
+      name={darrenWright.name}
+    />
+  );
+  const neilHepworthLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${neilHepworth.slug}`}
+      name={neilHepworth.name}
+    />
+  );
+  const colinHooperLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${colinHooper.slug}`}
+      name={colinHooper.name}
+    />
+  );
+  const trevorElkingtonLink = (
+    <QuickLink
+      href={`/result/${currentYearName}/player/${trevorElkington.slug}`}
+      name={trevorElkington.name}
+    />
+  );
 
-    const coachingAndSessionsLink = <QuickLink href='/sessions' name='Coaching and Sessions'/>
-    const competitionsLink = <QuickLink href='/competitions' name='Competitions'/>
+  const coachingAndSessionsLink = (
+    <QuickLink href="/sessions" name="Coaching and Sessions" />
+  );
+  const competitionsLink = (
+    <QuickLink href="/competitions" name="Competitions" />
+  );
 
-    return (
-        <div className='max-w-[768px] mx-auto'>
-            <MainHeading name='About Us'/>
+  return (
+    <ContentBody isNarrow>
+      <MainHeading name="About Us" />
 
-            <p className='my-4'>Our League has been running since 1974, originally being the Hyndburn Table Tennis
-                League and
-                becoming the East Lancashire Table Tennis League in 2001 in order to take in the wider East Lancashire
-                area as various other local leagues ceased to exist.
-            </p>
+      <p className="my-4">
+        Our League has been running since 1974, originally being the Hyndburn
+        Table Tennis League and becoming the East Lancashire Table Tennis League
+        in 2001 in order to take in the wider East Lancashire area as various
+        other local leagues ceased to exist.
+      </p>
 
-            <p className='my-4'>Whether you are able-bodied or have a disability, an experienced player wishing to play
-                competitive
-                league table tennis, a beginner wishing to learn or just someone who wants to play for fun, our League
-                provides facilities, opportunities, coaching and contacts in the East Lancashire area.
-            </p>
+      <p className="my-4">
+        Whether you are able-bodied or have a disability, an experienced player
+        wishing to play competitive league table tennis, a beginner wishing to
+        learn or just someone who wants to play for fun, our League provides
+        facilities, opportunities, coaching and contacts in the East Lancashire
+        area.
+      </p>
 
-            <p className='my-4'>For more information contact our Secretary {davidHeysLink} or any of our Committee
-                Members (see annual {handbookLink}
-                ) - or drop in at one of our Bat and Chat or Practice sessions at Hyndburn Leisure Centre or
-                Burnley St. Peters Leisure Centre. First session is free for anyone who wants to come along and try us
-                out!
-            </p>
+      <p className="my-4">
+        For more information contact our Secretary {davidHeysLink} or any of our
+        Committee Members (see annual {handbookLink}) - or drop in at one of our
+        Bat and Chat or Practice sessions at Hyndburn Leisure Centre or Burnley
+        St. Peters Leisure Centre. First session is free for anyone who wants to
+        come along and try us out!
+      </p>
 
-            <SubHeading name='Venues'/>
-            <SubHeading name='Fred Holden Table Tennis Centre at Hyndburn Leisure Centre'/>
+      <SubHeading name="Venues" />
+      <SubHeading name="Fred Holden Table Tennis Centre at Hyndburn Leisure Centre" />
 
-            <p className='my-4'>Here we have a dedicated Table Tennis Centre with a hall accommodating up to 10 tables
-                where we run
-                informal Bat and Chat Sessions, Practice Sessions and coaching, open to all.
-            </p>
-            <p className='my-4'>For further details and charges see {coachingAndSessionsLink} or
-                contact {davidHeysLink}.</p>
+      <p className="my-4">
+        Here we have a dedicated Table Tennis Centre with a hall accommodating
+        up to 10 tables where we run informal Bat and Chat Sessions, Practice
+        Sessions and coaching, open to all.
+      </p>
+      <p className="my-4">
+        For further details and charges see {coachingAndSessionsLink} or contact{" "}
+        {davidHeysLink}.
+      </p>
 
-            <SubHeading name='St. Peter’s Leisure Centre, Burnley'/>
+      <SubHeading name="St. Peter’s Leisure Centre, Burnley" />
 
-            <p className='my-4'>We have Bat and Chat and Practice Sessions with up to 10 tables available every week in
-                the main Sports
-                Hall as follows:
-            </p>
-            <p className='my-4'>For further details and charges see {coachingAndSessionsLink} or
-                contact {davidHeysLink}.</p>
+      <p className="my-4">
+        We have Bat and Chat and Practice Sessions with up to 10 tables
+        available every week in the main Sports Hall as follows:
+      </p>
+      <p className="my-4">
+        For further details and charges see {coachingAndSessionsLink} or contact{" "}
+        {davidHeysLink}.
+      </p>
 
-            <SubHeading name='Local Clubs'/>
+      <SubHeading name="Local Clubs" />
 
-            <p className='my-4'>Several local clubs throughout East Lancashire are affiliated to the League and
-                participate in the Annual
-                League and other Competitions organised by the League. They have their own membership and practice
-                arrangements and welcome newcomers. They include:
-            </p>
+      <p className="my-4">
+        Several local clubs throughout East Lancashire are affiliated to the
+        League and participate in the Annual League and other Competitions
+        organised by the League. They have their own membership and practice
+        arrangements and welcome newcomers. They include:
+      </p>
 
-            <ul className='list-disc pl-12'>
-                <li>
-                    <p className='my-4'>Kay St. Baptists, Rawtenstall - contact {trevorElkingtonLink};
-                        website: <QuickLink href='https://www.kaystreet.co.uk/sport' external/>
-                    </p>
-                </li>
-                <li>
+      <ul className="list-disc pl-12">
+        <li>
+          <p className="my-4">
+            Kay St. Baptists, Rawtenstall - contact {trevorElkingtonLink};
+            website:{" "}
+            <QuickLink href="https://www.kaystreet.co.uk/sport" external />
+          </p>
+        </li>
+        <li>
+          <p className="my-4">
+            Whalley Table Tennis Club, Village Hall, Whalley - contact{" "}
+            {colinHooperLink}
+          </p>
+        </li>
+        {/*<li>*/}
 
-                    <p className='my-4'>Whalley Table Tennis Club, Village Hall, Whalley - contact {colinHooperLink}
-                    </p>
-                </li>
-                {/*<li>*/}
+        {/*    <p className='my-4'>Doals Community Centre, Weir, Bacup - contact {neilHepworthLink}*/}
+        {/*    </p>*/}
+        {/*</li>*/}
+        <li>
+          <p className="my-4">
+            Vanguard Table Tennis Club, Burnley - contact {darrenWrightLink};
+            website:{" "}
+            <QuickLink href="https://www.vanguardttclub.co.uk" external />
+          </p>
+        </li>
+        {/*<li>*/}
 
-                {/*    <p className='my-4'>Doals Community Centre, Weir, Bacup - contact {neilHepworthLink}*/}
-                {/*    </p>*/}
-                {/*</li>*/}
-                <li>
+        {/*    <p className='my-4'>Ramsbottom Cricket Club – contact {bryanEdwardsLink}*/}
+        {/*    </p>*/}
 
-                    <p className='my-4'>Vanguard Table Tennis Club, Burnley - contact {darrenWrightLink};
-                        website: <QuickLink href='https://www.vanguardttclub.co.uk' external/>
-                    </p>
-                </li>
-                {/*<li>*/}
+        {/*</li>*/}
+      </ul>
 
-                {/*    <p className='my-4'>Ramsbottom Cricket Club – contact {bryanEdwardsLink}*/}
-                {/*    </p>*/}
+      <SubHeading name="League Participation and Membership" />
 
-                {/*</li>*/}
-            </ul>
+      <p className="my-4">
+        There is no obligation to become a League Member or participate in
+        League Competitions but for those who wish to do so we operate an Annual
+        League normally running between September and April - catering,
+        currently over four Divisions, for a wide range of skill levels. There
+        is a small individual League joining fee as well as a requirement to
+        join{" "}
+        <QuickLink
+          href="http://tabletennisengland.co.uk/"
+          name="Table Tennis England"
+          external
+        />{" "}
+        as a player member. In addition we run a number of other{" "}
+        {competitionsLink} for League Members.
+      </p>
 
-            <SubHeading name='League Participation and Membership'/>
+      <p className="my-4">
+        For further details see {handbookLink} , {competitionsLink} and other
+        League details on this website.
+      </p>
 
-            <p className='my-4'>There is no obligation to become a League Member or participate in League Competitions
-                but for those
-                who wish to do so we operate an Annual League normally running between September and April -
-                catering, currently over four Divisions, for a wide range of skill levels. There is a small individual
-                League
-                joining fee as well as a requirement to join <QuickLink href='http://tabletennisengland.co.uk/'
-                                                                        name='Table Tennis England' external/> as a
-                player member. In addition we run
-                a number of other {competitionsLink} for League Members.
-            </p>
+      <SubHeading name="Coaching" />
 
-            <p className='my-4'>For further details see {handbookLink} , {competitionsLink} and other League details on
-                this website.
-            </p>
-
-            <SubHeading name='Coaching'/>
-
-            <p className='my-4'>
-                Several of our members are qualified coaches who are happy provide advice and guidance when they
-                are in attendance at Bat &amp; Chat and Practice Sessions, or by individual arrangement.
-            </p>
-            <p className='my-4'>
-                Professional coaching for under 18s (Juniors) is available at Hyndburn Centre from {mickMoirLink} who
-                has
-                been appointed to develop the sport in schools and across the community. He will also provide adult
-                coaching by arrangement. He can be contacted direct: {mickMoirLink} or we can put you in touch.
-                See {coachingAndSessionsLink}.
-            </p>
-        </div>
-    )
+      <p className="my-4">
+        Several of our members are qualified coaches who are happy provide
+        advice and guidance when they are in attendance at Bat &amp; Chat and
+        Practice Sessions, or by individual arrangement.
+      </p>
+      <p className="my-4">
+        Professional coaching for under 18s (Juniors) is available at Hyndburn
+        Centre from {mickMoirLink} who has been appointed to develop the sport
+        in schools and across the community. He will also provide adult coaching
+        by arrangement. He can be contacted direct: {mickMoirLink} or we can put
+        you in touch. See {coachingAndSessionsLink}.
+      </p>
+    </ContentBody>
+  );
 }

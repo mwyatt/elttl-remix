@@ -1,19 +1,27 @@
-'use client'
+"use client";
 
-import classNames from 'classnames'
+import classNames from "classnames";
 
-export default function Panel({children, rowSpan, colSpan}) {
+export default function Panel({
+  children,
+  rowSpan = 1,
+  colSpan = 1,
+  extraClassNames = "",
+}) {
   return (
-    <div className={classNames({
-      'p-6 border border-stone-300 sm:rounded': true,
-      'sm:shadow-md': true,
-      'row-span-2': rowSpan === 2,
-      'col-span-2': colSpan === 2,
-      'bg-white/60': true,
-      'relative': true,
-    })}
+    <div
+      className={classNames({
+        "p-6 sm:border border-b border-stone-300 sm:rounded mb-4 sm:mb-0": true,
+        "sm:shadow-sm": true,
+        "row-span-2": rowSpan === 2,
+        "col-span-2": colSpan === 2,
+        "col-span-3": colSpan === 3,
+        "bg-white/60": true,
+        relative: true,
+        [extraClassNames]: extraClassNames,
+      })}
     >
       {children}
     </div>
-  )
+  );
 }

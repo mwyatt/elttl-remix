@@ -20,6 +20,7 @@ import classNames from "classnames";
 import FixtureEncounterChart from "~/components/FixtureEncounterChart";
 import { buildMeta } from "~/constants/MetaData";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, teamLeftSlug, teamRightSlug } = params;
@@ -171,7 +172,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
   };
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -278,6 +279,6 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
           </>
         )}
       </div>
-    </>
+    </ContentBody>
   );
 }

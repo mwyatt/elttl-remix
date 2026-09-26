@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import MainHeading from "~/components/MainHeading";
 import { buildMeta } from "~/constants/MetaData";
 import { getAllYears } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -28,7 +29,7 @@ export default function _frontResult({
   const { years } = loaderData;
 
   return (
-    <>
+    <ContentBody>
       <MainHeading name="Results Archive" />
       <p>Browse all all the results from seasons past and present.</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-8 text-center">
@@ -42,6 +43,6 @@ export default function _frontResult({
           </Link>
         ))}
       </div>
-    </>
+    </ContentBody>
   );
 }

@@ -18,6 +18,8 @@ import classNames from "classnames";
 import { BiTrophy } from "react-icons/bi";
 import { buildMeta } from "~/constants/MetaData";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import { getSeasonName } from "~/libraries/year";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year } = params;
@@ -106,25 +108,22 @@ export default function _frontResultYearSeason({
   const { year } = params;
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[{ name: "Results", href: "/result" }, { name: "Season" }]}
       />
 
-      <MainHeading name="Season Overview" />
-      <p className="mb-12">
-        This is an overview of what is happening each week in the {year} season:
-      </p>
+      <MainHeading name={`${getSeasonName(year)} Season Overview`} />
 
       {weeks.length === 0 && <p>No weeks have been configured yet.</p>}
       {weeks.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="mt-8 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {/* @todo unresolved key component prop? */}
           {weeks.map((week) => (
             <Week key={week.id} yearName={year} week={week} />
           ))}
         </div>
       )}
-    </>
+    </ContentBody>
   );
 }

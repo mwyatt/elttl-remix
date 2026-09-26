@@ -9,6 +9,7 @@ import MainHeading from "~/components/MainHeading";
 import { buildMeta } from "~/constants/MetaData";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year } = params;
@@ -69,7 +70,7 @@ export default function _frontResultYear({
   const { year } = params;
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -104,6 +105,6 @@ export default function _frontResultYear({
           />
         </div>
       ))}
-    </>
+    </ContentBody>
   );
 }

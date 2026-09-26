@@ -9,6 +9,7 @@ import MainHeading from "~/components/MainHeading";
 import DirectionsButton from "~/components/DirectionsButton";
 import { buildMeta } from "~/constants/MetaData";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -70,7 +71,7 @@ export default function _frontResultYearVenueSlug({
   const { year, slug } = params;
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -104,6 +105,6 @@ export default function _frontResultYearVenueSlug({
           <DirectionsButton url={venue.location} />
         </div>
       </div>
-    </>
+    </ContentBody>
   );
 }

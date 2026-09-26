@@ -15,6 +15,7 @@ import { getKvFromContext } from "~/kv-context.server";
 import Accordion from "~/components/Accordion";
 import { getCorePlayerInformation } from "~/services/player.service.server";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import ContentBody from "~/components/ContentBody";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -74,7 +75,7 @@ export default function _frontResultYearPlayerSlug({
   };
 
   return (
-    <>
+    <ContentBody>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -196,6 +197,6 @@ export default function _frontResultYearPlayerSlug({
           />
         ))}
       </div>
-    </>
+    </ContentBody>
   );
 }
