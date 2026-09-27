@@ -96,7 +96,6 @@ export default function _frontResultYearDivision({
       <h2 className="text-4xl mb-8">
         <span className="capitalize">{division}</span> Division
       </h2>
-      <p>This is an overview for the {division} division.</p>
       <DivisionalSubMenu year={year} division={division} />
 
       <SubHeading name="Teams" />

@@ -3,6 +3,7 @@ import { homeNightMap } from '~/constants/Team'
 import { getDayVenueSessions, sessionContacts, sessionVenues } from '~/constants/VenueSessions'
 import { allHomeButtonStyles, linkStyles } from '~/styles/ui-classes'
 import {Link} from "react-router";
+import LinkButton from "~/components/LinkButton";
 
 export default function SessionsToday ({ yearName }) {
   let date = dayjs()
@@ -18,7 +19,7 @@ export default function SessionsToday ({ yearName }) {
     <div className='px-4 md:px-0'>
       <div className='flex items-center mb-4'>
         <h2 className='text-2xl grow'>{homeNightMap[date.day()]} Sessions</h2>
-        <Link className={allHomeButtonStyles} to='/sessions'>All Sessions</Link>
+        <LinkButton to='/sessions' theme={'secondary'} size={'small'}>All Sessions</LinkButton>
       </div>
       <div className='flex flex-wrap gap-3'>
 

@@ -1,17 +1,21 @@
-import {Link} from "react-router";
+import LinkButton from "~/components/LinkButton";
+import classNames from "classnames";
 
-export default function DivisionalSubMenu ({ year, division }) {
+export default function DivisionalSubMenu ({ year, division, hasGrid = true }) {
   return (
-    <div className='sm:flex items-center justify-center border border-primary-500 rounded my-6'>
-      <Link className='block p-4 text-primary-500 font-bold sm:border-r border-primary-500' to={`/result/${year}/${division}/league`}>
+    <div className={classNames({
+      'rounded text-center gap-2 flex flex-col': true,
+      "grid sm:grid-cols-3": hasGrid
+    })}>
+      <LinkButton to={`/result/${year}/${division}/league`} theme={'secondary'} className={'block'}>
         League Table
-      </Link>
-      <Link className='block p-4 text-primary-500 font-bold border-t sm:border-t-0 sm:border-r border-primary-500' to={`/result/${year}/${division}/merit`}>
+      </LinkButton>
+      <LinkButton to={`/result/${year}/${division}/merit`} theme={'secondary'} className={'block'}>
         Merit Table
-      </Link>
-      <Link className='block p-4 text-primary-500 font-bold border-t sm:border-t-0 border-primary-500' to={`/result/${year}/${division}/doubles-merit`}>
+      </LinkButton>
+      <LinkButton to={`/result/${year}/${division}/doubles-merit`} theme={'secondary'} className={'block'}>
         Doubles Merit Table
-      </Link>
+      </LinkButton>
     </div>
   )
 }

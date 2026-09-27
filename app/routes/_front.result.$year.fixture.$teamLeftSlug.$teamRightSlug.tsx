@@ -21,6 +21,11 @@ import FixtureEncounterChart from "~/components/FixtureEncounterChart";
 import { buildMeta } from "~/constants/MetaData";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
 import ContentBody from "~/components/ContentBody";
+import {getFixtureDayFormatted} from "~/libraries/date";
+import {getWeekByYearIdId} from "~/repositories/week.repository.server";
+import LinkButton from "~/components/LinkButton";
+import DirectionsButton from "~/components/DirectionsButton";
+import ContentPanel from "~/components/ContentPanel";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, teamLeftSlug, teamRightSlug } = params;
@@ -40,7 +45,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const currentYear = await parseYearNameGetYear(db, year);
 
   const teamLefts = await db.all(sql`
-      select id, name, slug, venueId
+      select id, name, slug, venueId, homeWeekday
       from tennisTeam
       where slug = ${teamLeftSlug}
         and yearId = ${currentYear.id}
@@ -72,7 +77,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const teamRight = teamRights[0];
 
   const venuess = await db.all(sql`
-      select name, slug
+      select name, slug, location
       from tennisVenue
       where id = ${teamLeft.venueId}
         and yearId = ${currentYear.id}
@@ -80,13 +85,28 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const venue = venuess[0];
 
   const fixtures = await db.all(sql`
-      select id, timeFulfilled
+      select id, timeFulfilled, weekId
       from tennisFixture
       where teamIdLeft = ${teamLeft.id}
         and teamIdRight = ${teamRight.id}
         and yearId = ${currentYear.id}
   `);
   const fixture = fixtures[0];
+
+  if (fixtures.length !== 1) {
+    return Response.json(
+      `Unable to find fixture with team composition '${teamLeft.id}' vs '${teamRight.id}'`,
+      { status: StatusCodes.NOT_FOUND },
+    );
+  }
+
+  const week = await getWeekByYearIdId(db, currentYear.id, fixture.weekId);
+  let fixtureDateStartFormatted;
+  if (week) {
+    // @todo its interesting that we need to add an hour here, but on the timeline we dont
+    // Does not matter too much but it is something to do with the timezone
+    fixtureDateStartFormatted = getFixtureDayFormatted(week.timeStart, teamLeft.homeWeekday);
+  }
 
   const encounters = await db.all(sql`
       select CONCAT(tp.nameFirst, ' ', tp.nameLast)   AS playerLeftName,
@@ -112,6 +132,8 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       venue,
       fixture,
       encounters,
+      fixtureDateStartFormatted,
+      week,
     },
     { status: StatusCodes.OK },
   );
@@ -121,7 +143,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { teamLeft, teamRight, venue, encounters } = loaderData;
+  const { teamLeft, teamRight, venue, encounters, fixtureDateStartFormatted, week } = loaderData;
   const { year, teamLeftSlug, teamRightSlug } = params;
 
   const fixtureFulfilled = encounters.length > 0;
@@ -172,7 +194,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
   };
 
   return (
-    <ContentBody>
+    <ContentBody isNarrow>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -180,8 +202,6 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
           { name: `${teamLeft.name} vs ${teamRight.name}` },
         ]}
       />
-
-      <div className="max-w-[768px] mx-auto">
         <MainHeading
           name={
             <>
@@ -203,18 +223,25 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
             </>
           }
         />
-        <p className="mb-8">
-          Home team venue{" "}
-          <Link
+
+        {!fixtureFulfilled && (
+            <ContentPanel extraClassNames={'mt-8'}>
+              <div className={'flex flex-col gap-6 sm:gap-4'}>
+                <p>Scheduled to be played on <span className={'font-bold text-lg'}>{fixtureDateStartFormatted}</span> at <Link
             className={linkStyles.join(" ")}
             to={`/result/${year}/venue/${venue.slug}`}
           >
             {venue.name}
-          </Link>
-        </p>
-        {!fixtureFulfilled && (
-          <p>Fixture has not yet been fulfilled, please check back later.</p>
+          </Link></p>
+                <div className={'flex gap-4 justify-end text-lg'}>
+                  <DirectionsButton url={venue.location} />
+                  <LinkButton to={`/result/${year}/week/${week.id}`}>View Week</LinkButton>
+                </div>
+              </div>
+            </ContentPanel>
         )}
+
+      <div className={'mt-12'}>
         {encounters.map((row, index) => (
           <div
             key={index}
@@ -245,7 +272,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
               )}
               <RankChange rankChange={row.playerRankChangeLeft} />
             </div>
-            <div className="w-1/6 flex-grow font-bold text-right text-xl pr-4 border-r">
+            <div className="w-1/6 flex-grow font-bold text-right text-xl pr-4 border-r border-r-stone-300">
               {row.scoreLeft}
             </div>
             <div className="w-1/6 flex-grow font-bold text-xl pl-2">
@@ -278,7 +305,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
             />
           </>
         )}
-      </div>
+        </div>
     </ContentBody>
   );
 }

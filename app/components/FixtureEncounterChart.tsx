@@ -55,15 +55,6 @@ export default function FixtureEncounterChart ({ year, encounters, teamLeftName,
 
   return (
     <>
-      {/* Demo tip card */}
-      {/* <TipCard */}
-      {/*  isVisible={false} */}
-      {/*  leftName='left name' */}
-      {/*  rightName='right name' */}
-      {/*  scoreLeft={3} */}
-      {/*  scoreRight={2} */}
-      {/* /> */}
-
       <LineChart
         style={{ width: '100%', aspectRatio: 1.618 }}
         responsive
@@ -105,7 +96,7 @@ export default function FixtureEncounterChart ({ year, encounters, teamLeftName,
           {stats.map((stat, index) => (
             <tr
               key={index} className={classNames({
-                'border-t': true,
+                'border-t border-t-stone-300': true,
                 'border-dashed': true,
                 'hover:bg-gray-100': true
               })}

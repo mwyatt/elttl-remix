@@ -16,7 +16,6 @@ export default function Panel({
         "row-span-2": rowSpan === 2,
         "col-span-2": colSpan === 2,
         "col-span-3": colSpan === 3,
-        "bg-white/60": true,
         relative: true,
         [extraClassNames]: extraClassNames,
       })}

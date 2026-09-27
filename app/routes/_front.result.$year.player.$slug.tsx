@@ -7,15 +7,14 @@ import SubHeading from "~/components/SubHeading";
 import MainHeading from "~/components/MainHeading";
 import { getShortPlayerName } from "~/libraries/player";
 import { linkStyles } from "~/styles/ui-classes";
-import WeeksTimeline from "~/components/WeeksTimeline";
 import RankChange from "~/components/player/RankChange";
-import FixtureCard from "~/components/FixtureCard";
 import { buildMeta } from "~/constants/MetaData";
 import { getKvFromContext } from "~/kv-context.server";
-import Accordion from "~/components/Accordion";
 import { getCorePlayerInformation } from "~/services/player.service.server";
 import { parseYearNameGetYear } from "~/repositories/year.repository.server";
 import ContentBody from "~/components/ContentBody";
+import ContentPanel from "~/components/ContentPanel";
+import LinkButton from "~/components/LinkButton";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -47,7 +46,7 @@ export default function _frontResultYearPlayerSlug({
   loaderData,
   params,
 }: Route.ComponentProps<typeof loader>) {
-  const { player, encounters, fixtures, weeks } = loaderData;
+  const { player, encounters, fixtures, weeks, division } = loaderData;
   const { year, slug } = params;
 
   const getPlayerLink = (playerSlug, playerName) => {
@@ -75,7 +74,7 @@ export default function _frontResultYearPlayerSlug({
   };
 
   return (
-    <ContentBody>
+    <ContentBody isNarrow>
       <Breadcrumbs
         items={[
           { name: "Results", href: "/result" },
@@ -85,67 +84,86 @@ export default function _frontResultYearPlayerSlug({
       />
 
       <MainHeading name={player.name} />
-      <div className="lg:grid lg:grid-cols-8 gap-16">
-        <div className="lg:col-span-5">
-          <SubHeading name="General Information" />
-          <p>
-            {"Plays for the "}
+      <div className="mt-8">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <ContentPanel extraClassNames={'text-2xl flex flex-col gap-6'}>
+            <p>            {"Plays for "}
             <Link
               className={linkStyles.join(" ")}
               to={`/result/${year}/team/${player.teamSlug}`}
             >
               {player.teamName}
             </Link>
-            {" team with a rank of "}
-            <span className="font-bold">{player.rank}</span>
-            {" and has had "}
-            <span className="font-bold">{encounters.length}</span>
-            {" encounters with other players so far this season."}
-          </p>
+</p>
+            <div className={'flex justify-end items-end grow'}>
+            <LinkButton to={`/result/${year}/team/${player.teamSlug}`} className="text-base" theme={'secondary'}>
+              {"View Team"}
+            </LinkButton>
+            </div>
+          </ContentPanel>
+          <ContentPanel extraClassNames={'text-2xl flex flex-col gap-6'}>
+            <p>            {"Plays in the "}
+            <Link
+              className={linkStyles.join(" ")}
+              to={`/result/${year}/${division.name.toLowerCase()}/`}
+            >
+              {division.name} Division
+            </Link>
+</p>
+            <div className={'flex justify-end items-end grow'}>
+            <LinkButton to={`/result/${year}/${division.name.toLowerCase()}/`} className="text-base" theme={'secondary'}>
+              {"View Division"}
+            </LinkButton>
+            </div>
+          </ContentPanel>
+          <ContentPanel extraClassNames={'text-3xl flex justify-center items-center'}>
+            <p>{"Rank "}
+            <span className="font-bold">{player.rank}</span></p>
+          </ContentPanel>
+          {encounters.length > 0 && (
+            <ContentPanel extraClassNames={'text-xl flex justify-center items-center'}>
+              <p>
+
+              {"Has had "}
+              <span className="font-bold text-xl">{encounters.length}</span>
+              {" encounters with other players so far this season."}
+              </p>
+            </ContentPanel>
+          )}
 
           {(player.phoneLandline || player.phoneMobile) && (
-            <>
-              <SubHeading name="Contact Information" />
+            <ContentPanel extraClassNames={'text-2xl'}>
               {player.phoneLandline && (
                 <p className="mb-2">
-                  {"Phone Landline: "}
-                  <a
-                    className="text-primary-500"
+                  {"Landline "}
+                  <Link
+                    className={linkStyles.join(" ")}
                     to={`tel:${player.phoneLandline}`}
                   >
                     {player.phoneLandline}
-                  </a>
+                  </Link>
                 </p>
               )}
               {player.phoneMobile && (
                 <p className="mb-2">
-                  {"Phone Mobile: "}
-                  <a
-                    className="text-primary-500"
+                  {"Mobile "}
+                  <Link
+                    className={linkStyles.join(" ")}
                     to={`tel:${player.phoneMobile}`}
                   >
                     {player.phoneMobile}
-                  </a>
+                  </Link>
                 </p>
               )}
-            </>
-          )}
-
-          {weeks.length > 0 && (
-            <Accordion previewHeight={400}>
-              <WeeksTimeline
-                yearName={year}
-                weeks={weeks}
-                teamSlug={player.teamSlug}
-              />
-            </Accordion>
+            </ContentPanel>
           )}
         </div>
 
-        <div className="lg:col-span-3">
+        {encounters.length > 0 && (
+
+        <div>
           <SubHeading name="Performance" />
 
-          <Accordion previewHeight={400}>
             <div className="grid grid-cols-10">
               {encounters.map((encounter, index) => (
                 <div key={index} className="contents">
@@ -172,30 +190,8 @@ export default function _frontResultYearPlayerSlug({
                 </div>
               ))}
             </div>
-          </Accordion>
         </div>
-      </div>
-
-      {/* @todo make this only fixtures that the player has been involved in */}
-      <SubHeading name="Team Fixtures" />
-      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
-        {fixtures.map((fixture, index) => (
-          <FixtureCard
-            key={index}
-            year={year}
-            teamLeft={{
-              name: fixture.teamLeftName,
-              slug: fixture.teamLeftSlug,
-              score: fixture.scoreLeft,
-            }}
-            teamRight={{
-              name: fixture.teamRightName,
-              slug: fixture.teamRightSlug,
-              score: fixture.scoreRight,
-            }}
-            timeFulfilled={fixture.timeFulfilled}
-          />
-        ))}
+        )}
       </div>
     </ContentBody>
   );

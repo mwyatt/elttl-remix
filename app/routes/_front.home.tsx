@@ -25,6 +25,7 @@ import { formatDayWithSuffixOfMonth } from "~/libraries/date";
 import { getWeekDate } from "~/libraries/week";
 import { BiSolidInfoCircle } from "react-icons/bi";
 import ContentBody from "~/components/ContentBody";
+import LinkButton from "~/components/LinkButton";
 
 export function meta({}: Route.MetaArgs) {
   return buildMeta({
@@ -202,9 +203,9 @@ export default function HomePage({
         <div className="flex items-center">
           <h2 className="text-2xl grow">News Updates</h2>
           <div>
-            <Link className={allHomeButtonStyles.join(" ")} to="/press/">
+            <LinkButton to="/press/" size={'small'} theme={'secondary'}>
               All News
-            </Link>
+            </LinkButton>
           </div>
         </div>
         {latestPress.map((press) => (
@@ -269,9 +270,9 @@ export default function HomePage({
             </p>
           </div>
           <div className="flex justify-end">
-            <Link className={buttonPrimaryStyles.join(" ")} to="/service-rules">
+            <LinkButton to="/service-rules">
               View Rules
-            </Link>
+            </LinkButton>
           </div>
         </div>
       </Panel>
@@ -282,9 +283,9 @@ export default function HomePage({
             Find out more about the various competitions being held this season.
           </p>
           <div className="flex justify-end">
-            <Link className={buttonPrimaryStyles.join(" ")} to="/competitions">
+            <LinkButton to="/competitions">
               Competitions
-            </Link>
+            </LinkButton>
           </div>
         </div>
       </Panel>
@@ -296,12 +297,9 @@ export default function HomePage({
             match? Give our new handicap calculator a try!
           </p>
           <div className="flex justify-end">
-            <Link
-              className={buttonPrimaryStyles.join(" ")}
-              to="/handicap-calculator"
-            >
+            <LinkButton to="/handicap-calculator">
               Calculator
-            </Link>
+            </LinkButton>
           </div>
         </div>
       </Panel>

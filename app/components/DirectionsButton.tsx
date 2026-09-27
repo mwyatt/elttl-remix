@@ -3,9 +3,9 @@ import {Link} from "react-router";
 
 export default function DirectionsButton ({ url }) {
   return (
-    <Link to={url} target='_blank' rel='noreferrer' className='border border-primary-500 text-primary-500 p-2 flex items-center gap-3 rounded text-xl font-semibold max-w-64 p-2 focus:outline-2 focus:outline-offset-2 focus:outline-stone-500 active:border-stone-700'>
-      <span><BiMap size={30} /></span>
-      <span>Google Maps Directions</span>
+    <Link to={url} target='_blank' rel='noreferrer' className='border border-primary-500 text-primary-500 p-2 pr-3 flex items-center gap-2 rounded focus:outline-2 focus:outline-offset-2 focus:outline-stone-500 active:border-stone-700 flex-nowrap font-bold'>
+      <span><BiMap size={24} /></span>
+      <span>Directions</span>
     </Link>
 
   )

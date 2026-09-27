@@ -121,10 +121,6 @@ export default function _frontResultYearDivisionDoublesMerit({
         <span className="capitalize">{division}</span> Division Doubles Merit
         Table
       </h2>
-      <p>
-        This is the doubles merit table for the{" "}
-        <span className="capitalize">{division}</span> division.
-      </p>
       <DivisionalSubMenu year={year} division={division} />
       <table className="table-auto w-full mt-4">
         <thead>

@@ -1,6 +1,7 @@
 import { allHomeButtonStyles } from "~/styles/ui-classes";
 import { Link } from "react-router";
 import { getSeasonName } from "~/libraries/year";
+import LinkButton from "~/components/LinkButton";
 
 const Panel = ({ name, total, url }) => (
   <Link
@@ -18,18 +19,20 @@ export default function SeasonTotals({ yearName, totals }) {
       <div className="flex items-center">
         <h2 className="text-2xl grow">Season {getSeasonName(yearName)}</h2>
         <div className="flex gap-2">
-          <Link
-            className={allHomeButtonStyles.join(" ")}
+          <LinkButton
             to={`/result/${yearName}`}
+            theme={'secondary'}
+            size={'small'}
           >
             Team Information
-          </Link>
-          <Link
-            className={allHomeButtonStyles.join(" ")}
+          </LinkButton>
+          <LinkButton
             to={`/result/${yearName}/season`}
+            theme={'secondary'}
+            size={'small'}
           >
             Season Overview
-          </Link>
+          </LinkButton>
         </div>
       </div>
       <div className="flex flex-wrap gap-3">

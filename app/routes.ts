@@ -13,6 +13,8 @@ export default [
     "routes/api.result.$year.player.$slug.ts",
   ),
 
+  route("/.well-known/appspecific/com.chrome.devtools.json", "routes/chrome-devtools.ts"),
+
   // route("score", "routes/score.tsx"),
   //     route("api/score/start", "routes/api.score-start.ts"),
   //     route("api/score/update", "routes/api.score-update.ts"),
@@ -44,6 +46,9 @@ export default [
     route("gdpr", "routes/_front.gdpr.tsx"),
     route("code-of-conduct", "routes/_front.code-of-conduct.tsx"),
     route("handicap-calculator", "routes/_front.handicap-calculator.tsx"),
+
+    // @todo complete this to unlock header revamp
+    // route("league", "routes/_front.league.tsx"),
 
     route("result", "routes/_front.result.tsx"),
     route("result-archive", "routes/_front.result-archive.tsx"),
@@ -119,7 +124,7 @@ export default [
     // route("api/generate-fixtures", "routes/admin.api.generate-fixtures.ts"),
 
     // Helper to clear KV out manually - problem with this route name?
-    // route("api/kv-clear", "routes/admin.api.kv-clear.ts"),
+    route("api/kv-clear", "routes/admin.api.kv-clear.ts"),
 
     // Helper to clear KV out manually
     // route("api/test", "routes/admin.api.test.ts"),

@@ -5,6 +5,7 @@ import {sql} from "drizzle-orm";
 import {getPlayerEncounters} from "~/repositories/encounter.repository.server";
 import {getAllWeeksByYear} from "~/repositories/week.repository.server";
 import {getFixturesByTeamId} from "~/repositories/fixture.repository.server";
+import {getAllDivisionsByYear} from "~/repositories/division.repository.server";
 
 export async function getPlayersForYear(context: Route.LoaderArgs["context"], yearId: number, slugs: string[]) {
   const db = getDbFromContext(context);
@@ -35,6 +36,9 @@ export async function getCorePlayerInformation(kv, db, yearId, playerSlug) {
 
   const player = players[0]
 
+  const divisions = await getAllDivisionsByYear(db, yearId)
+  const division = divisions.find(division => division.id === player.divisionId)
+
   const encounters = await getPlayerEncounters(kv, db, yearId, player.id)
 
   const weeks = await getAllWeeksByYear(db, yearId)
@@ -49,6 +53,7 @@ export async function getCorePlayerInformation(kv, db, yearId, playerSlug) {
     player,
     encounters,
     fixtures: teamFixtures,
-    weeks
+    weeks,
+    division
   }
 }

@@ -3,7 +3,7 @@ import { BiMap, BiTrophy } from 'react-icons/bi'
 import dayjs from 'dayjs'
 import {Link} from "react-router";
 import {ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes} from "~/constants/Week";
-import {formatDateWithDayAndSuffixOfMonth, formatDayWithSuffixOfMonth} from "~/libraries/date";
+import {formatDateWithDayAndSuffixOfMonth, formatDayWithSuffixOfMonth, getFixtureDayFormatted} from "~/libraries/date";
 import {getWeekDate} from "~/libraries/week";
 import {allHomeButtonStyles, linkStyles} from "~/styles/ui-classes";
 
@@ -23,9 +23,7 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
   if (isFixtureWeek) {
     fixture = week.fixtures[0]
     fixtureLink = `/result/${yearName}/fixture/${fixture.teamLeftSlug}/${fixture.teamRightSlug}`
-    formattedDate = formatDateWithDayAndSuffixOfMonth(
-      dayjs.unix(week.timeStart).add(fixture.homeWeekday, 'day')
-    )
+    formattedDate = getFixtureDayFormatted(week.timeStart, fixture.homeWeekday);
   }
 
   if (isExactDayWeekType) {

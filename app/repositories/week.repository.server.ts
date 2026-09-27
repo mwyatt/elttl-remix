@@ -118,3 +118,20 @@ export async function updateWeek (db, week, fixtures) {
   })
 }
 
+export async function getWeekByYearIdId (db, yearId, id) {
+  const weeks = await db.all(sql`
+      SELECT
+          id,
+          type,
+          timeStart
+      FROM tennisWeek
+      WHERE yearId = ${yearId}
+      AND id = ${id}
+  `)
+
+  if (weeks.length !== 1) {
+    return null
+  }
+
+  return weeks[0]
+}

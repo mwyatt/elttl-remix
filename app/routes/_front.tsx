@@ -14,9 +14,9 @@ import { PiXLogoFill } from "react-icons/pi";
 import { getCurrentYear } from "~/repositories/year.repository.server";
 import { getDbFromContext } from "~/db-context.server";
 import { Link, Outlet } from "react-router";
-import { buttonPrimaryStyles } from "~/styles/ui-classes";
 import Header from "~/components/Header";
 import { getSeasonName } from "~/libraries/year";
+import LinkButton from "~/components/LinkButton";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -137,7 +137,7 @@ export default function FrontLayoutRoute({
       <Header appName={appName} menuPrimary={menuPrimary} />
 
       {isVisitingArchive && (
-        <div className="bg-amber-400 text-amber-900 text-center p-4">
+        <div className="bg-amber-400 text-amber-900 text-center p-2 text-sm">
           You are viewing an archived season ({visitingYearName}). For the
           latest information, please visit the{" "}
           <Link
@@ -258,14 +258,14 @@ function BannersSecondary({ currentYearName }: { currentYearName: string }) {
       title: "Service Rules",
       description:
         "Get familiar with the table tennis service rules we must all follow for fair play",
-      action: "View",
+      action: "View Rules",
       url: "/service-rules",
       icon: <BiSolidInfoCircle />,
     },
   ];
 
   return (
-    <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row gap-4 lg:pl-4 lg:pr-4 px-6">
+    <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row gap-4 lg:pl-4 lg:pr-4 px-4 sm:px-6">
       {advertisements.map((advertisement, index) => (
         <div
           key={index}
@@ -278,13 +278,12 @@ function BannersSecondary({ currentYearName }: { currentYearName: string }) {
           <p className="mt-2 text-lg grow mr-18">{advertisement.description}</p>
           <div className="mt-2 flex justify-end">
             {advertisement.action && (
-              <Link
-                className={buttonPrimaryStyles.join(" ")}
+              <LinkButton
                 to={advertisement.url}
                 target={advertisement.target || "_self"}
               >
                 {advertisement.action}
-              </Link>
+              </LinkButton>
             )}
           </div>
         </div>

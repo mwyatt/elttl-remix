@@ -2,21 +2,21 @@ import type { Route } from "./+types/_front.result.$year";
 import { getDbFromContext } from "~/db-context.server";
 import { StatusCodes } from "http-status-codes";
 import { sql } from "drizzle-orm";
+import { Link } from "react-router";
 import MainHeading from "~/components/MainHeading";
 import { buildMeta } from "~/constants/MetaData";
-import {getAllYears, getCurrentYear} from "~/repositories/year.repository.server";
+import { getCurrentYear } from "~/repositories/year.repository.server";
+import { buttonPrimaryStyles } from "~/styles/ui-classes";
+import classNames from "classnames";
 import DivisionalSubMenu from "~/components/DivisionalSubMenu";
 import ContentBody from "~/components/ContentBody";
-import LinkButton from "~/components/LinkButton";
-import ArchiveGrid from "~/components/ArchiveGrid";
-import SubHeading from "~/components/SubHeading";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year } = params;
 
   return buildMeta({
-    title: `Results`,
-    description: `Divisions from this years season and archive`,
+    title: `${year} Divisions`,
+    description: ``,
   });
 }
 
@@ -30,41 +30,37 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
       WHERE yearId = ${currentYear.id}
   `);
 
-  const years = await getAllYears(db);
-
-  return Response.json({ divisions, currentYear, years }, { status: StatusCodes.OK });
+  return Response.json({ divisions, currentYear }, { status: StatusCodes.OK });
 }
 
-export default function _frontResult({
+export default function _frontLeague({
   loaderData,
   params,
 }: Route.ComponentProps<typeof loader>) {
-  const { divisions, currentYear, years } = loaderData;
+  const { divisions, currentYear } = loaderData;
 
   return (
     <ContentBody isNarrow>
       <MainHeading name={`Results`} />
-      <div className="grid gap-6 sm:grid-cols-2 mt-6">
+      <div className="flex flex-col gap-2 mt-8">
         {divisions.map((division) => (
-          <div>
-            <LinkButton
+          <>
+            <Link
+              className={classNames({
+                [buttonPrimaryStyles.join(" ")]: true,
+                "block w-full": true,
+              })}
               to={`/result/${currentYear.name}/${division.name.toLowerCase()}`}
               key={division.name}
-              className={'block text-center mb-2 text-xl'}
             >
               {division.name} Division
-            </LinkButton>
+            </Link>
             <DivisionalSubMenu
               division={division.name.toLowerCase()}
               year={currentYear.name}
-              hasGrid={false}
             />
-          </div>
+          </>
         ))}
-      </div>
-      <div className="mt-8 border-t border-stone-300">
-        <SubHeading name="Results Archive" />
-        <ArchiveGrid years={years} />
       </div>
     </ContentBody>
   );

@@ -53,3 +53,9 @@ export const getClosestWeekId = (weeks) => {
 
   return closestWeek.id
 }
+
+export const getFixtureDayFormatted = (weekTimeStart, homeWeekday) => {
+      return formatDateWithDayAndSuffixOfMonth(
+      dayjs.unix(weekTimeStart).add(homeWeekday, 'day').add(1, 'hour')
+    )
+}
