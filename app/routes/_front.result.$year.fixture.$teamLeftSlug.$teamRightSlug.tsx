@@ -52,7 +52,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   `);
 
   if (teamLefts.length === 0) {
-    return Response.json(
+    throw new Response(
       `Unable to find teamLeft with slug '${teamLeftSlug}'`,
       { status: StatusCodes.NOT_FOUND },
     );
@@ -68,7 +68,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   `);
 
   if (teamRights.length === 0) {
-    return Response.json(
+    throw new Response(
       `Unable to find teamRight with slug '${teamRightSlug}'`,
       { status: StatusCodes.NOT_FOUND },
     );
@@ -94,7 +94,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const fixture = fixtures[0];
 
   if (fixtures.length !== 1) {
-    return Response.json(
+    throw new Response(
       `Unable to find fixture with team composition '${teamLeft.id}' vs '${teamRight.id}'`,
       { status: StatusCodes.NOT_FOUND },
     );

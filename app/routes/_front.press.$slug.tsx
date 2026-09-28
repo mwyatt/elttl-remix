@@ -30,7 +30,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
     `);
 
   if (contents.length === 0) {
-    return Response.json(`Unable to find 'press' with slug '${slug}'`, {
+    throw new Response(`Unable to find 'press' with slug '${slug}'`, {
       status: StatusCodes.NOT_FOUND,
     });
   }

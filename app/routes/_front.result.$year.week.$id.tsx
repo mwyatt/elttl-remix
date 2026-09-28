@@ -64,7 +64,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   `);
 
   if (weeks.length === 0) {
-    return Response.json(`Unable to find week with id '${id}'`, {
+    throw new Response(`Unable to find week with id '${id}'`, {
       status: StatusCodes.NOT_FOUND,
     });
   }

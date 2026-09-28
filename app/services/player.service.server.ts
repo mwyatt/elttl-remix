@@ -31,7 +31,7 @@ export async function getCorePlayerInformation(kv, db, yearId, playerSlug) {
   `)
 
   if (players.length === 0) {
-    return Response.json(`Unable to find player within year name '${yearId}' and slug '${playerSlug}'`, { status: StatusCodes.NOT_FOUND })
+    throw new Response(`Unable to find player within year name '${yearId}' and slug '${playerSlug}'`, { status: StatusCodes.NOT_FOUND })
   }
 
   const player = players[0]

@@ -39,7 +39,7 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   `);
 
   if (venues.length === 0) {
-    return Response.json(`Unable to find venue with slug '${slug}'`, {
+    throw new Response(`Unable to find venue with slug '${slug}'`, {
       status: StatusCodes.NOT_FOUND,
     });
   }

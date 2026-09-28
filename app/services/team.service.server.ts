@@ -25,7 +25,7 @@ export const getCoreTeamInformation = async (kv, db, yearId, teamSlug) => {
   `)
 
   if (teams.length === 0) {
-    return Response.json(`Unable to find team with slug '${teamSlug}'`, { status: StatusCodes.NOT_FOUND })
+    throw new Response(`Unable to find team with slug '${teamSlug}'`, { status: StatusCodes.NOT_FOUND })
   }
 
   const team = teams[0]
