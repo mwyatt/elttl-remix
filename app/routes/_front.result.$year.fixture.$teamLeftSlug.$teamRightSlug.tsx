@@ -19,7 +19,7 @@ import EncounterStatus from "~/constants/EncounterStatus";
 import classNames from "classnames";
 import FixtureEncounterChart from "~/components/FixtureEncounterChart";
 import { buildMeta } from "~/constants/MetaData";
-import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import {getCurrentYear, parseYearNameGetYear} from "~/repositories/year.repository.server";
 import ContentBody from "~/components/ContentBody";
 import {getFixtureDayFormatted} from "~/libraries/date";
 import {getWeekByYearIdId} from "~/repositories/week.repository.server";
@@ -125,6 +125,10 @@ export async function loader({ context, params }: Route.LoaderArgs) {
         and te.yearId = ${currentYear.id}
   `);
 
+  // Is this season over? Help us understand if a fixture was never fulfilled.
+  const currentSeasonYear = await getCurrentYear(db);
+  const isCurrentYear = currentSeasonYear.name === year
+
   return Response.json(
     {
       teamLeft,
@@ -134,6 +138,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       encounters,
       fixtureDateStartFormatted,
       week,
+      isCurrentYear
     },
     { status: StatusCodes.OK },
   );
@@ -143,7 +148,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { teamLeft, teamRight, venue, encounters, fixtureDateStartFormatted, week } = loaderData;
+  const { teamLeft, teamRight, venue, encounters, fixtureDateStartFormatted, week, isCurrentYear } = loaderData;
   const { year, teamLeftSlug, teamRightSlug } = params;
 
   const fixtureFulfilled = encounters.length > 0;
@@ -224,7 +229,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
           }
         />
 
-        {!fixtureFulfilled && (
+        {!fixtureFulfilled && week && (
             <ContentPanel extraClassNames={'mt-8'}>
               <div className={'flex flex-col gap-6 sm:gap-4'}>
                 <p>Scheduled to be played on <span className={'font-bold text-lg'}>{fixtureDateStartFormatted}</span> at <Link
@@ -237,6 +242,14 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
                   <DirectionsButton url={venue.location} />
                   <LinkButton to={`/result/${year}/week/${week.id}`}>View Week</LinkButton>
                 </div>
+              </div>
+            </ContentPanel>
+        )}
+
+        {!fixtureFulfilled && !isCurrentYear && (
+            <ContentPanel extraClassNames={'mt-8'}>
+              <div className={'flex flex-col gap-6 sm:gap-4'}>
+                <p>This fixture was never fulfilled.</p>
               </div>
             </ContentPanel>
         )}

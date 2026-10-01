@@ -9,12 +9,8 @@ import {
 
 import type {Route} from "./+types/root";
 import "./app.css";
-import ElttlEmblem from "~/components/icons/ElttlEmblem";
-import ContentPanel from "~/components/ContentPanel";
-import LinkButton from "~/components/LinkButton";
-import {Button} from "@headlessui/react";
-import classNames from "classnames";
-import {buttonPrimaryClassNames} from "~/styles/ui-classes";
+import NotFound from "~/components/NotFound";
+import {StatusCodes} from "http-status-codes";
 
 export const links: Route.LinksFunction = () => [
   {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -58,9 +54,9 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
   const navigate = useNavigate();
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === StatusCodes.NOT_FOUND ? StatusCodes.NOT_FOUND : "Error";
     details =
-      error.status === 404
+      error.status === StatusCodes.NOT_FOUND
         ? "The requested page could not be found."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
@@ -69,26 +65,6 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="p-4 container mx-auto flex flex-col gap-4 justify-center items-center h-screen">
-      <ContentPanel extraClassNames={'flex flex-col gap-4 items-center'}>
-        <div className={'mb-4'}>
-          <ElttlEmblem width={100}/>
-        </div>
-        <h1 className='text-4xl font-semibold'>{message}</h1>
-        <p className={'text-lg'}>{details}</p>
-        {stack && (
-          <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-        )}
-        <div className={'flex flex-col sm:flex-row gap-6 mt-6'}>
-          <Button className={classNames({
-            [buttonPrimaryClassNames]: true,
-            'px-6 cursor-pointer': true
-          })} onClick={() => navigate(-1)}>Back</Button>
-          <LinkButton to={"/"} theme={'secondary'} className={'px-6'}>Home</LinkButton>
-        </div>
-      </ContentPanel>
-    </main>
+    <NotFound message={message} details={details} stack={stack} navigate={navigate} />
   );
 }

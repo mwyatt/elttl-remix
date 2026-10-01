@@ -27,7 +27,7 @@ export function meta({ params }: Route.MetaArgs) {
 
   return buildMeta({
     title: `${playerName} – ${year} Player Performance & Results`,
-    description: `View detailed performance results for ${playerName} in the ${year} season, including encounters, scores, rank changes, team information, weekly fixtures, and fulfilled matches.`,
+    description: `View detailed performance results for ${playerName} in the ${year} season, including encounters, scores, rank changes, team information.`,
   });
 }
 
@@ -46,7 +46,7 @@ export default function _frontResultYearPlayerSlug({
   loaderData,
   params,
 }: Route.ComponentProps<typeof loader>) {
-  const { player, encounters, fixtures, weeks, division } = loaderData;
+  const { player, encounters, division } = loaderData;
   const { year, slug } = params;
 
   const getPlayerLink = (playerSlug, playerName) => {
@@ -86,6 +86,7 @@ export default function _frontResultYearPlayerSlug({
       <MainHeading name={player.name} />
       <div className="mt-8">
         <div className="grid sm:grid-cols-2 gap-4">
+          {player.teamSlug && (
           <ContentPanel extraClassNames={'text-2xl flex flex-col gap-6'}>
             <p>            {"Plays for "}
             <Link
@@ -101,6 +102,13 @@ export default function _frontResultYearPlayerSlug({
             </LinkButton>
             </div>
           </ContentPanel>
+          )}
+          {!player.teamSlug && (
+          <ContentPanel extraClassNames={'text-2xl flex flex-col gap-6'}>
+            <p>Not currently registered with a team.</p>
+          </ContentPanel>
+          )}
+          {division && (
           <ContentPanel extraClassNames={'text-2xl flex flex-col gap-6'}>
             <p>            {"Plays in the "}
             <Link
@@ -116,6 +124,7 @@ export default function _frontResultYearPlayerSlug({
             </LinkButton>
             </div>
           </ContentPanel>
+          )}
           <ContentPanel extraClassNames={'text-3xl flex justify-center items-center'}>
             <p>{"Rank "}
             <span className="font-bold">{player.rank}</span></p>

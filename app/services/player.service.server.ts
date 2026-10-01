@@ -41,19 +41,9 @@ export async function getCorePlayerInformation(kv, db, yearId, playerSlug) {
 
   const encounters = await getPlayerEncounters(kv, db, yearId, player.id)
 
-  const weeks = await getAllWeeksByYear(db, yearId)
-  const teamFixtures = await getFixturesByTeamId(kv, db, yearId, player.teamId)
-
-  // Attach fixtures to weeks
-  for (const week of weeks) {
-    week.fixtures = teamFixtures.filter(fixture => fixture.weekId === week.id)
-  }
-
   return {
     player,
     encounters,
-    fixtures: teamFixtures,
-    weeks,
     division
   }
 }

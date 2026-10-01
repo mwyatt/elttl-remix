@@ -129,4 +129,8 @@ export default [
     // Helper to clear KV out manually
     // route("api/test", "routes/admin.api.test.ts"),
   ]),
+
+  // Legacy endpoints - bots crawling for these
+  route("*", "routes/_404.tsx"),
+
 ] satisfies RouteConfig;
