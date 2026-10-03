@@ -14,7 +14,7 @@
   --color-tertiary-500: #6e6464;
   --color-text: var(--color-stone-600);
 
-  --breakpoint-xs: 430px;
+  --breakpoint-xs: 400px;
 }
 
 :root {

@@ -1,11 +1,67 @@
 import classNames from 'classnames'
-import { BiMap, BiTrophy } from 'react-icons/bi'
-import dayjs from 'dayjs'
+import { BiTrophy } from 'react-icons/bi'
 import {Link} from "react-router";
 import {ExactDayWeekTypes, NonEventTypes, WeekTypeLabels, WeekTypes} from "~/constants/Week";
 import {formatDateWithDayAndSuffixOfMonth, formatDayWithSuffixOfMonth, getFixtureDayFormatted} from "~/libraries/date";
 import {getWeekDate} from "~/libraries/week";
-import {allHomeButtonStyles, linkStyles} from "~/styles/ui-classes";
+import {linkStyles} from "~/styles/ui-classes";
+import FixtureCard from "~/components/FixtureCard";
+import {getContextualScoreStatus} from "~/libraries/fixture.lib";
+import DirectionsButton from "~/components/DirectionsButton";
+import LinkButton from "~/components/LinkButton";
+
+function FixtureDescription ({ yearName, currentTeamSlug, fixture, isAtHome }) {
+  let parts = []
+
+  if (fixture.timeFulfilled) {
+    parts.push(getContextualScoreStatus(currentTeamSlug === fixture.teamLeftSlug, fixture.scoreLeft, fixture.scoreRight))
+    parts.push(' at ')
+  }
+
+  parts.push(isAtHome ? 'home' : 'away')
+  parts.push(' vs ')
+
+  // @todo Refactor
+  if (isAtHome) {
+    parts.push(
+      <Link
+        className={linkStyles.join(' ')}
+        to={`/result/${yearName}/team/${fixture.teamRightSlug}`}
+        key={1}
+      >
+        {fixture.teamRightName}
+      </Link>
+    )
+  } else {
+    parts.push(
+            <Link
+        className={linkStyles.join(' ')}
+        to={`/result/${yearName}/team/${fixture.teamLeftSlug}`}
+        key={2}
+      >{fixture.teamLeftName}
+      </Link>
+    )
+  }
+
+  parts.push(' at ')
+  parts.push(
+    <Link
+                className={linkStyles.join(' ')}
+                to={`/result/${yearName}/venue/${fixture.venueSlug}`}
+                key={3}
+              >{fixture.venueName}
+              </Link>
+  )
+
+  // Capitalise first parts entry
+  parts[0] = parts[0].charAt(0).toUpperCase() + parts[0].slice(1)
+
+  return (
+    <span>
+      {parts}
+    </span>
+  )
+}
 
 export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
   const isCurrentWeek = week.id === closestWeekId
@@ -19,7 +75,6 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
   let formattedDate = formatDayWithSuffixOfMonth(
     getWeekDate(week.type, week.timeStart)
   )
-
   if (isFixtureWeek) {
     fixture = week.fixtures[0]
     fixtureLink = `/result/${yearName}/fixture/${fixture.teamLeftSlug}/${fixture.teamRightSlug}`
@@ -33,17 +88,16 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
   }
 
   return (
-    <div className={classNames({
-      'grid grid-cols-6 border-b border-stone-300': true,
-      'border-b-primary-500 border-solid border-b-2': isCurrentWeek,
-      'border-dashed': !isCurrentWeek,
+    <div id={isCurrentWeek ? 'timeline-current-week' : undefined} className={classNames({
+      'sm:grid grid-cols-6 border-stone-300': week.type !== WeekTypes.nothing,
+      'border-b-primary-500': isCurrentWeek,
       hidden: week.type === WeekTypes.nothing
     })}
     >
       <div className={classNames({
-        'col-span-2 border-r border-r-2 border-stone-200 flex items-center justify-end p-2 pr-4 text-right': true,
+        'col-span-2 border-stone-200 flex items-center sm:justify-end pb-2 sm:p-2 sm:pr-4 sm:text-right text-lg': true,
         'border-r-primary-500': isEvent,
-        'border-r-primary-500 bg-primary-500 text-white': isCurrentWeek
+        'border-r-primary-500 font-bold p-2 pl-4': isCurrentWeek
       })}
       >
         <Link
@@ -60,38 +114,26 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
         )} {formattedDate}
         </Link>
       </div>
-      <div className='col-span-4 flex flex-col sm:flex-row p-2 pr-0 gap-2 sm:gap-4 sm:items-center'>
+      <div className={classNames({
+        "col-span-4 flex flex-col pl-4 pt-4 pb-8 sm:p-4 pr-0 gap-4 sm:gap-6 border-l-2 border-b-2 border-stone-100 mb-6": true,
+        'border-l-primary-500': isEvent || isCurrentWeek,
+        'border-b-primary-500': isCurrentWeek,
+      })}>
         <div className='text-lg flex-grow'>
           {isEvent && (
-            <BiTrophy className='inline mr-1 mb-1 fill-primary-500' size={24} />
+            <BiTrophy className='inline mr-4 mb-1 fill-primary-500' size={28} />
           )}
-          {!isFixtureWeek && WeekTypeLabels[week.type]}
+          {!isFixtureWeek && (
+            <span className='text-xl font-semibold'>{WeekTypeLabels[week.type]}</span>
+          )}
           {(isFixtureWeek && fixture !== null) && (
             <div>
-              {isAtHome && ('Home')}
-              {!isAtHome && ('Away')}
-              {' vs '}
-              {isAtHome && (
-                <Link
-                  className={linkStyles.join(' ')}
-                  to={`/result/${yearName}/team/${fixture.teamRightSlug}`}
-                >
-                  {fixture.teamRightName}
-                </Link>
-              )}
-              {!isAtHome && (
-                <Link
-                  className={linkStyles.join(' ')}
-                  to={`/result/${yearName}/team/${fixture.teamLeftSlug}`}
-                >{fixture.teamLeftName}
-                </Link>
-              )}
-              {' at '}
-              <Link
-                className={linkStyles.join(' ')}
-                to={`/result/${yearName}/venue/${fixture.venueSlug}`}
-              >{fixture.venueName}
-              </Link>
+              <FixtureDescription
+                yearName={yearName}
+                currentTeamSlug={teamSlug}
+                fixture={fixture}
+                isAtHome={isAtHome}
+              />
             </div>
           )}
         </div>
@@ -103,24 +145,30 @@ export default function Week ({ yearName, week, teamSlug, closestWeekId }) {
           {/* </Link> */}
 
           {(isFixtureWeek && !fixture.timeFulfilled && !isAtHome) && (
-            <Link to={fixture.venueLocation} target='_blank' rel='noreferrer' className={`${allHomeButtonStyles.join(' ')} flex items-center gap-1 inline-block`}>
-              <span><BiMap size={20} /></span>
-              <span>Directions</span>
-            </Link>
+            <DirectionsButton url={fixture.venueLocation} />
           )}
           {(isFixtureWeek && fixture.timeFulfilled) && (
-            <Link
-              className={`${allHomeButtonStyles} whitespace-nowrap inline-block`}
-              to={fixtureLink}
-            >View {fixture.timeFulfilled ? 'Result' : 'Fixture'}
-            </Link>
+            <FixtureCard
+              timeFulfilled={fixture.timeFulfilled}
+              year={yearName}
+              teamLeft={{
+                slug: fixture.teamLeftSlug,
+                name: fixture.teamLeftName,
+                score: fixture.scoreLeft,
+              }}
+              teamRight={{
+                slug: fixture.teamRightSlug,
+                name: fixture.teamRightName,
+                score: fixture.scoreRight,
+              }}
+            />
           )}
           {(isEvent || week.type === WeekTypes.catchup) && (
-            <Link
-              className='color-secondary-500 border-b border-secondary-500 whitespace-nowrap inline-block'
+            <LinkButton
               to={`/result/${yearName}/week/${week.id}`}
+              theme={'secondary'}
             >More Info
-            </Link>
+            </LinkButton>
           )}
         </div>
       </div>

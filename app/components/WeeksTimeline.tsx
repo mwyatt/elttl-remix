@@ -2,22 +2,25 @@ import classNames from 'classnames'
 import {Link} from "react-router";
 import {getClosestWeekId} from "~/libraries/date";
 import Week from "~/components/Week";
+import {getSeasonName} from "~/libraries/year";
+import LinkButton from "~/components/LinkButton";
 
 export default function WeeksTimeline ({ yearName, weeks, teamSlug }) {
   const closestWeekId = getClosestWeekId(weeks)
 
   return (
     <>
-      <div className='flex mt-6 mb-4 items-center gap-4'>
+      <div className='flex flex-col sm:flex-row mt-6 mb-4 items-center gap-4'>
         <div className='flex-grow'>
-          <h2 className='text-2xl'>Events</h2>
+          <h2 className='text-2xl'>{getSeasonName(yearName)} Season</h2>
         </div>
         <div>
-          <Link
-            className='color-secondary-500 border-b border-secondary-500 whitespace-nowrap'
+          <LinkButton
             to={`/result/${yearName}/season`}
-          >Season Overview
-          </Link>
+            theme={'secondary'}
+          >
+            Season Overview
+          </LinkButton>
         </div>
       </div>
       <div className={classNames({

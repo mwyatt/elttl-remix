@@ -26,6 +26,7 @@ import {getWeekByYearIdId} from "~/repositories/week.repository.server";
 import LinkButton from "~/components/LinkButton";
 import DirectionsButton from "~/components/DirectionsButton";
 import ContentPanel from "~/components/ContentPanel";
+import dayjs from "dayjs";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, teamLeftSlug, teamRightSlug } = params;
@@ -108,6 +109,13 @@ export async function loader({ context, params }: Route.LoaderArgs) {
     fixtureDateStartFormatted = getFixtureDayFormatted(week.timeStart, teamLeft.homeWeekday);
   }
 
+  let fixtureDateFulfilledFormatted;
+  if (week) {
+    const fixtureDateFulfilled = dayjs.unix(fixture.timeFulfilled)
+    fixtureDateFulfilledFormatted = fixtureDateFulfilled.format("DD/MM/YYYY");
+    fixtureDateFulfilledFormatted += ` at ${fixtureDateFulfilled.format("HH:mm")}`;
+  }
+
   const encounters = await db.all(sql`
       select CONCAT(tp.nameFirst, ' ', tp.nameLast)   AS playerLeftName,
              tp.slug                                  AS playerLeftSlug,
@@ -137,6 +145,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
       fixture,
       encounters,
       fixtureDateStartFormatted,
+      fixtureDateFulfilledFormatted,
       week,
       isCurrentYear
     },
@@ -148,7 +157,7 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { teamLeft, teamRight, venue, encounters, fixtureDateStartFormatted, week, isCurrentYear } = loaderData;
+  const { teamLeft, teamRight, venue, encounters, fixtureDateStartFormatted, fixtureDateFulfilledFormatted, week, isCurrentYear } = loaderData;
   const { year, teamLeftSlug, teamRightSlug } = params;
 
   const fixtureFulfilled = encounters.length > 0;
@@ -228,6 +237,22 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
             </>
           }
         />
+
+      {fixtureFulfilled && (
+        <ContentPanel extraClassNames={'grid sm:grid-cols-2 gap-4 mt-8'}>
+          <div>
+            <p>Played at <Link
+            className={linkStyles.join(" ")}
+            to={`/result/${year}/venue/${venue.slug}`}
+          >
+            {venue.name}
+          </Link></p>
+          </div>
+          <div>
+            Fulfilled on {fixtureDateFulfilledFormatted}
+          </div>
+        </ContentPanel>
+      )}
 
         {!fixtureFulfilled && week && (
             <ContentPanel extraClassNames={'mt-8'}>

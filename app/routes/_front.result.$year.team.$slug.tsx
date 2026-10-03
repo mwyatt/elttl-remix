@@ -5,16 +5,17 @@ import Breadcrumbs from "~/components/Breadcrumbs";
 import { Link } from "react-router";
 import SubHeading from "~/components/SubHeading";
 import { linkStyles } from "~/styles/ui-classes";
-import FixtureCard from "~/components/FixtureCard";
 import MainHeading from "~/components/MainHeading";
 import { homeNightMap } from "~/constants/Team";
 import WeeksTimeline from "~/components/WeeksTimeline";
 import { buildMeta } from "~/constants/MetaData";
 import { getKvFromContext } from "~/kv-context.server";
-import Accordion from "~/components/Accordion";
 import { getCoreTeamInformation } from "~/services/team.service.server";
-import { parseYearNameGetYear } from "~/repositories/year.repository.server";
+import {getCurrentYear, parseYearNameGetYear} from "~/repositories/year.repository.server";
 import ContentBody from "~/components/ContentBody";
+import LinkButton from "~/components/LinkButton";
+import {doesYearSupportWeeks} from "~/libraries/year";
+import FixtureCard from "~/components/FixtureCard";
 
 export function meta({ params }: Route.MetaArgs) {
   const { year, slug } = params;
@@ -36,8 +37,13 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   const kv = getKvFromContext(context);
   const { year, slug } = params;
   const currentYear = await parseYearNameGetYear(db, year);
+  const activeYear = await getCurrentYear(db);
 
   const data = await getCoreTeamInformation(kv, db, currentYear.id, slug);
+
+  data.yearIsCurrentYear = activeYear.name === year;
+
+  console.log(currentYear, year)
 
   return Response.json(data, { status: StatusCodes.OK });
 }
@@ -46,7 +52,7 @@ export default function _frontResultYearTeamSlug({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { team, players, fixtures, weeks } = loaderData;
+  const { team, players, fixtures, weeks, yearIsCurrentYear } = loaderData;
   const { year } = params;
 
   return (
@@ -61,7 +67,7 @@ export default function _frontResultYearTeamSlug({
 
       <MainHeading name={team.name} />
 
-      <div className="md:flex gap-8">
+      <div className="">
         <div className="flex-1">
           <SubHeading name="General Information" />
           <p className="my-2">
@@ -95,23 +101,23 @@ export default function _frontResultYearTeamSlug({
           )}
           {!team.secretaryName && <p>There is no team secretary currently.</p>}
 
-          {weeks.length > 0 && (
-            <Accordion previewHeight={400}>
-              <WeeksTimeline
-                yearName={year}
-                weeks={weeks}
-                teamSlug={team.slug}
-              />
-            </Accordion>
+          {yearIsCurrentYear && (
+            <div className="flex justify-end mt-4">
+                      <LinkButton
+              to={`#timeline-current-week`}
+              theme={'secondary'}
+            >
+              View Current Week
+            </LinkButton>
+            </div>
           )}
-        </div>
-        <div className="flex-1">
+
           <SubHeading name="Registered Players" />
-          <div className="">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
             {players.map((player, index) => (
               <div
                 key={index}
-                className="flex p-4 gap-4 border-t border-t-neutral-300 border-dashed hover:bg-gray-100"
+                className="flex flex-col gap-2 border border-stone-300 p-3 rounded"
               >
                 <div className="flex-2">
                   <Link
@@ -124,16 +130,28 @@ export default function _frontResultYearTeamSlug({
                 </div>
                 <div className="flex-1 text-right">
                   <span className="float-right text-tertiary-500">
-                    {player.rank}
+                    <span className={'text-stone-400'}>Rank</span> {player.rank}
                   </span>
                 </div>
               </div>
             ))}
           </div>
 
+          {weeks.length > 0 && (
+              <WeeksTimeline
+                yearName={year}
+                weeks={weeks}
+                teamSlug={team.slug}
+              />
+          )}
+        </div>
+        <div className="flex-1">
+
           {/* <SubHeading name='Directions' /> */}
           {/* <DirectionsButton url={data.venue.location} /> */}
 
+          {!doesYearSupportWeeks(year) && (
+            <>
           <SubHeading name="Fixtures" />
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 ">
             {fixtures.map((fixture, index) => (
@@ -154,6 +172,8 @@ export default function _frontResultYearTeamSlug({
               />
             ))}
           </div>
+          </>
+          )}
         </div>
       </div>
     </ContentBody>
