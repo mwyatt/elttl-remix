@@ -43,8 +43,6 @@ export async function loader({ context, params }: Route.LoaderArgs) {
 
   data.yearIsCurrentYear = activeYear.name === year;
 
-  console.log(currentYear, year)
-
   return Response.json(data, { status: StatusCodes.OK });
 }
 

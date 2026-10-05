@@ -82,6 +82,17 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
     return stat;
   });
 
+  const encounterCeiling = Math.max(...stats.map((s) => s.encounter));
+
+  // Encounter threshold for qualification is 50% + 1
+  const encounterMeritQualificationThreshold = Math.round(encounterCeiling / 2) + 1;
+
+  console.log({
+    encounterCeiling,
+    encounterMeritQualificationThreshold,
+    division: encounterCeiling / 2
+  })
+
   return Response.json(
     {
       stats,

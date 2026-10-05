@@ -18,6 +18,7 @@ export async function getUserByEmail (db, email) {
 }
 
 export async function updateUserPassword (db, id, hashedPassword) {
+  console.log("updateUserPassword", id, hashedPassword)
     const result = await db.run(sql`
     UPDATE user
     SET password = ${hashedPassword}
