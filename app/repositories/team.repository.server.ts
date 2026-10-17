@@ -23,3 +23,17 @@ export async function getTeamsByIds(db: any, yearId: number, ids: number[]) {
       AND id IN (${sql.join(ids.map((id) => sql`${id}`), sql`, `)})
   `);
 }
+
+export async function getTeamById(db: any, yearId: number, id: number) {
+  const rows = await db.all(sql`
+    SELECT
+      id,
+      name,
+      divisionId
+    FROM tennisTeam
+    WHERE yearId = ${yearId}
+      AND id = ${id}
+  `);
+
+  return rows[0];
+}

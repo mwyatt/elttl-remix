@@ -50,6 +50,19 @@ export const clearFixtureFulfillKvs = async (kv, db, fixtureId, encounterStruct)
   return results;
 }
 
+export const clearPlayerUpdateKvs = async (kv, db, divisionId) => {
+  console.log('running clearPlayerUpdateKvs')
+
+  const currentYear = await getCurrentYear(db)
+
+  // Just the 1 key to refresh
+  const results = await Promise.all([
+      deleteKeysByPrefix(kv, `division-merit-encounters-${currentYear.id}-${divisionId}`),
+  ]);
+
+  return results;
+}
+
 async function deleteKeysByPrefix(
   kv: KVNamespace,
   prefix: string,

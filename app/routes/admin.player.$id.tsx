@@ -4,8 +4,14 @@ import {Form, Link, redirect} from "react-router";
 import {getDbFromContext} from "~/db-context.server";
 import Feedback from '~/components/Feedback'
 import {sql} from "drizzle-orm";
-import {createFlashHeaders, getFlashMessage} from "~/auth/session.server";
+import {createFlashHeaders, getFlashMessage, getSessionUser} from "~/auth/session.server";
 import {getCurrentYear} from "~/repositories/year.repository.server";
+import {getUserById} from "~/repositories/user.repository.server";
+import {getTeamById} from "~/repositories/team.repository.server";
+import {getKvFromContext} from "~/kv-context.server";
+import {clearPlayerUpdateKvs} from "~/services/kv.service.server";
+
+const minRank = 150
 
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   const db = getDbFromContext(context);
@@ -27,7 +33,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         nameFirst: '',
         nameLast: '',
         slug: '',
-        rank: '',
+        rank: minRank,
         phoneLandline: '',
         phoneMobile: '',
         ettaLicenseNumber: '',
@@ -74,7 +80,10 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
 export async function action({ request, context, params }: Route.ActionArgs) {
   const db = getDbFromContext(context);
+  const kv = getKvFromContext(context)
   const { id } = params
+  const sessionUser = await getSessionUser(request)
+  let authorUser = await getUserById(db, sessionUser.userId)
 
   const formData = await request.formData();
   const player = {
@@ -98,8 +107,6 @@ export async function action({ request, context, params }: Route.ActionArgs) {
   `);
 
   const nextId = (maxRows[0]?.maxId ?? 0) + 1;
-
-    console.log({maxRows, nextId})
 
     const response = await db.run(sql`
          INSERT INTO tennisPlayer (
@@ -128,9 +135,10 @@ export async function action({ request, context, params }: Route.ActionArgs) {
                 )
     `<any>)
     affectedPlayerId = nextId
-    console.log(response)
 
   } else {
+    const team = await getTeamById(db, currentYear.id, player.teamId)
+
     await db.run(sql`
          UPDATE tennisPlayer
          SET 
@@ -144,6 +152,17 @@ export async function action({ request, context, params }: Route.ActionArgs) {
              teamId = ${player.teamId}
         WHERE yearId = ${currentYear.id} and id = ${id}
     `<any>)
+
+    console.info('player updated', {
+      player,
+      team,
+      adminUser: {
+        id: authorUser.id,
+        name: [authorUser.nameFirst, authorUser.nameLast].join(' ')
+      }
+    })
+
+    await clearPlayerUpdateKvs(kv, db, team.divisionId)
   }
 
 const message = isCreate
@@ -162,9 +181,23 @@ export default function AdminPlayerId({ loaderData }: Route.ComponentProps<typeo
 
   const handleChange = async (event) => {
     const { name, value } = event.target
+
     setPlayerData({
       ...playerData,
       [name]: value
+    })
+  }
+
+  // Do we want to enforce the min rank?
+  const handleBlurRank = async (event) => {
+    const { value } = event.target
+    let theValue = value
+    if (Number(theValue) < minRank) {
+      theValue = minRank
+    }
+    setPlayerData({
+      ...playerData,
+      rank: theValue
     })
   }
 
@@ -191,7 +224,7 @@ export default function AdminPlayerId({ loaderData }: Route.ComponentProps<typeo
           </div>
           <div className='flex gap-4 items-center border-t border-t-stone-200 p-2'>
             <div className='w-[200px]'>Rank</div>
-            <input className='border border-tertiary-500 p-2' type='text' onChange={handleChange} value={playerData.rank} name='rank' required />
+            <input className='border border-tertiary-500 p-2' type='number' onChange={handleChange} value={playerData.rank} name='rank' required />
           </div>
           <div className='flex gap-4 items-center border-t border-t-stone-200 p-2'>
             <div className='w-[200px]'>Landline</div>
