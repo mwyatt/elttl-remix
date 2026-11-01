@@ -62,6 +62,9 @@ export const FredHoldenCupCompetitionContent = ({
                     >
                       {teamsBySlug[fixture.teamLeftSlug]?.name}
                     </Link>
+                    {fixture.teamLeftScore && (
+                      <span className={'border px-1 rounded ml-2 text-sm'}>{fixture.teamLeftScore}</span>
+                    )}
                   </div>
                   <div>vs</div>
                   <div className={"w-1/3"}>
@@ -76,6 +79,9 @@ export const FredHoldenCupCompetitionContent = ({
                     >
                       {teamsBySlug[fixture.teamRightSlug]?.name}
                     </Link>
+                    {fixture.teamRightScore && (
+                    <span className={'border px-1 rounded ml-2 text-sm'}>{fixture.teamRightScore}</span>
+                                          )}
                   </div>
                 </div>
               ))}

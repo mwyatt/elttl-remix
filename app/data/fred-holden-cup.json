@@ -5,50 +5,151 @@
       "fixtures": [
         {
           "teamLeftSlug": "gladiators",
-          "teamLeftScore": null,
+          "teamLeftScore": 318,
           "teamRightSlug": "whalley-harriers",
-          "teamRightScore": null
+          "teamRightScore": 419
         },
         {
           "teamLeftSlug": "spartans",
-          "teamLeftScore": null,
+          "teamLeftScore": 401,
           "teamRightSlug": "whalley-eagles",
-          "teamRightScore": null
+          "teamRightScore": 362
         },
         {
           "teamLeftSlug": "whalley-falcons",
-          "teamLeftScore": null,
+          "teamLeftScore": 517,
           "teamRightSlug": "ksb-d",
+          "teamRightScore": 481
+        },
+        {
+          "teamLeftSlug": "whalley-hawks",
+          "teamLeftScore": 450,
+          "teamRightSlug": "whalley-kestrels",
+          "teamRightScore": 438
+        },
+        {
+          "teamLeftSlug": "ksb-pumas-jun",
+          "teamLeftScore": "w/o",
+          "teamRightSlug": "brierfield",
+          "teamRightScore": "Conceded"
+        },
+        {
+          "teamLeftSlug": "ksb-g",
+          "teamLeftScore": 646,
+          "teamRightSlug": "burnley-scorpions",
+          "teamRightScore": 664
+        },
+        {
+          "teamLeftSlug": "burnley-hornets",
+          "teamLeftScore": 544,
+          "teamRightSlug": "ksb-leopards-jun",
+          "teamRightScore": 493
+        },
+        {
+          "teamLeftSlug": "whalley-merlins",
+          "teamLeftScore": 571,
+          "teamRightSlug": "vanguard-phantoms",
+          "teamRightScore": 496
+        }
+      ]
+    },
+    {
+      "name": "Round 1",
+      "fixtures": [
+        {
+          "teamLeftSlug": "burnley-bees",
+          "teamLeftScore": null,
+          "teamRightSlug": "burnley-wasps",
           "teamRightScore": null
         },
         {
           "teamLeftSlug": "whalley-hawks",
           "teamLeftScore": null,
-          "teamRightSlug": "whalley-kestrels",
+          "teamRightSlug": "ksb-c",
           "teamRightScore": null
         },
         {
-          "teamLeftSlug": "ksb-pumas-jun",
+          "teamLeftSlug": "ksb-b",
           "teamLeftScore": null,
-          "teamRightSlug": "brierfield",
-          "teamRightScore": null
-        },
-        {
-          "teamLeftSlug": "ksb-g",
-          "teamLeftScore": null,
-          "teamRightSlug": "burnley-scorpions",
+          "teamRightSlug": "ksb-panthers-jun",
           "teamRightScore": null
         },
         {
           "teamLeftSlug": "burnley-hornets",
           "teamLeftScore": null,
-          "teamRightSlug": "ksb-leopards-jun",
+          "teamRightSlug": "hyndburn-ttc-a",
           "teamRightScore": null
         },
         {
-          "teamLeftSlug": "whalley-merlins",
+          "teamLeftSlug": "slayers",
           "teamLeftScore": null,
-          "teamRightSlug": "vanguard-phantoms",
+          "teamRightSlug": "burnley-scorpions",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-jaguars",
+          "teamLeftScore": null,
+          "teamRightSlug": "rovers",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-lions",
+          "teamLeftScore": null,
+          "teamRightSlug": "past-masters",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-a",
+          "teamLeftScore": null,
+          "teamRightSlug": "vanguard-typhoons",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "vanguard-raptors",
+          "teamLeftScore": null,
+          "teamRightSlug": "misfits",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "vanguard-tornados",
+          "teamLeftScore": null,
+          "teamRightSlug": "ksb-e",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "whalley-falcons",
+          "teamLeftScore": null,
+          "teamRightSlug": "burnley-dragon-flies",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "hyndburn-ttc-b",
+          "teamLeftScore": null,
+          "teamRightSlug": "vanguard-jets",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-tigers",
+          "teamLeftScore": null,
+          "teamRightSlug": "spartans",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "ksb-pumas-jun",
+          "teamLeftScore": null,
+          "teamRightSlug": "ksb-f",
+          "teamRightScore": null
+        },
+                {
+          "teamLeftSlug": "whalley-harriers",
+          "teamLeftScore": null,
+          "teamRightSlug": "whalley-ospreys",
+          "teamRightScore": null
+        },
+        {
+          "teamLeftSlug": "burnley-black-widows",
+          "teamLeftScore": null,
+          "teamRightSlug": "whalley-merlins",
           "teamRightScore": null
         }
       ]
