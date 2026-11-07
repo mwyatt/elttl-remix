@@ -121,7 +121,6 @@ export async function getDivisionLeagueTable (kv, db, yearId, divisionId) {
                left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
                left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
       where tte.yearId = ${yearId}
-        and status != 'exclude'
         and ttl.divisionId = ${divisionId}
       group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug
   `)
@@ -129,39 +128,6 @@ export async function getDivisionLeagueTable (kv, db, yearId, divisionId) {
     console.warn('cache: setting cache key', cacheKey)
     await kv.put(cacheKey, JSON.stringify(leagueTable))
     cached = leagueTable
-  } else {
-    console.warn('cache: using cache key', cacheKey)
-  }
-
-  return cached
-}
-
-export async function getTeamsFulfilledFixtures (kv, db, yearId, teamIds) {
-  const cacheKey = `teams-fulfilled-fixtures-${yearId}-${teamIds.join('')}`
-  let cached = await kv.get(cacheKey, { type: "json" });
-  if (!cached) {
-  const response = await db.all(sql`
-      select ttl.name        teamLeftName,
-             ttl.slug        teamLeftSlug,
-             sum(scoreLeft)  scoreLeft,
-             ttr.name        teamRightName,
-             ttr.slug        teamRightSlug,
-             sum(scoreRight) scoreRight,
-             timeFulfilled
-      from tennisEncounter tte
-               inner join tennisFixture ttf on ttf.id = tte.fixtureId
-          and ttf.yearId = tte.yearId
-          and ttf.teamIdLeft in (${sql.join(teamIds, sql`, `)})
-               left join tennisTeam ttl on ttl.id = ttf.teamIdLeft and ttl.yearId = tte.yearId
-               left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
-      where tte.yearId = ${yearId}
-        and status != 'exclude'
-      group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
-  `)
-
-    console.warn('cache: setting cache key', cacheKey)
-    await kv.put(cacheKey, JSON.stringify(response))
-    cached = response
   } else {
     console.warn('cache: using cache key', cacheKey)
   }

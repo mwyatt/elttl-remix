@@ -23,7 +23,6 @@ export async function getFixturesByWeekId(kv, db, yearId, weekId) {
           left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
           left join tennisDivision ttd on ttd.id = ttl.divisionId and ttd.yearId = tte.yearId
       where tte.yearId = ${yearId}
-      and status != 'exclude'
       group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled, divisionName
     `);
 
@@ -140,7 +139,6 @@ export async function getLatestFixtures(kv, db, yearId) {
                left join tennisTeam ttr on ttr.id = ttf.teamIdRight and ttr.yearId = tte.yearId
       where tte.yearId = ${yearId}
         AND timeFulfilled IS NOT NULL
-        and status != 'exclude'
       group by fixtureId, teamLeftName, teamRightName, teamLeftSlug, teamRightSlug, timeFulfilled
       ORDER BY timeFulfilled DESC
       LIMIT 12

@@ -168,9 +168,6 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
     let score = 0;
 
     encounters.forEach((encounter) => {
-      if (encounter.status === EncounterStatus.EXCLUDE) {
-        return;
-      }
       score += parseInt(encounter[sideScoreKey]);
     });
 
@@ -283,7 +280,11 @@ export default function _frontResultYearFixtureTeamLeftSlugTeamRightSlug({
         {encounters.map((row, index) => (
           <div
             key={index}
-            className="flex gap-4 mt-4 border-b border-dashed border-gray-300 pb-3"
+            className={classNames({
+              "flex gap-4 mt-4 border-b border-dashed border-gray-300 pb-3": true,
+              "bg-stone-100 cursor-help": row.status === EncounterStatus.EXCLUDE,
+            })}
+            title={row.status === EncounterStatus.EXCLUDE ? "This encounter was excluded from the merit" : ""}
           >
             <div className="w-2/6">
               <span
