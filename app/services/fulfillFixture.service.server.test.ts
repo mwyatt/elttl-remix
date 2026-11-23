@@ -316,6 +316,49 @@ test('it will produce the right rank changes when fulfilling and fulfilling cons
   expect(nextPlayerRanks[4]).toEqual(2594)
 })
 
+test('it will produce the right rank changes when fulfilling and fulfilling consecutively with excluded encounters', async () => {
+  const db = getTestDb()
+  const fixtureId = 3718
+  const latestYear = await getLatestYear(db)
+
+  await db.run(sql`UPDATE tennisPlayer SET \`rank\` = 2500 WHERE id = 1;`)
+  await db.run(sql`UPDATE tennisPlayer SET \`rank\` = 2600 WHERE id = 4;`)
+
+  const encounterStruct = [
+    { playerIdLeft: 1, playerIdRight: 4, scoreLeft: 0, scoreRight: 3, status: '' },
+    { playerIdLeft: 1, playerIdRight: 4, scoreLeft: 0, scoreRight: 3, status: EncounterStatus.EXCLUDE },
+    { playerIdLeft: 0, playerIdRight: 0, scoreLeft: 0, scoreRight: 3, status: '' },
+    { playerIdLeft: 0, playerIdRight: 0, scoreLeft: 0, scoreRight: 3, status: '' }
+  ]
+
+  await fulfillFixture(db, fixtureId, encounterStruct)
+
+  const encounters = await db.all(`SELECT * FROM tennisEncounter WHERE fixtureId = ${fixtureId}`)
+
+  expect(encounters[0].playerRankChangeLeft).toEqual(-5)
+  expect(encounters[0].playerRankChangeRight).toEqual(8)
+  expect(encounters[1].playerRankChangeLeft).toEqual(0)
+  expect(encounters[1].playerRankChangeRight).toEqual(0)
+
+  const playerRanks = await getPlayerRanks(db, latestYear.id, encounterStruct)
+
+  expect(playerRanks[1]).toEqual(2495)
+  expect(playerRanks[4]).toEqual(2608)
+
+  const nextEncounterStruct = [
+    { playerIdLeft: 1, playerIdRight: 4, scoreLeft: 0, scoreRight: 3, status: '' },
+    { playerIdLeft: 1, playerIdRight: 4, scoreLeft: 3, scoreRight: 0, status: '' },
+    { playerIdLeft: 0, playerIdRight: 0, scoreLeft: 0, scoreRight: 3, status: '' }
+  ]
+
+  await fulfillFixture(db, fixtureId, nextEncounterStruct)
+
+  const nextPlayerRanks = await getPlayerRanks(db, latestYear.id, nextEncounterStruct)
+
+  expect(nextPlayerRanks[1]).toEqual(2516)
+  expect(nextPlayerRanks[4]).toEqual(2594)
+})
+
 test('it will produce the right rank changes when rolling back', async () => {
   const db = getTestDb()
     const latestYear = await getLatestYear(db)

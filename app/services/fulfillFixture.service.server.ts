@@ -12,6 +12,7 @@ import filter from "lodash/filter";
 import {playerGetMany} from '~/repositories/player.repository.server'
 import {getCurrentYear} from "~/repositories/year.repository.server";
 import {sql} from "drizzle-orm"
+import EncounterStatus from "~/constants/EncounterStatus";
 
 const TRACE_RANK_CHANGES = false
 
@@ -181,12 +182,16 @@ export default async function fulfillFixture (db, fixtureId, encounterStruct, ro
           playerRanks[encounter.playerIdRight]
         ])
 
-        rankChanges = getRankChanges(
-          encounter.scoreLeft,
-          encounter.scoreRight,
-          playerRanks[encounter.playerIdLeft],
-          playerRanks[encounter.playerIdRight]
-        )
+        // This is where we apply the rank changes that have been calculated for an encounter
+        // We only want to apply them if the encounter is not excluded - excluded means from the merit
+        if (encounter.status !== EncounterStatus.EXCLUDE) {
+          rankChanges = getRankChanges(
+            encounter.scoreLeft,
+            encounter.scoreRight,
+            playerRanks[encounter.playerIdLeft],
+            playerRanks[encounter.playerIdRight]
+          )
+        }
 
         for (const sideCapitalized of getSidesCapitalized()) {
           const sideIndex = getSideIndex(sideCapitalized)
