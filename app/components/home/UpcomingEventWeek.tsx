@@ -1,7 +1,5 @@
 import {ExactDayWeekTypes, WeekTypeLabels} from '~/constants/Week'
 import {GiTrophyCup} from 'react-icons/gi'
-import {Link} from "react-router";
-import {buttonPrimaryStyles} from "~/styles/ui-classes";
 import LinkButton from "~/components/LinkButton";
 
 export default function UpcomingEventWeek({yearName, week}) {
@@ -9,7 +7,7 @@ export default function UpcomingEventWeek({yearName, week}) {
 
   return (
     <div className='flex flex-col items-center justify-center gap-6 h-full'>
-      <div className='grow flex gap-4'>
+      <div className='grow flex gap-4 w-full'>
         <div>
           <GiTrophyCup className='inline mr-1 mb-1 fill-primary-500' size={120}/>
         </div>

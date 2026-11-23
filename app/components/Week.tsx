@@ -14,8 +14,13 @@ function FixtureDescription ({ yearName, currentTeamSlug, fixture, isAtHome }) {
   let parts = []
 
   if (fixture.timeFulfilled) {
-    parts.push(getContextualScoreStatus(currentTeamSlug === fixture.teamLeftSlug, fixture.scoreLeft, fixture.scoreRight))
-    parts.push(' at ')
+    const contextualScoreStatus = getContextualScoreStatus(currentTeamSlug === fixture.teamLeftSlug, fixture.scoreLeft, fixture.scoreRight)
+    parts.push(contextualScoreStatus)
+    if (isAtHome) {
+      parts.push(' at ')
+    } else {
+      parts.push(' ')
+    }
   }
 
   parts.push(isAtHome ? 'home' : 'away')

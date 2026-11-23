@@ -10,8 +10,6 @@ import UpcomingEventWeek from "~/components/home/UpcomingEventWeek";
 import ThisWeek from "~/components/home/ThisWeek";
 import { Link } from "react-router";
 import {
-  allHomeButtonStyles,
-  buttonPrimaryStyles,
   linkStyles,
 } from "~/styles/ui-classes";
 import SeasonTotals from "~/components/home/SeasonTotals";
@@ -130,25 +128,34 @@ export async function loader({ context }) {
     }
   }
 
+  // For events it will be good to show an event even when the date has elapsed for about 3 days
+  // We are looking for timeStart to be < now+3days and > now -7days
+  const DAY_IN_SECONDS = 86400;
+  const GRACE_PERIOD_SECONDS = 3 * DAY_IN_SECONDS;
+  const nowSec = Math.floor(Date.now() / 1000);
+  const cutoffTimeStart = nowSec - GRACE_PERIOD_SECONDS;
+
   // this week
   const upcomingEventWeeks = await db.all(sql`
-      SELECT id,
+    SELECT id,
              timeStart,
              type
       FROM tennisWeek
       WHERE yearId = ${currentYear.id}
-        AND type != ${WeekTypes.fixture}
-        AND type != ${WeekTypes.catchup}
-        AND type != ${WeekTypes.nothing}
-      ORDER BY timeStart
-          LIMIT 1;
+        AND type NOT IN (${WeekTypes.fixture}, ${WeekTypes.catchup}, ${WeekTypes.nothing})
+        AND timeStart >= ${cutoffTimeStart}
+      ORDER BY ABS(timeStart - ${nowSec}) ASC
+      LIMIT 1;
   `);
   let upcomingEventWeek = null;
   if (upcomingEventWeeks.length > 0) {
-    upcomingEventWeek = upcomingEventWeeks[0];
-    upcomingEventWeek.dateStartWithSuffix = formatDayWithSuffixOfMonth(
-      getWeekDate(upcomingEventWeek.type, upcomingEventWeek.timeStart),
-    );
+    const row = upcomingEventWeeks[0];
+    upcomingEventWeek = {
+      ...row,
+      dateStartWithSuffix: formatDayWithSuffixOfMonth(
+        getWeekDate(row.type, row.timeStart),
+      ),
+    };
   }
 
   return Response.json(
